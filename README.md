@@ -49,3 +49,7 @@ Erstellt eine Kopie eines bestehenden Git-Repositorys
 ### Status überprüfen
 `git status` Gibt den aktuellen Status des Arbeitsverzeichnisses und der Staging-Umgebung zurück 1.
 
+Quellen:  
+https://www.atlassian.com/de/git/glossary#terminology  
+https://docs.aws.amazon.com/de_de/codecommit/latest/userguide/how-to-basic-git.html  
+https://vfhvws.eduloop.de/loop/Moderne_Softwareentwicklung
