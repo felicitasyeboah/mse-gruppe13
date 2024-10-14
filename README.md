@@ -3,10 +3,10 @@
 
 Git ist ein kostenfreies Versionskontrollsystem, welches der Verwaltung von Projekten in der Softwareentwicklung dient. Es ermöglicht effektives Speichern, Ändern und Protokollieren von Quellcode. Bei der Versionsverwaltung unterscheidet man zwischen drei Arten von Versionskontrollsystemen:
 
-`Lokal `
+`Lokal`
 <br> Daten werden lokal gespeichert.
 
-`Zentral `
+`Zentral`
 <br> Daten werden auf einem zentralen Server gespeichert und müssen von dort auf den PC übermittelt werden.
 
 `Verteilt`<br>
