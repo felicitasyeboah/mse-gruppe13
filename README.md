@@ -14,7 +14,7 @@ Ein Branch kann mit verschiedenen Befehlen angelegt werden:
 
 `$ git branch (branchname)` Branch erstellen
  
-`$git checkout -b (branchname)` Branch erstellen und in den Branch wechseln 
+`$ git checkout -b (branchname)` Branch erstellen und in den Branch wechseln 
 
 ### Branches anzeigen und Branch löschen
 `$ git branch` Anzeigen der verfügbaren Branches 
@@ -43,9 +43,9 @@ Wenn eine Person eine Datei ändert, die von einer anderen Person gelöscht wurd
 
 `$ git status` zeigt Konflikt an. Es muss entschieden werden, ob die Datei erhalten werden soll. 
 
-`git add` gelöschte Datei hinzufügen
+`$ git add` gelöschte Datei hinzufügen
 
-`git rm` Datei löschen 
+`$ git rm` Datei löschen 
 
 
 ### Quellen
