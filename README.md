@@ -252,3 +252,7 @@ https://docs.github.com/de/repositories/creating-and-managing-repositories/about
 https://www.jetbrains.com/help/idea/using-git-integration.html
 
 https://www.jetbrains.com/help/pycharm/using-git-integration.html
+
+
+## Beiträge der Teammitglieder zum Handout:
+Felicitas Yeboah: Abschnitt - Grundlegende Git-Befehle
