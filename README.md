@@ -48,3 +48,10 @@ Wenn eine Person eine Datei ändert, die von einer anderen Person gelöscht wurd
 `git rm` Datei löschen 
 
 
+### Quellen
+https://docs.github.com/de/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-branches  
+https://docs.github.com/de/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/resolving-a-merge-conflict-using-the-command-line  
+https://www.atlassian.com/de/git/tutorials/using-branches/merge-conflicts  
+https://vfhvws.eduloop.de/loop/Moderne_Softwareentwicklung  
+
+
