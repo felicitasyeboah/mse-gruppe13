@@ -258,3 +258,5 @@ https://www.jetbrains.com/help/pycharm/using-git-integration.html
 Felicitas Yeboah: Abschnitt - Grundlegende Git-Befehle
 
 Katrin Knoke: Abschnitt - Git mit IntelliJ/PyCharm benutzen: Local und Remote Repository
+
+Christine Neick: Branches und ihre Nutzung, Umgang mit Merge-Befehlen
