@@ -14,10 +14,31 @@ Ein lokales Repository ist die Version des Projekts, die auf deinem eigenen Comp
 #### Remote
 Ein remote Repository ist eine zentrale Version eines Projekts, die auf einem Server oder in der Cloud gespeichert ist, typischerweise bei Anbietern wie GitHub, GitLab oder Bitbucket. Mehrere Entwickler können auf dasselbe Repository zugreifen, ihre Änderungen synchronisieren und gemeinsam an einem Projekt arbeiten. Änderungen, die an einem lokalen Repository vorgenommen werden, können in das remote Repository hochgeladen __(Push)__ werden. Umgekehrt ist es möglich, Änderungen anderer Entwickler abzurufen __(Pull)__. Remote Repositories dienen als __Sicherheitskopie__ des Codes. Sollte ein lokales Repository verloren gehen oder beschädigt werden, bleiben die Daten im remote Repository erhalten. Zudem ermöglichen remote Repositories die zentrale Speicherung des __gesamten Versionsverlaufs__ eines Projekts, sodass jeder Entwickler den Projektverlauf nachvollziehen kann.
 
+#### Repository-Begriffe
+
+`Verzweigung` 
+
+Eine Parallelversion Ihres Codes, die im Repository enthalten ist, aber keine Auswirkungen auf den primären oder Main Branch hat.
+
+`Klon`
+
+So kann man eine Kopie der Daten, alle Versionen, Dateien und Ordner, eines Repositories aus GitHub herunterladen
+
+`Fork`
+
+Es wird ein neues Repository erstellt, welches den Code und Sicherheitseinstellungen verwendet werden, wie das Repository, auf dem es basiert.
+
+`Merge`
+
+Änderungen werden von einer Verzweigung auf eine Andere übertragen.
+
+`Upstream und Downstream`
+
+Die Verzweigung eines ursprüglichen Repositorys, welches geforkt oder geklont wurde, wird Upstream genannt. Die Verzweigung, auf dem geklonten oder geforktem Zweig wird als Downstream bezeichnet.
 
 ### IntelliJ / PyCharm
 
-IntelliJ IDEA und PyCharm sind integrierte Entwicklungsumgebungen (IDEs), die von JetBrains entwickelt wurden. Beide Tools bieten Entwicklern eine Vielzahl von Funktionen, um die Softwareentwicklung zu erleichtern, jedoch mit unterschiedlichen Schwerpunkten.
+IntelliJ IDEA und PyCharm sind integrierte Entwicklungsumgebungen (IDEs), die von JetBrains entwickelt wurden. Beide Tools bieten Entwicklern eine Vielzahl von Funktionen, um die Softwareentwicklung zu erleichtern, jedoch mit unterschiedlichen Schwerpunkten. Die IDEs können mit direkt mit Git arbeiten, wenn beides auf einem Gerät installiert wurde. Die Verbindung zwischen IDEs und lokalen sowie remote Repositories schafft eine effiziente und benutzerfreundliche Umgebung für die Softwareentwicklung. Entwickler können ihre Projekte einfach verwalten, Änderungen nachverfolgen und nahtlos mit anderen zusammenarbeiten, was die Qualität und Geschwindigkeit des Entwicklungsprozesses verbessert.
 
 #### IntelliJ IDEA
 
@@ -36,3 +57,14 @@ PyCharm ist hingegen speziell auf die Entwicklung mit Python ausgerichtet. Es bi
 * Spezielle Tools und Funktionen zur Unterstützung der Entwicklung mit dem Django-Webframework
 * Integration von Funktionen für Datenanalyse, wie Jupyter Notebook und Unterstützung für Datenvisualisierungsbibliotheken
 * Unterstützung in der Webentwicklung für HTML, CSS, JavaScript und Frameworks wie Flask
+
+
+### Quellen
+
+https://docs.github.com/de/repositories/creating-and-managing-repositories/about-repositories
+
+https://www.jetbrains.com/help/idea/using-git-integration.html
+
+https://www.jetbrains.com/help/pycharm/using-git-integration.html
+
+
