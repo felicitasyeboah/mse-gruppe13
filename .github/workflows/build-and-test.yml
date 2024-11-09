@@ -27,7 +27,7 @@ jobs:
     - name: Set up JDK
       uses: actions/setup-java@v4.5.0
       with:
-        java-version: '11'
+        java-version: '17'
 
     # 3. Installiere die Projektabhängigkeiten
     - name: Install dependencies and build project
