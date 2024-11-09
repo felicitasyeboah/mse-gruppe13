@@ -5,26 +5,29 @@ import java.time.Instant;
 public class Feedback {
 
     private Long id;
-    private Category category;
+    private Long categoryId;
     private String title;
     private String content;
-    private User citizen;
-    private User employee;
+    private Long citizenId;
+    private Long employeeId;
     private String comment;
-    private Status status;
+    private Long statusId;
     private Instant createdAt;
     private Instant updatedAt;
 
-    public Feedback(Long id, Category category, String title, String content, User citizen, User employee,
-                    String comment, Status status, Instant createdAt, Instant updatedAt) {
+    public Feedback() {
+    }
+
+    public Feedback(Long id, Long categoryId, String title, String content, Long citizenId, Long employeeId,
+                    String comment, Long statusId, Instant createdAt, Instant updatedAt) {
         this.id = id;
-        this.category = category;
+        this.categoryId = categoryId;
         this.title = title;
         this.content = content;
-        this.citizen = citizen;
-        this.employee = employee;
+        this.citizenId = citizenId;
+        this.employeeId = employeeId;
         this.comment = comment;
-        this.status = status;
+        this.statusId = statusId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -37,12 +40,12 @@ public class Feedback {
         this.id = id;
     }
 
-    public Category getCategory() {
-        return category;
+    public Long getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 
     public String getTitle() {
@@ -61,20 +64,20 @@ public class Feedback {
         this.content = content;
     }
 
-    public User getCitizen() {
-        return citizen;
+    public Long getCitizenId() {
+        return citizenId;
     }
 
-    public void setCitizen(User citizen) {
-        this.citizen = citizen;
+    public void setCitizenId(Long citizenId) {
+        this.citizenId = citizenId;
     }
 
-    public User getEmployee() {
-        return employee;
+    public Long getEmployeeId() {
+        return employeeId;
     }
 
-    public void setEmployee(User employee) {
-        this.employee = employee;
+    public void setEmployeeId(Long employeeId) {
+        this.employeeId = employeeId;
     }
 
     public String getComment() {
@@ -85,12 +88,12 @@ public class Feedback {
         this.comment = comment;
     }
 
-    public Status getStatus() {
-        return status;
+    public Long getStatusId() {
+        return statusId;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
+    public void setStatusId(Long statusId) {
+        this.statusId = statusId;
     }
 
     public Instant getCreatedAt() {
