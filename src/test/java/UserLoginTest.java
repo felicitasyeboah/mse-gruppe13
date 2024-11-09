@@ -1,13 +1,43 @@
 import de.cityfeedback.exception.WrongUserInputException;
+import de.cityfeedback.repository.InMemoryUserRepository;
 import de.cityfeedback.validator.UserInputValidator;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class UserLoginTest {
+    //private UserService service;
+    private InMemoryUserRepository repository;
 
+    @BeforeAll
+    public static void init() {
+        System.out.println("BeforeAll init() method called");
+    }
+
+    @BeforeEach
+    public void setUp() {
+        repository = new InMemoryUserRepository();
+        //service = new UserService(repository);
+    }
+
+//    @Test
+//    void testLoginByEmail() {
+//        assertDoesNotThrow(() -> service.loginUser("abds", "username@domain.de"));
+//        assertThrows(WrongUserInputException.class, () -> service.loginUser("abds/sadas", "username@domain.de"));
+//    }
+
+    @Test
+    void testUserNotFound() {
+        assertNull(repository.findUserByEmail("test@domain.de"));
+    }
+
+    @Test
+    void testFoundUser() {
+        assertNotNull(repository.findUserByEmail("username@domain.de"));
+    }
 
     @Test
     void testInvalidUsernameNull() {
