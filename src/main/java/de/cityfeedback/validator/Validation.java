@@ -1,3 +1,5 @@
+package de.cityfeedback.validator;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,11 +44,11 @@ public class Validation {
         return matcher.matches();
     }
 
-   /**  // Validierung der Kategorien
-    public static boolean isValidCategory(String category) {
-        if (category == null) return false;
-        Pattern pattern = Pattern.compile(CATEGORY_REGEX);
-        Matcher matcher = pattern.matcher(category);
-        return matcher.matches(); 
-    } **/
+    /**  // Validierung der Kategorien
+     public static boolean isValidCategory(String category) {
+     if (category == null) return false;
+     Pattern pattern = Pattern.compile(CATEGORY_REGEX);
+     Matcher matcher = pattern.matcher(category);
+     return matcher.matches();
+     } **/
 }

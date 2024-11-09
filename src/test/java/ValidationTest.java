@@ -1,7 +1,8 @@
-import org.junit.Test;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
+import de.cityfeedback.validator.Validation;
+import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ValidationTest {
 
@@ -35,11 +36,10 @@ public class ValidationTest {
         assertFalse(Validation.isValidComplaintDescription("")); // Beschreibung darf nicht leer sein
     }
 
-    /**@Test
-    public void testValidCategory() {
-        assertTrue(Validation.isValidCategory("Verkehr"));
-        assertTrue(Validation.isValidCategory("Umwelt"));
-        assertFalse(Validation.isValidCategory("Unbekannt")); // Ungültige Kategorie
+    /**@Test public void testValidCategory() {
+    assertTrue(Validation.isValidCategory("Verkehr"));
+    assertTrue(Validation.isValidCategory("Umwelt"));
+    assertFalse(Validation.isValidCategory("Unbekannt")); // Ungültige Kategorie
     } **/
 }
 
