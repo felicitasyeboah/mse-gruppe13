@@ -27,6 +27,7 @@ jobs:
     - name: Set up JDK
       uses: actions/setup-java@v4.5.0
       with:
+        distribution: 'corretto'
         java-version: '17'
 
     # 3. Installiere die Projektabhängigkeiten
