@@ -15,7 +15,7 @@ public class FeedbackServiceTest {
     public InMemoryFeedbackRepository feedbackRepository;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         feedbackRepository = new InMemoryFeedbackRepository();
         feedbackService = new FeedbackService(feedbackRepository);
     }
