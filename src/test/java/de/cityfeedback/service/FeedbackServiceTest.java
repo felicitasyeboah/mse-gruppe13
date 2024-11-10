@@ -11,17 +11,19 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FeedbackServiceTest {
-    public FeedbackService feedbackService;
-    public InMemoryFeedbackRepository feedbackRepository;
+//    public FeedbackService feedbackService;
+//    public InMemoryFeedbackRepository feedbackRepository;
 
     @BeforeEach
-    void setUp() {
-        feedbackRepository = new InMemoryFeedbackRepository();
-        feedbackService = new FeedbackService(feedbackRepository);
+    public void setUp() {
+//        feedbackRepository = new InMemoryFeedbackRepository();
+//        feedbackService = new FeedbackService(feedbackRepository);
     }
 
     @Test
     public void testCreateFeedback_ShouldCreateNewFeedback() {
+        InMemoryFeedbackRepository feedbackRepository = new InMemoryFeedbackRepository();
+        FeedbackService feedbackService = new FeedbackService(feedbackRepository);
         //arrange
         String title = "Das ist ein Testtitel";
         String content = "Das ist ein Testcontent fuer unsere testcases.";
@@ -47,6 +49,8 @@ public class FeedbackServiceTest {
 
     @Test
     public void testUpdateFeedbackStatus_ShouldUpdateFeedbackStatusToInBearbeitung() {
+        InMemoryFeedbackRepository feedbackRepository = new InMemoryFeedbackRepository();
+        FeedbackService feedbackService = new FeedbackService(feedbackRepository);
         //arrange
         Feedback feedback = feedbackRepository.findById(1L);
 
@@ -61,6 +65,8 @@ public class FeedbackServiceTest {
 
     @Test
     public void testAssignEmployeeToFeedback_ShouldAssignEmployee() {
+        InMemoryFeedbackRepository feedbackRepository = new InMemoryFeedbackRepository();
+        FeedbackService feedbackService = new FeedbackService(feedbackRepository);
         //arrange
         Feedback feedback = feedbackRepository.findById(1L);
         Long employeeId = 120L;
