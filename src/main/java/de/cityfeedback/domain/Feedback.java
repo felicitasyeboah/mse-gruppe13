@@ -1,30 +1,41 @@
 package de.cityfeedback.domain;
 
 import java.time.Instant;
+import java.util.Objects;
 
 public class Feedback {
 
     private Long id;
-    private Category category;
+    private Long categoryId;
     private String title;
     private String content;
-    private User citizen;
-    private User employee;
+    private Long citizenId;
+    private Long employeeId;
     private String comment;
-    private Status status;
+    private Long statusId;
     private Instant createdAt;
     private Instant updatedAt;
 
-    public Feedback(Long id, Category category, String title, String content, User citizen, User employee,
-                    String comment, Status status, Instant createdAt, Instant updatedAt) {
-        this.id = id;
-        this.category = category;
+    public Feedback() {
+    }
+
+    public Feedback(Long categoryId, String title, String content, Long citizenId) {
+        this.categoryId = categoryId;
         this.title = title;
         this.content = content;
-        this.citizen = citizen;
-        this.employee = employee;
+        this.citizenId = citizenId;
+    }
+
+    public Feedback(Long id, Long categoryId, String title, String content, Long citizenId, Long employeeId,
+                    String comment, Long statusId, Instant createdAt, Instant updatedAt) {
+        this.id = id;
+        this.categoryId = categoryId;
+        this.title = title;
+        this.content = content;
+        this.citizenId = citizenId;
+        this.employeeId = employeeId;
         this.comment = comment;
-        this.status = status;
+        this.statusId = statusId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -37,12 +48,12 @@ public class Feedback {
         this.id = id;
     }
 
-    public Category getCategory() {
-        return category;
+    public Long getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 
     public String getTitle() {
@@ -61,20 +72,20 @@ public class Feedback {
         this.content = content;
     }
 
-    public User getCitizen() {
-        return citizen;
+    public Long getCitizenId() {
+        return citizenId;
     }
 
-    public void setCitizen(User citizen) {
-        this.citizen = citizen;
+    public void setCitizenId(Long citizenId) {
+        this.citizenId = citizenId;
     }
 
-    public User getEmployee() {
-        return employee;
+    public Long getEmployeeId() {
+        return employeeId;
     }
 
-    public void setEmployee(User employee) {
-        this.employee = employee;
+    public void setEmployeeId(Long employeeId) {
+        this.employeeId = employeeId;
     }
 
     public String getComment() {
@@ -85,12 +96,12 @@ public class Feedback {
         this.comment = comment;
     }
 
-    public Status getStatus() {
-        return status;
+    public Long getStatusId() {
+        return statusId;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
+    public void setStatusId(Long statusId) {
+        this.statusId = statusId;
     }
 
     public Instant getCreatedAt() {
@@ -107,5 +118,34 @@ public class Feedback {
 
     public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Feedback feedback = (Feedback) o;
+        return Objects.equals(id, feedback.id) && Objects.equals(categoryId, feedback.categoryId) && Objects.equals(title, feedback.title) && Objects.equals(content, feedback.content) && Objects.equals(citizenId, feedback.citizenId) && Objects.equals(employeeId, feedback.employeeId) && Objects.equals(comment, feedback.comment) && Objects.equals(statusId, feedback.statusId) && Objects.equals(createdAt, feedback.createdAt) && Objects.equals(updatedAt, feedback.updatedAt);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, categoryId, title, content, citizenId, employeeId, comment, statusId, createdAt, updatedAt);
+    }
+
+    @Override
+    public String toString() {
+        return "Feedback{" +
+                "id=" + id +
+                ", categoryId=" + categoryId +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", citizenId=" + citizenId +
+                ", employeeId=" + employeeId +
+                ", comment='" + comment + '\'' +
+                ", statusId=" + statusId +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
     }
 }

@@ -2,7 +2,9 @@ package de.cityfeedback.service;
 
 import de.cityfeedback.domain.User;
 import de.cityfeedback.repository.UserRepository;
-import de.cityfeedback.validator.UserInputValidator;
+import de.cityfeedback.validator.Validation;
+
+import java.util.NoSuchElementException;
 
 public class UserService {
     UserRepository userRepository;
@@ -18,11 +20,14 @@ public class UserService {
     public void loginUser(String username, String email) {
 
         // validate username
-        UserInputValidator.isValidUsername(username);
+        Validation.validateUsername(username);
         // validate email
-
+        Validation.validateEmail(email);
         // findUserByEmail
         User user = this.userRepository.findUserByEmail(email);
+        if (user == null) {
+            throw new NoSuchElementException();
+        }
         System.out.println("user: " + user.getEmail());
         // validate that we found a user and it's not null
     }
