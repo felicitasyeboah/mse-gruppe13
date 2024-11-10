@@ -21,7 +21,7 @@ jobs:
     steps:
       # 1. Checke den Code aus dem Repository aus
     - name: Checkout source code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     # 2. Rufe die passende Version von 
     - name: Set up JDK
