@@ -32,7 +32,7 @@ public class ValidationTest {
     }
 
     @Test
-    void testValidateEmail_Invalid() {
+    public void testValidateEmail_Invalid() {
         // Ungültige E-Mail-Adressen
         assertThrows(IllegalArgumentException.class, () -> Validation.validateEmail("invalid-email"));
         assertThrows(IllegalArgumentException.class, () -> Validation.validateEmail("user@domain"));
@@ -41,14 +41,14 @@ public class ValidationTest {
 
     // Test für die Validierung des Beschwerdetitels
     @Test
-    void testValidateComplaintTitle_Valid() {
+    public void testValidateComplaintTitle_Valid() {
         // Gültige Titel
         assertDoesNotThrow(() -> Validation.validateComplaintTitle("Verkehrsproblem"));
         assertDoesNotThrow(() -> Validation.validateComplaintTitle("Sehr langer Titel, aber immer noch gültig"));
     }
 
     @Test
-    void testValidateComplaintTitle_Invalid() {
+    public void testValidateComplaintTitle_Invalid() {
         // Ungültige Titel
         assertThrows(IllegalArgumentException.class, () -> Validation.validateComplaintTitle(""));  // Zu kurz
         assertThrows(IllegalArgumentException.class, () -> Validation.validateComplaintTitle("A"));  // Zu kurz
@@ -57,14 +57,14 @@ public class ValidationTest {
 
     // Test für die Validierung der Beschreibungen
     @Test
-    void testValidateComplaintDescription_Valid() {
+    public void testValidateComplaintDescription_Valid() {
         // Gültige Beschreibungen
         assertDoesNotThrow(() -> Validation.validateComplaintDescription("Es gibt ein Problem auf der Straße"));
         assertDoesNotThrow(() -> Validation.validateComplaintDescription("Kurze Beschreibung."));
     }
 
     @Test
-    void testValidateComplaintDescription_Invalid() {
+    public void testValidateComplaintDescription_Invalid() {
         // Ungültige Beschreibungen
         assertThrows(IllegalArgumentException.class, () -> Validation.validateComplaintDescription(""));  // Zu kurz
         assertThrows(IllegalArgumentException.class, () -> Validation.validateComplaintDescription("Kurz"));  // Zu kurz
