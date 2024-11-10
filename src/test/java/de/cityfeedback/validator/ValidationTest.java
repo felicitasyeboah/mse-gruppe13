@@ -1,4 +1,5 @@
-import de.cityfeedback.validator.Validation;
+package de.cityfeedback.validator;
+
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -70,20 +71,18 @@ public class ValidationTest {
         assertThrows(IllegalArgumentException.class, () -> Validation.validateComplaintDescription("A".repeat(501)));  // Zu lang
     }
 
-   /**  // Test für die Validierung der Kategorien
-    @Test
-    void testValidateCategory_Valid() {
-        // Gültige Kategorien
-        assertDoesNotThrow(() -> Validation.validateCategory("Verkehr"));
-        assertDoesNotThrow(() -> Validation.validateCategory("Umwelt"));
-        assertDoesNotThrow(() -> Validation.validateCategory("Sicherheit"));
-    }
+    /**  // Test für die Validierung der Kategorien
+     @Test void testValidateCategory_Valid() {
+     // Gültige Kategorien
+     assertDoesNotThrow(() -> Validation.validateCategory("Verkehr"));
+     assertDoesNotThrow(() -> Validation.validateCategory("Umwelt"));
+     assertDoesNotThrow(() -> Validation.validateCategory("Sicherheit"));
+     }
 
-    @Test
-    void testValidateCategory_Invalid() {
-        // Ungültige Kategorien
-        assertThrows(IllegalArgumentException.class, () -> Validation.validateCategory("Bildung"));
-        assertThrows(IllegalArgumentException.class, () -> Validation.validateCategory("Sport"));
-        assertThrows(IllegalArgumentException.class, () -> Validation.validateCategory(""));  // Leerer Wert
-    } **/
+     @Test void testValidateCategory_Invalid() {
+     // Ungültige Kategorien
+     assertThrows(IllegalArgumentException.class, () -> Validation.validateCategory("Bildung"));
+     assertThrows(IllegalArgumentException.class, () -> Validation.validateCategory("Sport"));
+     assertThrows(IllegalArgumentException.class, () -> Validation.validateCategory(""));  // Leerer Wert
+     } **/
 }
