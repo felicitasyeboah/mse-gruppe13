@@ -1,6 +1,7 @@
 package de.cityfeedback.domain;
 
 import java.time.Instant;
+import java.util.Objects;
 
 public class Feedback {
 
@@ -16,6 +17,13 @@ public class Feedback {
     private Instant updatedAt;
 
     public Feedback() {
+    }
+
+    public Feedback(Long categoryId, String title, String content, Long citizenId) {
+        this.categoryId = categoryId;
+        this.title = title;
+        this.content = content;
+        this.citizenId = citizenId;
     }
 
     public Feedback(Long id, Long categoryId, String title, String content, Long citizenId, Long employeeId,
@@ -110,5 +118,34 @@ public class Feedback {
 
     public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Feedback feedback = (Feedback) o;
+        return Objects.equals(id, feedback.id) && Objects.equals(categoryId, feedback.categoryId) && Objects.equals(title, feedback.title) && Objects.equals(content, feedback.content) && Objects.equals(citizenId, feedback.citizenId) && Objects.equals(employeeId, feedback.employeeId) && Objects.equals(comment, feedback.comment) && Objects.equals(statusId, feedback.statusId) && Objects.equals(createdAt, feedback.createdAt) && Objects.equals(updatedAt, feedback.updatedAt);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, categoryId, title, content, citizenId, employeeId, comment, statusId, createdAt, updatedAt);
+    }
+
+    @Override
+    public String toString() {
+        return "Feedback{" +
+                "id=" + id +
+                ", categoryId=" + categoryId +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", citizenId=" + citizenId +
+                ", employeeId=" + employeeId +
+                ", comment='" + comment + '\'' +
+                ", statusId=" + statusId +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
     }
 }

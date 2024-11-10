@@ -14,8 +14,8 @@ public class InMemoryStatusRepository implements StatusRepository {
 
     private void initStatusDb() {
         Status offen = new Status(1L, "OFFEN");
-        Status inBearbeitung = new Status(1L, "IN BEARBEITUNG");
-        Status closed = new Status(1L, "ABGESCLOSSEN");
+        Status inBearbeitung = new Status(2L, "IN BEARBEITUNG");
+        Status closed = new Status(3L, "ABGESCLOSSEN");
         statusDatabase.put(offen.getId(), offen);
         statusDatabase.put(inBearbeitung.getId(), inBearbeitung);
         statusDatabase.put(closed.getId(), closed);

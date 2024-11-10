@@ -1,44 +1,45 @@
 package de.cityfeedback.service;
 
 import de.cityfeedback.domain.Feedback;
-import de.cityfeedback.domain.Status;
-import de.cityfeedback.domain.User;
-import de.cityfeedback.repository.FeedbackRepository;
+import de.cityfeedback.repository.InMemoryFeedbackRepository;
+import de.cityfeedback.validator.Validation;
 
 import java.util.Date;
 
 public class FeedbackService {
-    private final FeedbackRepository feedbackRepository;
-    private Long idCounter = 5L;
+    private final InMemoryFeedbackRepository feedbackRepository;
+    private static Long idCounter = 2L;
 
-    public FeedbackService(FeedbackRepository feedbackRepository) {
+    public FeedbackService(InMemoryFeedbackRepository feedbackRepository) {
         this.feedbackRepository = feedbackRepository;
     }
 
-    public void createFeedback(String title, String content, Long citizenId, Long categoryId) {
+    public Feedback createFeedback(String title, String content, Long citizenId, Long categoryId) {
         Feedback feedback = new Feedback();
-        //TODO Validate inputs title and content
+        Validation.validateComplaintTitle(title);
+        Validation.validateComplaintDescription(content);
 
-        feedback.setId(idCounter++);
         feedback.setCategoryId(categoryId);
         feedback.setTitle(title);
         feedback.setContent(content);
         feedback.setCitizenId(citizenId);
+        feedback.setId(idCounter++);
         feedback.setStatusId(1L);
         feedback.setCreatedAt(new Date().toInstant());
         feedback.setUpdatedAt(new Date().toInstant());
 
-        this.feedbackRepository.save(feedback);
-        System.out.println("Feedback: " + feedback);
+        System.out.println("Feedback aha: " + feedback.toString());
+        return this.feedbackRepository.save(feedback);
     }
 
-    public void updateFeedbackStatus(Feedback feedback, Status status) {
-        feedback.setStatusId(2L);
-        this.feedbackRepository.save(feedback);
+    public Feedback updateFeedbackStatus(Feedback feedback, Long statusId) {
+        feedback.setStatusId(statusId);
+        feedback.setUpdatedAt(new Date().toInstant());
+        return this.feedbackRepository.save(feedback);
     }
 
-    public void assignEmployeeToFeedback(Feedback feedback, User employee) {
-        feedback.setEmployeeId(2L);
-        feedbackRepository.save(feedback);
+    public Feedback assignEmployeeToFeedback(Feedback feedback, Long employeeId) {
+        feedback.setEmployeeId(employeeId);
+        return feedbackRepository.save(feedback);
     }
 }

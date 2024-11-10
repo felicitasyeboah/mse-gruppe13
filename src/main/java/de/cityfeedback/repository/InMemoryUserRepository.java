@@ -7,13 +7,14 @@ import java.util.Map;
 
 public class InMemoryUserRepository implements UserRepository {
     private final Map<String, User> userDatabase = new HashMap<>();
+    private static Long idCounter = 1L;
 
     public InMemoryUserRepository() {
         this.initUserDb();
     }
 
     private void initUserDb() {
-        User user = new User(1L, "abds", "username@domain.de", "citizen");
+        User user = new User(idCounter++, "abds", "username@domain.de", "citizen");
         userDatabase.put(user.getEmail(), user);
     }
 

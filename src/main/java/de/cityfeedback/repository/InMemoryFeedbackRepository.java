@@ -11,35 +11,34 @@ public class InMemoryFeedbackRepository implements FeedbackRepository {
     private final Map<Long, Feedback> feedbackDatabase = new HashMap<>();
 
     public InMemoryFeedbackRepository() {
-
+        initFeedbackDb();
     }
 
     private void initFeedbackDb() {
         Feedback feedback = new Feedback();
-        //TODO Validate inputs title and content
-
         feedback.setId(1L);
         feedback.setCategoryId(2L);
         feedback.setTitle("das ist ein Testitel");
         feedback.setContent("Das ist der sehr aussagekraeftige Feedbacktitel");
         feedback.setCitizenId(1L);
-        feedback.setStatusId(2L);
+        feedback.setStatusId(1L);
         feedback.setEmployeeId(100L);
         feedback.setCreatedAt(new Date().toInstant());
         feedback.setUpdatedAt(new Date().toInstant());
-
         feedbackDatabase.put(feedback.getId(), feedback);
     }
 
     @Override
-    public void save(Feedback feedback) {
-        feedbackDatabase.put(1L, feedback);
+    public Feedback save(Feedback feedback) {
+        System.out.println("feedback in save: " + feedback);
+        feedbackDatabase.put(feedback.getId(), feedback);
+        return feedbackDatabase.put(feedback.getId(), feedback);
 
     }
 
     @Override
     public Feedback findById(Long id) {
-        return feedbackDatabase.get(1L);
+        return feedbackDatabase.get(id);
     }
 
     @Override
