@@ -11,8 +11,8 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FeedbackServiceTest {
-    private FeedbackService feedbackService;
-    private InMemoryFeedbackRepository feedbackRepository;
+    public FeedbackService feedbackService;
+    public InMemoryFeedbackRepository feedbackRepository;
 
     @BeforeEach
     void setUp() {
