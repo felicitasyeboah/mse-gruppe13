@@ -5,25 +5,30 @@ import de.cityfeedback.repository.InMemoryFeedbackRepository;
 import de.cityfeedback.validator.Validation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.MockitoAnnotations;
 
+import java.time.Instant;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FeedbackServiceTest {
-//    public FeedbackService feedbackService;
-//    public InMemoryFeedbackRepository feedbackRepository;
+    @InjectMocks
+    public InMemoryFeedbackRepository feedbackRepository;
+
+    @InjectMocks
+    public FeedbackService feedbackService;
 
     @BeforeEach
     public void setUp() {
-//        feedbackRepository = new InMemoryFeedbackRepository();
-//        feedbackService = new FeedbackService(feedbackRepository);
+        MockitoAnnotations.openMocks(this);
+        feedbackService = new FeedbackService(feedbackRepository);
     }
 
     @Test
     public void testCreateFeedback_ShouldCreateNewFeedback() {
-        InMemoryFeedbackRepository feedbackRepository = new InMemoryFeedbackRepository();
-        FeedbackService feedbackService = new FeedbackService(feedbackRepository);
+
         //arrange
         String title = "Das ist ein Testtitel";
         String content = "Das ist ein Testcontent fuer unsere testcases.";
@@ -49,24 +54,22 @@ public class FeedbackServiceTest {
 
     @Test
     public void testUpdateFeedbackStatus_ShouldUpdateFeedbackStatusToInBearbeitung() {
-        InMemoryFeedbackRepository feedbackRepository = new InMemoryFeedbackRepository();
-        FeedbackService feedbackService = new FeedbackService(feedbackRepository);
         //arrange
         Feedback feedback = feedbackRepository.findById(1L);
 
         Long statusId = 2L; // IN BEARBEITUNG
-        feedback.setUpdatedAt(new Date().toInstant());
+        Instant updateTime = new Date().toInstant();
+        feedback.setUpdatedAt(updateTime);
         //act
         Feedback updatedFeedback = feedbackService.updateFeedbackStatus(feedback, statusId);
         //assert
+        assertEquals(updatedFeedback.getUpdatedAt(), updateTime);
         assertNotNull(updatedFeedback);
         assertEquals(statusId, updatedFeedback.getStatusId());
     }
 
     @Test
     public void testAssignEmployeeToFeedback_ShouldAssignEmployee() {
-        InMemoryFeedbackRepository feedbackRepository = new InMemoryFeedbackRepository();
-        FeedbackService feedbackService = new FeedbackService(feedbackRepository);
         //arrange
         Feedback feedback = feedbackRepository.findById(1L);
         Long employeeId = 120L;
@@ -77,5 +80,18 @@ public class FeedbackServiceTest {
         //assert
         assertNotNull(updatedFeedback);
         assertEquals(employeeId, updatedFeedback.getEmployeeId());
+    }
+
+    @Test
+    public void testAddCommentToFeedback_ShouldAddComment() {
+        String comment = "das ist ein Kommentar von einem Mitarbeiter";
+        Validation.validateComment(comment);
+        Feedback feedback = feedbackRepository.findById(1L);
+        Instant updateTime = new Date().toInstant();
+        feedback.setUpdatedAt(updateTime);
+        Feedback updatedFeedback = feedbackService.addCommentToFeedback(feedback, comment);
+        assertNotNull(feedback);
+        assertEquals(updateTime, updatedFeedback.getUpdatedAt());
+
     }
 }
