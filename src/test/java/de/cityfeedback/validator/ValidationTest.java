@@ -9,14 +9,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class ValidationTest {
     // Test für die Validierung des Benutzernamens
     @Test
-    void testValidateUsername_Valid() {
+    public void testValidateUsername_Valid() {
         // Gültige Benutzernamen
         assertDoesNotThrow(() -> Validation.validateUsername("max_mustermann"));
         assertDoesNotThrow(() -> Validation.validateUsername("user123"));
     }
 
     @Test
-    void testValidateUsername_Invalid() {
+    public void testValidateUsername_Invalid() {
         // Ungültige Benutzernamen
         assertThrows(IllegalArgumentException.class, () -> Validation.validateUsername("a"));  // Zu kurz
         assertThrows(IllegalArgumentException.class, () -> Validation.validateUsername("user@123"));  // Ungültige Zeichen
@@ -25,7 +25,7 @@ public class ValidationTest {
 
     // Test für die Validierung der E-Mail-Adresse
     @Test
-    void testValidateEmail_Valid() {
+    public void testValidateEmail_Valid() {
         // Gültige E-Mail-Adressen
         assertDoesNotThrow(() -> Validation.validateEmail("example@example.com"));
         assertDoesNotThrow(() -> Validation.validateEmail("user.name+tag@domain.de"));
