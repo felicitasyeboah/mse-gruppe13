@@ -1,6 +1,7 @@
 package de.cityfeedback.validator;
 
-//import java.util.regex.Matcher;
+import de.cityfeedback.exception.WrongUserInputException;
+
 import java.util.regex.Pattern;
 
 public class Validation {
@@ -10,6 +11,7 @@ public class Validation {
     private static final String EMAIL_REGEX = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+[.][A-Za-z.]{2,}$"; // E-Mail-Validierung  
     private static final String COMPLAINT_TITLE_REGEX = "^.{3,100}$";  // Titel muss zwischen 3 und 100 Zeichen lang sein
     private static final String COMPLAINT_DESCRIPTION_REGEX = "^.{10,500}$";  // Beschreibung muss zwischen 10 und 500 Zeichen lang sein
+    private static final String EMPLOYEE_FEEDBACK = "^.{3,200}$";
     //private static final String CATEGORY_REGEX = "^(Verkehr|Umwelt|Sicherheit)$";  // Nur drei gültige Kategorien
 
     // Validierung des Benutzernamens
@@ -40,10 +42,9 @@ public class Validation {
         }
     }
 
-    /** // Validierung der Kategorien
-    public static void validateCategory(String category) {
-        if (category == null || !Pattern.matches(CATEGORY_REGEX, category)) {
-            throw new IllegalArgumentException("Ungültige Kategorie. Erlaubte Kategorien: Verkehr, Umwelt, Sicherheit.");
+    public static void validateComment(String comment) {
+        if (comment == null || !Pattern.matches(EMPLOYEE_FEEDBACK, comment)) {
+            throw new WrongUserInputException("Der Kommentar muss zwischen 3 und 200 Zeichen lang sein.");
         }
-    } **/
+    }
 }

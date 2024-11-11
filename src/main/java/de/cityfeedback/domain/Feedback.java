@@ -1,6 +1,7 @@
 package de.cityfeedback.domain;
 
 import java.time.Instant;
+import java.util.Date;
 import java.util.Objects;
 
 public class Feedback {
@@ -24,20 +25,20 @@ public class Feedback {
         this.title = title;
         this.content = content;
         this.citizenId = citizenId;
+        this.statusId = 1L;
+        this.createdAt = new Date().toInstant();
+        this.updatedAt = new Date().toInstant();
     }
 
-    public Feedback(Long id, Long categoryId, String title, String content, Long citizenId, Long employeeId,
-                    String comment, Long statusId, Instant createdAt, Instant updatedAt) {
-        this.id = id;
+    public Feedback(Long categoryId, String title, String content, Long citizenId, Long employeeId) {
         this.categoryId = categoryId;
         this.title = title;
         this.content = content;
         this.citizenId = citizenId;
         this.employeeId = employeeId;
-        this.comment = comment;
-        this.statusId = statusId;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.statusId = 1L;
+        this.createdAt = new Date().toInstant();
+        this.updatedAt = new Date().toInstant();
     }
 
     public Long getId() {

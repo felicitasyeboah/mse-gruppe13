@@ -7,7 +7,7 @@ import de.cityfeedback.validator.Validation;
 import java.util.Date;
 
 public class FeedbackService {
-    private final InMemoryFeedbackRepository feedbackRepository;
+    public final InMemoryFeedbackRepository feedbackRepository;
     private static Long idCounter = 2L;
 
     public FeedbackService(InMemoryFeedbackRepository feedbackRepository) {
@@ -15,18 +15,15 @@ public class FeedbackService {
     }
 
     public Feedback createFeedback(String title, String content, Long citizenId, Long categoryId) {
-        Feedback feedback = new Feedback();
         Validation.validateComplaintTitle(title);
         Validation.validateComplaintDescription(content);
 
-        feedback.setCategoryId(categoryId);
-        feedback.setTitle(title);
-        feedback.setContent(content);
-        feedback.setCitizenId(citizenId);
+        Feedback feedback = new Feedback(categoryId, title, content, citizenId);
+
         feedback.setId(idCounter++);
-        feedback.setStatusId(1L);
-        feedback.setCreatedAt(new Date().toInstant());
-        feedback.setUpdatedAt(new Date().toInstant());
+//        feedback.setStatusId(1L);
+//        feedback.setCreatedAt(new Date().toInstant());
+//        feedback.setUpdatedAt(new Date().toInstant());
 
         System.out.println("Feedback aha: " + feedback.toString());
         return this.feedbackRepository.save(feedback);
@@ -42,4 +39,11 @@ public class FeedbackService {
         feedback.setEmployeeId(employeeId);
         return feedbackRepository.save(feedback);
     }
+
+    public Feedback addCommentToFeedback(Feedback feedback, String comment) {
+        feedback.setComment(comment);
+        return feedbackRepository.save(feedback);
+    }
+
+    // TODO show feedbacks for user
 }
