@@ -3,29 +3,16 @@ package de.cityfeedback.service;
 import de.cityfeedback.domain.Feedback;
 import de.cityfeedback.repository.InMemoryFeedbackRepository;
 import de.cityfeedback.validator.Validation;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.MockitoAnnotations;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FeedbackServiceTest {
-    @InjectMocks
-    public InMemoryFeedbackRepository feedbackRepository;
-    @InjectMocks
-    public FeedbackService feedbackService;
-
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-        feedbackService = new FeedbackService(feedbackRepository);
-    }
 
     @Test
     public void testCreateFeedback_ShouldCreateNewFeedback() {
-        //InMemoryFeedbackRepository feedbackRepository = new InMemoryFeedbackRepository();
-        //FeedbackService feedbackService = new FeedbackService(feedbackRepository);
+        InMemoryFeedbackRepository feedbackRepository = new InMemoryFeedbackRepository();
+        FeedbackService feedbackService = new FeedbackService(feedbackRepository);
 
         //arrange
         String title = "Das ist ein Testtitel";
