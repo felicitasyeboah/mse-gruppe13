@@ -19,13 +19,7 @@ public class FeedbackService {
         Validation.validateComplaintDescription(content);
 
         Feedback feedback = new Feedback(categoryId, title, content, citizenId);
-
-        feedback.setId(idCounter++);
-//        feedback.setStatusId(1L);
-//        feedback.setCreatedAt(new Date().toInstant());
-//        feedback.setUpdatedAt(new Date().toInstant());
-
-        System.out.println("Feedback aha: " + feedback.toString());
+        feedback.setId(idCounter++); // for in memory repository, can be deleted when working with persistence db and auto increment
         return this.feedbackRepository.save(feedback);
     }
 
@@ -37,11 +31,13 @@ public class FeedbackService {
 
     public Feedback assignEmployeeToFeedback(Feedback feedback, Long employeeId) {
         feedback.setEmployeeId(employeeId);
+        feedback.setUpdatedAt(new Date().toInstant());
         return feedbackRepository.save(feedback);
     }
 
     public Feedback addCommentToFeedback(Feedback feedback, String comment) {
         feedback.setComment(comment);
+        feedback.setUpdatedAt(new Date().toInstant());
         return feedbackRepository.save(feedback);
     }
 
