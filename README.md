@@ -268,3 +268,4 @@ Die Aufgaben des Workflows sind Folgende:
 2. Set up JDK - Im nächsten Schritt wird die aktuelle Java Version geladen, bei uns mithilfe der kostenlosen OpenJDK Distribution "coretto" von Amazon Web Services
 3. Install dependencies and build project - Die Projektabhängigkeiten werden installiert und mithilfe von Maven gebaut
 4. Run tests - im letzten Schritt werden explizit noch einmal die von uns geschriebenen Unit-Tests ausgeführt
+Der CI-Workflow muss bei jeden pull-request erfolgreich durchlaufen werden und die Änderungen von einem Teammitglied approved werden, damit diese gemerged werden können.
