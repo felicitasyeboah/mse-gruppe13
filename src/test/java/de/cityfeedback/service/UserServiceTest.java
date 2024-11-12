@@ -15,32 +15,33 @@ public class UserServiceTest {
     public InMemoryUserRepository userRepository;
 
     @InjectMocks
-    public UserService userservice;
+    public UserService userService;
 
     @Test
-    public void TestUserInDatabase_shouldFindUserInDatabase() {
+    public void testUserInDatabase_shouldFindUserInDatabase() {
         InMemoryUserRepository userRepository = new InMemoryUserRepository();
         UserService userService = new UserService(userRepository);
 
-        String email = "Test@Email.de";
-        String username = "Testuser";
-        String role = "Mitarbeiter";
+        String email = "username@domain.de";
+        String username = "abds";
+        String role = "citizen";
 
-
-        System.out.println(email + username);
         Validation.validateEmail(email);
 
-        //User savedUser = userRepository.findUserByEmail(email);
-        User savedUser = new User();
-        savedUser.setId(1L);
-        savedUser.setEmail(email);
-        savedUser.setUsername(username);
-        savedUser.setRole(role);
-        System.out.println(savedUser.getEmail());
-        assertNotNull(savedUser);
-        assertEquals(email, savedUser.getEmail());
-        assertNotNull(savedUser.getId());
-        assertNotNull(savedUser.getRole());
+        User user = userService.loginUser(username, email);
+
+
+        //User user = new User();
+        //user.setId(1L);
+        //user.setEmail(email);
+        //user.setUsername(username);
+        //user.setRole(role);
+        assertNotNull(user);
+        assertEquals(email, user.getEmail());
+        assertNotNull(user.getId());
+        assertNotNull(user.getRole());
+        System.out.println(user.getEmail() + ", " + user.getUsername() + ", " + user.getRole());
+
 
     }
 

@@ -17,7 +17,7 @@ public class UserService {
     }
 
 
-    public void loginUser(String username, String email) {
+    public User loginUser(String username, String email) {
 
         // validate username
         Validation.validateUsername(username);
@@ -28,7 +28,9 @@ public class UserService {
         if (user == null) {
             throw new NoSuchElementException();
         }
-        System.out.println("user: " + user.getEmail());
+        //System.out.println("user: " + user.getEmail());
+
         // validate that we found a user and it's not null
+        return user;
     }
 }
