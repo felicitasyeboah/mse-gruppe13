@@ -259,3 +259,13 @@ Felicitas Yeboah: Abschnitt - Grundlegende Git-Befehle + Repository angelegt<br>
 Katrin Knoke: Abschnitt - Git mit IntelliJ/PyCharm benutzen: Local und Remote Repository<br>
 Christine Neick: Abschnitt - Branches und ihre Nutzung, Umgang mit Merge-Befehlen<br>
 Roxane Buhl: Abschnitte - Was ist Git und warum sollte es verwendet werden? & Nützliche Git-Tools und Plattformen
+
+
+### CI - Pipeline
+Unsere CI - Pipeline wird immer dann automatisch ausgeführt, wenn ein Commit oder Pull Request im main - Branch erkannt wird. Er ist so konfiguriert, dass dieser aber auch manuell im Tab "Actions" ausgeführt werden kann. Hierbei kann auch der Branch geändert werden. 
+Die Aufgaben des Workflows sind Folgende:
+1. Checkout source code - hier wird der aktuelle Stand des Codes des Repositories geladen, damit die Ci-Pipeline damit arbeiten kann
+2. Set up JDK - Im nächsten Schritt wird die aktuelle Java Version geladen, bei uns mithilfe der kostenlosen OpenJDK Distribution "coretto" von Amazon Web Services
+3. Install dependencies and build project - Die Projektabhängigkeiten werden installiert und mithilfe von Maven gebaut
+4. Run tests - im letzten Schritt werden explizit noch einmal die von uns geschriebenen Unit-Tests ausgeführt
+Der CI-Workflow muss bei jeden pull-request erfolgreich durchlaufen werden und die Änderungen von einem Teammitglied approved werden, damit diese gemerged werden können.
