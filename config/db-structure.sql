@@ -1,0 +1,35 @@
+create table USER
+(
+    USER_ID  INT not null AUTO_INCREMENT PRIMARY KEY,
+    NAME     VARCHAR(256),
+    EMAIL    VARCHAR(256),
+    ROLE VARCHAR(256)
+);
+create table CATEGORY
+(
+    CATEGORY_ID int not null primary key,
+    NAME        VARCHAR(256)
+);
+create TABLE STATUS
+(
+    STATUS_ID int not null primary key,
+    NAME      VARCHAR(256)
+);
+
+create table FEEDBACK
+(
+    FEEDBACK_ID INT not null AUTO_INCREMENT primary key,
+    CATEGORY_ID int,
+    TITLE       VARCHAR(1000),
+    CONTENT     TEXT,
+    CITIZEN_ID  int,
+    EMPLOYEE_ID int,
+    COMMENT     TEXT,
+    STATUS_ID   int,
+    CREATED_AT  timestamp(6),
+    UPDATED_AT  timestamp(6),
+    FOREIGN KEY (EMPLOYEE_ID) REFERENCES USER (USER_ID),
+    FOREIGN KEY (CITIZEN_ID) REFERENCES USER (USER_ID),
+    FOREIGN KEY (CATEGORY_ID) REFERENCES CATEGORY (CATEGORY_ID),
+    FOREIGN KEY (STATUS_ID) REFERENCES STATUS (STATUS_ID)
+);
