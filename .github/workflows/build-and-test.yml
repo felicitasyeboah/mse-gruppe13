@@ -23,7 +23,7 @@ jobs:
     - name: Checkout source code
       uses: actions/checkout@v4.2.2
 
-    # 2. Rufe die passende Version von 
+    # 2. Rufe die passende Version von JDK auf 
     - name: Set up JDK
       uses: actions/setup-java@v4.5.0
       with:
