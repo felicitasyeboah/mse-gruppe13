@@ -6,9 +6,9 @@ name: CI Pipeline
 on:
   # Der Workflow wird bei jedem Push oder Pull Request ausgeführt (nur der main-Branch)
   push:
-    branches: [ "main" ]
+    branches: [ "main", "felicitas" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "dev" ]
 
   # Workflow kann auch manuell in "Actions" aufgerufen werden
   workflow_dispatch:
@@ -20,21 +20,21 @@ jobs:
 
     steps:
       # 1. Checke den Code aus dem Repository aus
-    - name: Checkout source code
-      uses: actions/checkout@v4.2.2
+      - name: Checkout source code
+        uses: actions/checkout@v4.2.2
 
-    # 2. Rufe die passende Version von JDK auf 
-    - name: Set up JDK
-      uses: actions/setup-java@v4.5.0
-      with:
-        distribution: 'corretto'
-        java-version: '17'
+      # 2. Rufe die passende Version von JDK auf
+      - name: Set up JDK
+        uses: actions/setup-java@v4.5.0
+        with:
+          distribution: 'corretto'
+          java-version: '17'
 
-    # 3. Installiere die Projektabhängigkeiten
-    - name: Install dependencies and build project
-      run: mvn clean install  
+      # 3. Installiere die Projektabhängigkeiten
+      - name: Install dependencies and build project
+        run: mvn clean install
 
-    # 4. Führe automatisierte Tests aus
-    - name: Run tests
-      run: mvn test
+      # 4. Führe automatisierte Tests aus
+      - name: Run tests
+        run: mvn test
     
