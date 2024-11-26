@@ -17,21 +17,21 @@ jobs:
   # Dieser workflow enthält die jobs "build" und "test"
   build-and-test:
     runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: mysql:8.0
-        ports:
-          - 3306:3306
-        env:
-          MYSQL_DATABASE: dev-db
-          MYSQL_USER: user
-          MYSQL_PASSWORD: pass
-          MYSQL_ROOT_PASSWORD: rootpass
-        options: >-
-          --health-cmd="mysqladmin ping -h 127.0.0.1 --silent"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
+    #    services:
+    #      mysql:
+    #        image: mysql:8.0
+    #        ports:
+    #          - 3306:3306
+    #        env:
+    #          MYSQL_DATABASE: dev-db
+    #          MYSQL_USER: user
+    #          MYSQL_PASSWORD: pass
+    #          MYSQL_ROOT_PASSWORD: rootpass
+    #        options: >-
+    #          --health-cmd="mysqladmin ping -h 127.0.0.1 --silent"
+    #          --health-interval=10s
+    #          --health-timeout=5s
+    #          --health-retries=3
     steps:
       # 1. Checke den Code aus dem Repository aus
       - name: Checkout source code
