@@ -6,9 +6,9 @@ name: CI Pipeline
 on:
   # Der Workflow wird bei jedem Push oder Pull Request ausgeführt (nur der main-Branch)
   push:
-    branches: [ "main" ]
+    branches: [ "main", "felicitas" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "dev" ]
 
   # Workflow kann auch manuell in "Actions" aufgerufen werden
   workflow_dispatch:
@@ -43,9 +43,11 @@ jobs:
         with:
           distribution: 'corretto'
           java-version: '17'
+
       # start docker
       - name: Start Docker Compose
         run: docker-compose up -d
+
       # 3. Installiere die Projektabhängigkeiten
       - name: Install dependencies and build project
         run: mvn clean install
@@ -58,3 +60,5 @@ jobs:
       - name: Tear down MySQL
         run: |
           docker-compose down
+
+
