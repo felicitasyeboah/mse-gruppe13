@@ -73,6 +73,6 @@ jobs:
       # 5. Tear down MySQL
       - name: Tear down MySQL
         run: |
-          docker-compose down
+          docker-compose down -v
 
 
