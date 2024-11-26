@@ -14,25 +14,24 @@ on:
   workflow_dispatch:
 
 jobs:
-  setup-database:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up MySQL database
-        run: |
-          docker-compose up -d
-
-      - name: Wait for MySQL to be ready
-        run: |
-          until mysqladmin --silent --host=localhost ping; do
-            echo "Waiting for MySQL..."
-            sleep 5
-          done
   # Dieser workflow enthält die jobs "build" und "test"
   build-and-test:
     runs-on: ubuntu-latest
-
+    services:
+      mysql:
+        image: mysql:8.0
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_DATABASE: testdb
+          MYSQL_USER: testuser
+          MYSQL_PASSWORD: testpassword
+          MYSQL_ROOT_PASSWORD: rootpassword
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
     steps:
       # 1. Checke den Code aus dem Repository aus
       - name: Checkout source code
@@ -44,7 +43,9 @@ jobs:
         with:
           distribution: 'corretto'
           java-version: '17'
-
+      # start docker
+      - name: Start Docker Compose
+        run: docker-compose up -d
       # 3. Installiere die Projektabhängigkeiten
       - name: Install dependencies and build project
         run: mvn clean install
