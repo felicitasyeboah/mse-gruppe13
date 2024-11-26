@@ -17,7 +17,21 @@ jobs:
   # Dieser workflow enthält die jobs "build" und "test"
   build-and-test:
     runs-on: ubuntu-latest
-
+    #    services:
+    #      mysql:
+    #        image: mysql:8.0
+    #        ports:
+    #          - 3306:3306
+    #        env:
+    #          MYSQL_DATABASE: dev-db
+    #          MYSQL_USER: user
+    #          MYSQL_PASSWORD: pass
+    #          MYSQL_ROOT_PASSWORD: rootpass
+    #        options: >-
+    #          --health-cmd="mysqladmin ping -h 127.0.0.1 --silent"
+    #          --health-interval=10s
+    #          --health-timeout=5s
+    #          --health-retries=3
     steps:
       # 1. Checke den Code aus dem Repository aus
       - name: Checkout source code
@@ -29,7 +43,25 @@ jobs:
         with:
           distribution: 'corretto'
           java-version: '17'
+      # Step 3: Install Docker Compose
+      - name: Install Docker Compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose --version
 
+      # Step 4: Start Docker Compose
+      - name: Start Docker Compose
+        run: docker-compose up -d
+
+      # Step 5: Wait for MySQL to be Ready
+      - name: Wait for MySQL
+        run: |
+          for i in {1..10}; do
+          docker exec mysql-db mysqladmin ping -h localhost --silent && break
+          echo "Waiting for MySQL..."
+          sleep 5
+          done
       # 3. Installiere die Projektabhängigkeiten
       - name: Install dependencies and build project
         run: mvn clean install
@@ -37,4 +69,10 @@ jobs:
       # 4. Führe automatisierte Tests aus
       - name: Run tests
         run: mvn test
-    
+
+      # 5. Tear down MySQL
+      - name: Tear down MySQL
+        run: |
+          docker-compose down -v
+
+
