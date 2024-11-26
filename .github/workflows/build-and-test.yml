@@ -14,27 +14,46 @@ on:
   workflow_dispatch:
 
 jobs:
+  setup-database:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up MySQL database
+        run: |
+          docker-compose up -d
+
+      - name: Wait for MySQL to be ready
+        run: |
+          until mysqladmin --silent --host=localhost ping; do
+            echo "Waiting for MySQL..."
+            sleep 5
+          done
   # Dieser workflow enthält die jobs "build" und "test"
   build-and-test:
     runs-on: ubuntu-latest
 
     steps:
       # 1. Checke den Code aus dem Repository aus
-    - name: Checkout source code
-      uses: actions/checkout@v4.2.2
+      - name: Checkout source code
+        uses: actions/checkout@v4.2.2
 
-    # 2. Rufe die passende Version von JDK auf 
-    - name: Set up JDK
-      uses: actions/setup-java@v4.5.0
-      with:
-        distribution: 'corretto'
-        java-version: '17'
+      # 2. Rufe die passende Version von JDK auf
+      - name: Set up JDK
+        uses: actions/setup-java@v4.5.0
+        with:
+          distribution: 'corretto'
+          java-version: '17'
 
-    # 3. Installiere die Projektabhängigkeiten
-    - name: Install dependencies and build project
-      run: mvn clean install  
+      # 3. Installiere die Projektabhängigkeiten
+      - name: Install dependencies and build project
+        run: mvn clean install
 
-    # 4. Führe automatisierte Tests aus
-    - name: Run tests
-      run: mvn test
-    
+      # 4. Führe automatisierte Tests aus
+      - name: Run tests
+        run: mvn test
+
+      # 5. Tear down MySQL
+      - name: Tear down MySQL
+        run: |
+          docker-compose down
