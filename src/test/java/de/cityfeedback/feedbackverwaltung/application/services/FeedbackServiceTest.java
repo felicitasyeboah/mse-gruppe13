@@ -1,90 +1,166 @@
 package de.cityfeedback.feedbackverwaltung.application.services;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
+import de.cityfeedback.feedbackverwaltung.domain.events.FeedbackCreatedEvent;
 import de.cityfeedback.feedbackverwaltung.domain.model.Feedback;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.*;
 import de.cityfeedback.feedbackverwaltung.infrastructure.repositories.FeedbackRepository;
-import de.cityfeedback.validator.Validation;
+import de.cityfeedback.feedbackverwaltung.ui.controller.FeedbackRequest;
+import jakarta.persistence.EntityNotFoundException;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationEventPublisher;
 
 @SpringBootTest
 class FeedbackServiceTest {
 
-  @Autowired private FeedbackService feedbackService;
+  @MockBean
+  private FeedbackRepository feedbackRepository;
 
-  @Autowired private FeedbackRepository feedbackRepository;
+  @MockBean
+  private ApplicationEventPublisher eventPublisher;
+
+  @Autowired
+  private FeedbackService feedbackService;
+
+  private Feedback feedback;
+  private FeedbackRequest request;
 
   @BeforeEach
-  void setUp() {
-    MockitoAnnotations.openMocks(this);
-    feedbackService = new FeedbackService(feedbackRepository);
+  void setup() {
+    // Set up test data
+    request = new FeedbackRequest("Issue", "Details of the issue", 1L, "Beschwerde");
+    feedback = new Feedback();
+    feedback.setId(1L);
+    feedback.setCategory(FeedbackCategory.COMPLAINT);
+    feedback.setTitle(request.title());
+    feedback.setContent(request.content());
+    feedback.setCitizenId(new CitizenId(request.citizenId()));
   }
 
   @Test
-  void createFeedback_ShouldSaveAndReturnFeedback() {
+  void createFeedback_ShouldReturnFeedbackAndPublishEvent() {
     // Arrange
-    String title = "Test Feedback";
-    String content = "This is a test feedback content.";
-    Long citizenId = 1L;
+    when(feedbackRepository.save(any(Feedback.class))).thenReturn(feedback);
 
     // Act
-    Feedback feedback =
-        feedbackService.createFeedback(title, content, citizenId, FeedbackCategory.COMPLAINT);
+    Feedback createdFeedback = feedbackService.createFeedback(request.title(), request.content(), request.citizenId(), FeedbackCategory.COMPLAINT);
 
     // Assert
-    assertNotNull(feedback);
-    assertEquals(title, feedback.getTitle());
-    assertEquals(content, feedback.getContent());
-    assertEquals(citizenId, feedback.getCitizenId().citizenId());
-    assertEquals(FeedbackCategory.COMPLAINT, feedback.getCategory());
-    assertEquals(FeedbackStatus.NEW, feedback.getStatus());
+    assertNotNull(createdFeedback);
+    assertEquals(feedback.getId(), createdFeedback.getId());
+    assertEquals(feedback.getCategory(), createdFeedback.getCategory());
+    assertEquals(feedback.getTitle(), createdFeedback.getTitle());
+    assertEquals(feedback.getContent(), createdFeedback.getContent());
 
-    // Verify that the feedback was saved to the database
-    Feedback savedFeedback = feedbackRepository.findById(feedback.getId()).orElseThrow();
-    assertEquals(feedback, savedFeedback);
+    // Verify that the event was published
+    ArgumentCaptor<FeedbackCreatedEvent> eventCaptor = ArgumentCaptor.forClass(FeedbackCreatedEvent.class);
+    verify(eventPublisher, times(1)).publishEvent(eventCaptor.capture());
+    FeedbackCreatedEvent event = eventCaptor.getValue();
+
+    assertNotNull(event);
+    assertEquals(feedback.getId(), event.getFeedbackId());
+    assertEquals(feedback.getCategory().getCategoryName(), event.getCategory());
+    assertEquals(feedback.getTitle(), event.getTitle());
+    assertEquals(feedback.getContent(), event.getContent());
+    assertEquals(feedback.getCitizenId().citizenId(), event.getCitizenId());
+    assertEquals(feedback.getStatus().getStatusName(), event.getStatus());
   }
 
   @Test
-  public void testUpdateFeedbackStatus_ShouldUpdateFeedbackStatusToInBearbeitung() {
-    // arrange
-    Feedback currentFeedback = feedbackRepository.findById(1L).orElseThrow();
-
+  void updateFeedbackStatus_ShouldReturnUpdatedFeedback() {
+    // Arrange
     FeedbackStatus status = FeedbackStatus.IN_PROGRESS;
+    when(feedbackRepository.findById(feedback.getId())).thenReturn(Optional.of(feedback));
+    when(feedbackRepository.save(any(Feedback.class))).thenReturn(feedback);
 
-    // act
-    Feedback updatedFeedback =
-        feedbackService.updateFeedbackStatus(currentFeedback.getId(), status);
-    // assert
+    // Act
+    Feedback updatedFeedback = feedbackService.updateFeedbackStatus(feedback.getId(), status);
+
+    // Assert
     assertNotNull(updatedFeedback);
     assertEquals(status, updatedFeedback.getStatus());
   }
 
   @Test
-  public void testAssignEmployeeToFeedback_ShouldAssignEmployee() {
-    // arrange
-    Feedback currentFeedback = feedbackRepository.findById(1L).orElseThrow();
-    Long employeeId = 10L;
-    // act
-    Feedback updatedFeedback =
-        feedbackService.assignFeedbackToEmployee(currentFeedback.getId(), employeeId);
+  void updateFeedbackStatus_FeedbackNotFound_ShouldThrowException() {
+    // Arrange
+    when(feedbackRepository.findById(feedback.getId())).thenReturn(Optional.empty());
 
-    // assert
-    assertNotNull(updatedFeedback);
-    assertEquals(employeeId, updatedFeedback.getEmployeeId().employeeId());
+    // Act & Assert
+    assertThrows(EntityNotFoundException.class, () -> feedbackService.updateFeedbackStatus(feedback.getId(), FeedbackStatus.IN_PROGRESS));
   }
 
   @Test
-  public void testAddCommentToFeedback_ShouldAddComment() {
-    String comment = "das ist ein Kommentar von einem Mitarbeiter";
-    Validation.validateComment(comment);
-    Feedback currentFeedback = feedbackRepository.findById(1L).orElseThrow();
-    Feedback updatedFeedback =
-        feedbackService.addCommentToFeedback(currentFeedback.getId(), comment);
+  void assignFeedbackToEmployee_ShouldReturnUpdatedFeedback() {
+    // Arrange
+    Long employeeId = 1L;
+    when(feedbackRepository.findById(feedback.getId())).thenReturn(Optional.of(feedback));
+    when(feedbackRepository.save(any(Feedback.class))).thenReturn(feedback);
+
+    // Act
+    Feedback assignedFeedback = feedbackService.assignFeedbackToEmployee(feedback.getId(), employeeId);
+
+    // Assert
+    assertNotNull(assignedFeedback);
+    assertEquals(new EmployeeId(employeeId), assignedFeedback.getEmployeeId());
+  }
+
+  @Test
+  void assignFeedbackToEmployee_FeedbackNotFound_ShouldThrowException() {
+    // Arrange
+    Long employeeId = 1L;
+    when(feedbackRepository.findById(feedback.getId())).thenReturn(Optional.empty());
+
+    // Act & Assert
+    assertThrows(EntityNotFoundException.class, () -> feedbackService.assignFeedbackToEmployee(feedback.getId(), employeeId));
+  }
+
+  @Test
+  void addCommentToFeedback_ShouldReturnUpdatedFeedback() {
+    // Arrange
+    String comment = "New comment";
+    when(feedbackRepository.findById(feedback.getId())).thenReturn(Optional.of(feedback));
+    when(feedbackRepository.save(any(Feedback.class))).thenReturn(feedback);
+
+    // Act
+    Feedback updatedFeedback = feedbackService.addCommentToFeedback(feedback.getId(), comment);
+
+    // Assert
     assertNotNull(updatedFeedback);
+    assertEquals(comment, updatedFeedback.getComment());
+  }
+
+  @Test
+  void addCommentToFeedback_FeedbackNotFound_ShouldThrowException() {
+    // Arrange
+    String comment = "New comment";
+    when(feedbackRepository.findById(feedback.getId())).thenReturn(Optional.empty());
+
+    // Act & Assert
+    assertThrows(EntityNotFoundException.class, () -> feedbackService.addCommentToFeedback(feedback.getId(), comment));
+  }
+
+  @Test
+  void findAllFeedbacksForCitizen_ShouldReturnListOfFeedbacks() {
+    // Arrange
+    List<Feedback> feedbacks = List.of(feedback);
+    when(feedbackRepository.findAllByCitizenId(feedback.getCitizenId().citizenId())).thenReturn(feedbacks);
+
+    // Act
+    List<Feedback> foundFeedbacks = feedbackService.findAllFeedbacksForCitizen(feedback.getCitizenId().citizenId());
+
+    // Assert
+    assertNotNull(foundFeedbacks);
+    assertEquals(1, foundFeedbacks.size());
+    assertEquals(feedback.getId(), foundFeedbacks.get(0).getId());
   }
 }

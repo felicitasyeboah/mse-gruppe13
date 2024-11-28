@@ -10,14 +10,11 @@ public class Validation {
       "^[a-zA-Z0-9_]{3,20}$"; // Erlaubt Buchstaben, Zahlen und Unterstriche, Länge 3-20 Zeichen
   private static final String EMAIL_REGEX =
       "^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+[.][A-Za-z.]{2,}$"; // E-Mail-Validierung
-  private static final String COMPLAINT_TITLE_REGEX =
+  private static final String FEEDBACK_TITLE_REGEX =
       "^.{3,100}$"; // Titel muss zwischen 3 und 100 Zeichen lang sein
-  private static final String COMPLAINT_DESCRIPTION_REGEX =
+  private static final String FEEDBACK_DESCRIPTION_REGEX =
       "^.{10,500}$"; // Beschreibung muss zwischen 10 und 500 Zeichen lang sein
   private static final String EMPLOYEE_FEEDBACK = "^.{3,200}$";
-
-  // private static final String CATEGORY_REGEX = "^(Verkehr|Umwelt|Sicherheit)$";  // Nur drei
-  // gültige Kategorien
 
   // Validierung des Benutzernamens
   public static void validateUsername(String username) {
@@ -35,15 +32,15 @@ public class Validation {
   }
 
   // Validierung des Beschwerdetitels
-  public static void validateComplaintTitle(String title) {
-    if (title == null || !Pattern.matches(COMPLAINT_TITLE_REGEX, title)) {
+  public static void validateFeedbackTitle(String title) {
+    if (title == null || !Pattern.matches(FEEDBACK_TITLE_REGEX, title)) {
       throw new WrongUserInputException("Der Titel muss zwischen 3 und 100 Zeichen lang sein.");
     }
   }
 
   // Validierung der Beschreibungen
-  public static void validateComplaintContent(String content) {
-    if (content == null || !Pattern.matches(COMPLAINT_DESCRIPTION_REGEX, content)) {
+  public static void validateFeedbackContent(String content) {
+    if (content == null || !Pattern.matches(FEEDBACK_DESCRIPTION_REGEX, content)) {
       throw new WrongUserInputException(
           "Die Beschreibung muss zwischen 10 und 500 Zeichen lang sein.");
     }

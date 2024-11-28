@@ -1,4 +1,4 @@
-package de.cityfeedback.domain.valueobjects;
+package de.cityfeedback.feedbackverwaltung.domain.valueobjects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

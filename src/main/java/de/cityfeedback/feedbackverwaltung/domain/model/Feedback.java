@@ -4,14 +4,13 @@ import de.cityfeedback.feedbackverwaltung.domain.valueobject.CitizenId;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.EmployeeId;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackCategory;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackStatus;
+import de.cityfeedback.validator.Validation;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@NoArgsConstructor
 @Setter
 @Getter
 @Entity
@@ -68,6 +67,12 @@ public class Feedback {
     this.citizenId = citizenId;
     this.status = FeedbackStatus.NEW; // Default status
     this.createdAt = LocalDateTime.now();
+    Validation.validateFeedbackContent(this.content);
+    Validation.validateFeedbackTitle(this.title);
+  }
+
+  public Feedback() {
+    this.status = FeedbackStatus.NEW;
   }
 
   @Override
@@ -95,6 +100,7 @@ public class Feedback {
 
   public void addComment(String comment) {
     this.comment = comment;
+    Validation.validateComment(comment);
     this.updatedAt = LocalDateTime.now();
   }
 
