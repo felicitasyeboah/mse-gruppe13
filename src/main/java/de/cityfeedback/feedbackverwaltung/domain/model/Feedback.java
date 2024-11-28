@@ -1,110 +1,96 @@
 package de.cityfeedback.feedbackverwaltung.domain.model;
 
-import de.cityfeedback.feedbackverwaltung.domain.valueobject.*;
+import de.cityfeedback.feedbackverwaltung.domain.valueobject.CitizenId;
+import de.cityfeedback.feedbackverwaltung.domain.valueobject.EmployeeId;
+import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackCategory;
+import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackStatus;
 import jakarta.persistence.*;
-import java.util.Date;
-import java.util.Objects;
+import java.time.LocalDateTime;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@NoArgsConstructor
 @Setter
 @Getter
 @Entity
 @Table(name = "FEEDBACK")
 public class Feedback {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "FEEDBACK_ID")
   private Long id;
 
   @Enumerated(EnumType.STRING)
-  private CategoryEnum category;
+  @Column(name = "CATEGORY")
+  private FeedbackCategory category;
 
-  @Enumerated(EnumType.STRING)
-  private StatusEnum status;
+  @Column(name = "TITLE", length = 1000)
+  private String title;
 
-  @Embedded private Title title;
-  @Embedded private Content content;
+  @Column(name = "CONTENT", columnDefinition = "TEXT")
+  private String content;
 
   @Embedded
-  @Column(name = "CITIZEN_ID")
+  @AttributeOverrides({
+    @AttributeOverride(name = "citizenId", column = @Column(name = "CITIZEN_ID"))
+  })
   private CitizenId citizenId;
 
   @Embedded
-  @Column(name = "EMPLOYEE_ID")
+  @AttributeOverrides({
+    @AttributeOverride(name = "employeeId", column = @Column(name = "EMPLOYEE_ID"))
+  })
   private EmployeeId employeeId;
 
-  @Embedded private Comment comment;
+  @Column(name = "COMMENT", columnDefinition = "TEXT")
+  private String comment;
 
-  @Column(name = "CREATED_AT", insertable = false, updatable = false)
-  @Embedded
-  private CreatedAt createdAt;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "STATUS")
+  private FeedbackStatus status;
 
-  @Column(name = "UPDATED_AT", insertable = false, updatable = false)
-  @Embedded
-  private UpdatedAt updatedAt;
+  @Column(name = "CREATED_AT")
+  private LocalDateTime createdAt;
 
-  public Feedback() {}
+  @Column(name = "UPDATED_AT")
+  private LocalDateTime updatedAt;
 
-  public Feedback(CategoryEnum category, Title title, Content content, CitizenId citizenId) {
-    this.category = category;
+  // Getters and Setters
+
+  // Constructor for creation
+  public Feedback(String title, String content, FeedbackCategory category, CitizenId citizenId) {
     this.title = title;
     this.content = content;
+    this.category = category;
     this.citizenId = citizenId;
-    this.status = StatusEnum.NEW;
-    this.createdAt = new CreatedAt(new Date().toInstant());
-    this.updatedAt = new UpdatedAt(new Date().toInstant());
+    this.status = FeedbackStatus.NEW; // Default status
+    this.createdAt = LocalDateTime.now();
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    Feedback feedback = (Feedback) o;
-    return Objects.equals(id, feedback.id)
-        && Objects.equals(category, feedback.category)
-        && Objects.equals(title, feedback.title)
-        && Objects.equals(content, feedback.content)
-        && Objects.equals(citizenId, feedback.citizenId)
-        && Objects.equals(employeeId, feedback.employeeId)
-        && Objects.equals(comment, feedback.comment)
-        && Objects.equals(status, feedback.status)
-        && Objects.equals(createdAt, feedback.createdAt)
-        && Objects.equals(updatedAt, feedback.updatedAt);
+  // Business methods
+  public void assignToEmployee(EmployeeId employeeId) {
+    this.employeeId = employeeId;
+    this.status = FeedbackStatus.IN_PROGRESS;
+    this.updatedAt = LocalDateTime.now();
   }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(
-        id, category, title, content, citizenId, employeeId, comment, status, createdAt, updatedAt);
+  public void addComment(String comment) {
+    this.comment = comment;
+    this.updatedAt = LocalDateTime.now();
   }
 
-  @Override
-  public String toString() {
-    return "Feedback{"
-        + "id="
-        + id
-        + ", categoryId="
-        + category
-        + ", title='"
-        + title
-        + '\''
-        + ", content='"
-        + content
-        + '\''
-        + ", citizenId="
-        + citizenId
-        + ", employeeId="
-        + employeeId
-        + ", comment='"
-        + comment
-        + '\''
-        + ", statusId="
-        + status
-        + ", createdAt="
-        + createdAt
-        + ", updatedAt="
-        + updatedAt
-        + '}';
+  public void updateStatus(FeedbackStatus status) {
+    this.status = status;
+    this.updatedAt = LocalDateTime.now();
   }
+
+  public void closeFeedback(String comment) {
+    this.comment = comment;
+    this.status = FeedbackStatus.CLOSED;
+    this.updatedAt = LocalDateTime.now();
+  }
+
+  // Other domain logic as needed
 }

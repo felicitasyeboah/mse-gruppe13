@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
 
-  @Query("SELECT fa FROM Feedback fa WHERE fa.citizenId = :citizenId")
+  @Query("SELECT fa FROM Feedback fa WHERE fa.citizenId.citizenId = :citizenId")
   List<Feedback> findAllByCitizenId(@Param("citizenId") Long citizenId);
 
   @Modifying

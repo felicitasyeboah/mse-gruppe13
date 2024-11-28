@@ -63,18 +63,18 @@ class FeedbackServiceTest {
     String title = "Test Feedback";
     String content = "This is a test feedback content.";
     Long citizenId = 123L;
-    String category = "COMPLAINT";
 
     // Act
-    Feedback feedback = feedbackService.createFeedback(title, content, citizenId, category);
+    Feedback feedback =
+        feedbackService.createFeedback(title, content, citizenId, FeedbackCategory.COMPLAINT);
 
     // Assert
     assertNotNull(feedback);
-    assertEquals(title, feedback.getTitle().title());
-    assertEquals(content, feedback.getContent().content());
+    assertEquals(title, feedback.getTitle());
+    assertEquals(content, feedback.getContent());
     assertEquals(citizenId, feedback.getCitizenId().citizenId());
-    assertEquals(CategoryEnum.valueOf(category), feedback.getCategory());
-    assertEquals(StatusEnum.NEW, feedback.getStatus());
+    assertEquals(FeedbackCategory.COMPLAINT, feedback.getCategory());
+    assertEquals(FeedbackStatus.NEW, feedback.getStatus());
 
     // Verify that the feedback was saved to the database
     Feedback savedFeedback = feedbackRepository.findById(feedback.getId()).orElseThrow();
@@ -134,10 +134,11 @@ class FeedbackServiceTest {
     // arrange
     Feedback currentFeedback = feedbackRepository.findById(1L).orElseThrow();
 
-    StatusEnum status = StatusEnum.IN_PROGRESS;
+    FeedbackStatus status = FeedbackStatus.IN_PROGRESS;
 
     // act
-    Feedback updatedFeedback = feedbackService.updateFeedbackStatus(currentFeedback, status);
+    Feedback updatedFeedback =
+        feedbackService.updateFeedbackStatus(currentFeedback.getId(), status);
     // assert
     assertNotNull(updatedFeedback);
     assertEquals(status, updatedFeedback.getStatus());
@@ -149,10 +150,10 @@ class FeedbackServiceTest {
     //    FeedbackService feedbackService = new FeedbackService(feedbackRepository);
     // arrange
     Feedback currentFeedback = feedbackRepository.findById(1L).orElseThrow();
-    EmployeeId employeeId = new EmployeeId(120L);
+    Long employeeId = 120L;
     // act
     Feedback updatedFeedback =
-        feedbackService.assignEmployeeToFeedback(currentFeedback, employeeId);
+        feedbackService.assignFeedbackToEmployee(currentFeedback.getId(), employeeId);
 
     // assert
     assertNotNull(updatedFeedback);
@@ -163,10 +164,11 @@ class FeedbackServiceTest {
   public void testAddCommentToFeedback_ShouldAddComment() {
     //    InMemoryFeedbackRepository feedbackRepository = new InMemoryFeedbackRepository();
     //    FeedbackService feedbackService = new FeedbackService(feedbackRepository);
-    Comment comment = new Comment("das ist ein Kommentar von einem Mitarbeiter");
-    Validation.validateComment(comment.comment());
+    String comment = "das ist ein Kommentar von einem Mitarbeiter";
+    Validation.validateComment(comment);
     Feedback currentFeedback = feedbackRepository.findById(1L).orElseThrow();
-    Feedback updatedFeedback = feedbackService.addCommentToFeedback(currentFeedback, comment);
+    Feedback updatedFeedback =
+        feedbackService.addCommentToFeedback(currentFeedback.getId(), comment);
     assertNotNull(updatedFeedback);
   }
 }
