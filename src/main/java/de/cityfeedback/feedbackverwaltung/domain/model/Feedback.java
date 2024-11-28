@@ -6,6 +6,7 @@ import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackCategory;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackStatus;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -67,6 +68,22 @@ public class Feedback {
     this.citizenId = citizenId;
     this.status = FeedbackStatus.NEW; // Default status
     this.createdAt = LocalDateTime.now();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Feedback feedback = (Feedback) o;
+    return Objects.equals(id, feedback.id)
+        && Objects.equals(category, feedback.category)
+        && Objects.equals(title, feedback.title)
+        && Objects.equals(content, feedback.content); // Compare all relevant fields
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, category, title, content); // Hash based on the same fields
   }
 
   // Business methods

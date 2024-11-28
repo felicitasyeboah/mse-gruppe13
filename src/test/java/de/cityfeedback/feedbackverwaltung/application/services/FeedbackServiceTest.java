@@ -14,38 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class FeedbackServiceTest {
-  //  @Autowired private FeedbackService feedbackService;
-  //
-  //  @MockBean private FeedbackRepository feedbackRepository;
-  //
-  //  @BeforeEach
-  //  public void setUp() {
-  //    // Initialize any test data or mocks here
-  //  }
-  //
-  //  @Test
-  //  public void testCreateFeedback_ShouldCreateNewFeedback() {
-  //
-  //    // arrange
-  //    String title = "Das ist ein Testtitel";
-  //    String content = "Das ist ein Testcontent fuer unsere testcases.";
-  //    Long citizenId = 1L;
-  //    String category = CategoryEnum.REQUEST.name();
-  //    Validation.validateComplaintTitle(title);
-  //    Validation.validateComplaintContent(content);
-  //
-  //    // act
-  //    FeedbackAggregate savedFeedback =
-  //        feedbackService.createFeedback(title, content, citizenId, category);
-  //
-  //    // assert
-  //    assertNotNull(savedFeedback);
-  //    assertEquals(StatusEnum.NEW, savedFeedback.getStatus());
-  //    assertNotNull(savedFeedback.getCreatedAt());
-  //    assertNotNull(savedFeedback.getUpdatedAt());
-  //    assertNull(savedFeedback.getComment());
-  //    assertNull(savedFeedback.getEmployeeId());
-  //  }
+
   @Autowired private FeedbackService feedbackService;
 
   @Autowired private FeedbackRepository feedbackRepository;
@@ -58,11 +27,10 @@ class FeedbackServiceTest {
 
   @Test
   void createFeedback_ShouldSaveAndReturnFeedback() {
-
     // Arrange
     String title = "Test Feedback";
     String content = "This is a test feedback content.";
-    Long citizenId = 123L;
+    Long citizenId = 1L;
 
     // Act
     Feedback feedback =
@@ -81,56 +49,8 @@ class FeedbackServiceTest {
     assertEquals(feedback, savedFeedback);
   }
 
-  //    // Arrange
-  //    String title = "Test Feedback";
-  //    String content = "This is a test feedback content.";
-  //    Long citizenId = 123L;
-  //    String category = "COMPLAINT";
-  //
-  //    FeedbackAggregate feedback =
-  //        new FeedbackAggregate(
-  //            CategoryEnum.valueOf(category),
-  //            new Title(title),
-  //            new Content(content),
-  //            new CitizenId(citizenId));
-  //    feedback.setId(1L);
-  //
-  //    when(feedbackRepository.save(any(FeedbackAggregate.class))).thenReturn(feedback);
-  //
-  //    // Act
-  //    FeedbackAggregate result = feedbackService.createFeedback(title, content, citizenId,
-  // category);
-  //
-  //    // Assert
-  //    assertNotNull(result);
-  //    assertEquals(1L, result.getId());
-  //    assertEquals(title, result.getTitle().title());
-  //    assertEquals(content, result.getContent().content());
-  //    assertEquals(citizenId, result.getCitizenId().citizenId());
-  //    assertEquals(CategoryEnum.COMPLAINT, result.getCategory());
-  //    assertEquals(StatusEnum.NEW, result.getStatus());
-  //
-  //    // Verify repository interaction
-  //    // verify(feedbackRepository, times(1)).save(feedback);
-  //
-  //    ArgumentCaptor<FeedbackAggregate> captor = ArgumentCaptor.forClass(FeedbackAggregate.class);
-  //    verify(feedbackRepository).save(captor.capture());
-  //    FeedbackAggregate capturedFeedback = captor.getValue();
-  //
-  //    assertEquals(title, capturedFeedback.getTitle().title());
-  //    assertEquals(content, capturedFeedback.getContent().content());
-  //    assertEquals(citizenId, capturedFeedback.getCitizenId().citizenId());
-  //    assertEquals(CategoryEnum.COMPLAINT, capturedFeedback.getCategory());
-  //    assertEquals(StatusEnum.NEW, capturedFeedback.getStatus());
-  //
-  //    verifyNoMoreInteractions(feedbackRepository);
-  //  }
-
   @Test
   public void testUpdateFeedbackStatus_ShouldUpdateFeedbackStatusToInBearbeitung() {
-    //    InMemoryFeedbackRepository feedbackRepository = new InMemoryFeedbackRepository();
-    //    FeedbackService feedbackService = new FeedbackService(feedbackRepository);
-
     // arrange
     Feedback currentFeedback = feedbackRepository.findById(1L).orElseThrow();
 
@@ -146,24 +66,20 @@ class FeedbackServiceTest {
 
   @Test
   public void testAssignEmployeeToFeedback_ShouldAssignEmployee() {
-    //    FeedbackRepository feedbackRepository = new FeedbackRepository();
-    //    FeedbackService feedbackService = new FeedbackService(feedbackRepository);
     // arrange
     Feedback currentFeedback = feedbackRepository.findById(1L).orElseThrow();
-    Long employeeId = 120L;
+    Long employeeId = 10L;
     // act
     Feedback updatedFeedback =
         feedbackService.assignFeedbackToEmployee(currentFeedback.getId(), employeeId);
 
     // assert
     assertNotNull(updatedFeedback);
-    assertEquals(employeeId, updatedFeedback.getEmployeeId());
+    assertEquals(employeeId, updatedFeedback.getEmployeeId().employeeId());
   }
 
   @Test
   public void testAddCommentToFeedback_ShouldAddComment() {
-    //    InMemoryFeedbackRepository feedbackRepository = new InMemoryFeedbackRepository();
-    //    FeedbackService feedbackService = new FeedbackService(feedbackRepository);
     String comment = "das ist ein Kommentar von einem Mitarbeiter";
     Validation.validateComment(comment);
     Feedback currentFeedback = feedbackRepository.findById(1L).orElseThrow();
