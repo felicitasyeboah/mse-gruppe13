@@ -6,7 +6,7 @@ name: CI Pipeline
 on:
   # Der Workflow wird bei jedem Push oder Pull Request ausgeführt (nur der main-Branch)
   push:
-    branches: [ "main" ]
+    branches: [ "main", "felicitas" ]
   pull_request:
     branches: [ "main" ]
 
@@ -20,21 +20,46 @@ jobs:
 
     steps:
       # 1. Checke den Code aus dem Repository aus
-    - name: Checkout source code
-      uses: actions/checkout@v4.2.2
+      - name: Checkout source code
+        uses: actions/checkout@v4.2.2
 
-    # 2. Rufe die passende Version von JDK auf 
-    - name: Set up JDK
-      uses: actions/setup-java@v4.5.0
-      with:
-        distribution: 'corretto'
-        java-version: '17'
+      # 2. Rufe die passende Version von JDK auf
+      - name: Set up JDK
+        uses: actions/setup-java@v4.5.0
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+      # 3. Install Docker Compose
+      - name: Install Docker Compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose --version
 
-    # 3. Installiere die Projektabhängigkeiten
-    - name: Install dependencies and build project
-      run: mvn clean install  
+      # 4. Start Docker Compose
+      - name: Start Docker Compose
+        run: docker-compose up -d
 
-    # 4. Führe automatisierte Tests aus
-    - name: Run tests
-      run: mvn test
-    
+      # 5. Wait for MySQL to be Ready
+      - name: Wait for MySQL
+        run: |
+          for i in {1..10}; do
+          docker exec mysql-db mysqladmin ping -h localhost --silent && break
+          echo "Waiting for MySQL..."
+          sleep 5
+          done
+
+      # 6. Installiere die Projektabhängigkeiten
+      - name: Install dependencies and build project
+        run: mvn clean install
+
+      # 7 Führe automatisierte Tests aus
+      - name: Run tests
+        run: mvn test
+
+      # 8. Tear down MySQL
+      - name: Tear down MySQL
+        run: |
+          docker-compose down -v
+
+
