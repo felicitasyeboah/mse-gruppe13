@@ -45,47 +45,46 @@ public class ValidationTest {
 
   // Test für die Validierung des Beschwerdetitels
   @Test
-  public void testValidateComplaintTitle_Valid() {
+  public void testValidateFeedbackTitle_Valid() {
     // Gültige Titel
-    assertDoesNotThrow(() -> Validation.validateComplaintTitle("Verkehrsproblem"));
+    assertDoesNotThrow(() -> Validation.validateFeedbackTitle("Verkehrsproblem"));
     assertDoesNotThrow(
-        () -> Validation.validateComplaintTitle("Sehr langer Titel, aber immer noch gültig"));
+        () -> Validation.validateFeedbackTitle("Sehr langer Titel, aber immer noch gültig"));
   }
 
   @Test
-  public void testValidateComplaintTitle_Invalid() {
+  public void testValidateFeedbackTitle_Invalid() {
     // Ungültige Titel
     assertThrows(
-        WrongUserInputException.class, () -> Validation.validateComplaintTitle("")); // Zu kurz
+        WrongUserInputException.class, () -> Validation.validateFeedbackTitle("")); // Zu kurz
     assertThrows(
-        WrongUserInputException.class, () -> Validation.validateComplaintTitle("A")); // Zu kurz
+        WrongUserInputException.class, () -> Validation.validateFeedbackTitle("A")); // Zu kurz
     assertThrows(
         WrongUserInputException.class,
         () ->
-            Validation.validateComplaintTitle(
+            Validation.validateFeedbackTitle(
                 "Sehr sehr sehr sehr sehr sehr sehr sehr sehr sehr sehr sehr sehr langer Titel, und deshalb nicht mehr gültig")); // Zu lang
   }
 
   // Test für die Validierung der Beschreibungen
   @Test
-  public void testValidateComplaintContent_Valid() {
+  public void testValidateFeedbackContent_Valid() {
     // Gültige Beschreibungen
     assertDoesNotThrow(
-        () -> Validation.validateComplaintContent("Es gibt ein Problem auf der Straße"));
-    assertDoesNotThrow(() -> Validation.validateComplaintContent("Kurze Beschreibung."));
+        () -> Validation.validateFeedbackContent("Es gibt ein Problem auf der Straße"));
+    assertDoesNotThrow(() -> Validation.validateFeedbackContent("Kurze Beschreibung."));
   }
 
   @Test
-  public void testValidateComplaintContent_Invalid() {
+  public void testValidateFeedbackContent_Invalid() {
     // Ungültige Beschreibungen
     assertThrows(
-        WrongUserInputException.class, () -> Validation.validateComplaintContent("")); // Zu kurz
+        WrongUserInputException.class, () -> Validation.validateFeedbackContent("")); // Zu kurz
+    assertThrows(
+        WrongUserInputException.class, () -> Validation.validateFeedbackContent("kurz")); // Zu kurz
     assertThrows(
         WrongUserInputException.class,
-        () -> Validation.validateComplaintContent("kurz")); // Zu kurz
-    assertThrows(
-        WrongUserInputException.class,
-        () -> Validation.validateComplaintContent("A".repeat(501))); // Zu lang
+        () -> Validation.validateFeedbackContent("A".repeat(501))); // Zu lang
   }
 
   /**
