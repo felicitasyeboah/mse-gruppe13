@@ -1,88 +1,100 @@
 package de.cityfeedback.validator;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import de.cityfeedback.exception.WrongUserInputException;
+import org.junit.jupiter.api.Test;
 
 public class ValidationTest {
-    // Test für die Validierung des Benutzernamens
-    @Test
-    public void testValidateUsername_Valid() {
-        // Gültige Benutzernamen
-        assertDoesNotThrow(() -> Validation.validateUsername("max_mustermann"));
-        assertDoesNotThrow(() -> Validation.validateUsername("user123"));
-    }
+  // Test für die Validierung des Benutzernamens
+  @Test
+  public void testValidateUsername_Valid() {
+    // Gültige Benutzernamen
+    assertDoesNotThrow(() -> Validation.validateUsername("max_mustermann"));
+    assertDoesNotThrow(() -> Validation.validateUsername("user123"));
+  }
 
-    @Test
-    public void testValidateUsername_Invalid() {
-        // Ungültige Benutzernamen
-        assertThrows(IllegalArgumentException.class, () -> Validation.validateUsername("a"));  // Zu kurz
-        assertThrows(IllegalArgumentException.class, () -> Validation.validateUsername("user@123"));  // Ungültige Zeichen
-        assertThrows(IllegalArgumentException.class, () -> Validation.validateUsername("EinsehrsehrsehsehrsehrlangerName"));  // Zu lang
-    }
+  @Test
+  public void testValidateUsername_Invalid() {
+    // Ungültige Benutzernamen
+    assertThrows(WrongUserInputException.class, () -> Validation.validateUsername("a")); // Zu kurz
+    assertThrows(
+        WrongUserInputException.class,
+        () -> Validation.validateUsername("user@123")); // Ungültige Zeichen
+    assertThrows(
+        WrongUserInputException.class,
+        () -> Validation.validateUsername("EinsehrsehrsehsehrsehrlangerName")); // Zu lang
+  }
 
-    // Test für die Validierung der E-Mail-Adresse
-    @Test
-    public void testValidateEmail_Valid() {
-        // Gültige E-Mail-Adressen
-        assertDoesNotThrow(() -> Validation.validateEmail("example@example.com"));
-        assertDoesNotThrow(() -> Validation.validateEmail("user.name+tag@domain.de"));
-    }
+  // Test für die Validierung der E-Mail-Adresse
+  @Test
+  public void testValidateEmail_Valid() {
+    // Gültige E-Mail-Adressen
+    assertDoesNotThrow(() -> Validation.validateEmail("example@example.com"));
+    assertDoesNotThrow(() -> Validation.validateEmail("user.name+tag@domain.de"));
+  }
 
-    @Test
-    public void testValidateEmail_Invalid() {
-        // Ungültige E-Mail-Adressen
-        assertThrows(IllegalArgumentException.class, () -> Validation.validateEmail("invalid-email"));
-        assertThrows(IllegalArgumentException.class, () -> Validation.validateEmail("user@domain"));
-        assertThrows(IllegalArgumentException.class, () -> Validation.validateEmail("user@domain,com"));
-    }
+  @Test
+  public void testValidateEmail_Invalid() {
+    // Ungültige E-Mail-Adressen
+    assertThrows(WrongUserInputException.class, () -> Validation.validateEmail("invalid-email"));
+    assertThrows(WrongUserInputException.class, () -> Validation.validateEmail("user@domain"));
+    assertThrows(WrongUserInputException.class, () -> Validation.validateEmail("user@domain,com"));
+  }
 
-    // Test für die Validierung des Beschwerdetitels
-    @Test
-    public void testValidateComplaintTitle_Valid() {
-        // Gültige Titel
-        assertDoesNotThrow(() -> Validation.validateComplaintTitle("Verkehrsproblem"));
-        assertDoesNotThrow(() -> Validation.validateComplaintTitle("Sehr langer Titel, aber immer noch gültig"));
-    }
+  // Test für die Validierung des Beschwerdetitels
+  @Test
+  public void testValidateFeedbackTitle_Valid() {
+    // Gültige Titel
+    assertDoesNotThrow(() -> Validation.validateFeedbackTitle("Verkehrsproblem"));
+    assertDoesNotThrow(
+        () -> Validation.validateFeedbackTitle("Sehr langer Titel, aber immer noch gültig"));
+  }
 
-    @Test
-    public void testValidateComplaintTitle_Invalid() {
-        // Ungültige Titel
-        assertThrows(IllegalArgumentException.class, () -> Validation.validateComplaintTitle(""));  // Zu kurz
-        assertThrows(IllegalArgumentException.class, () -> Validation.validateComplaintTitle("A"));  // Zu kurz
-        assertThrows(IllegalArgumentException.class, () -> Validation.validateComplaintTitle("Sehr sehr sehr sehr sehr sehr sehr sehr sehr sehr sehr sehr sehr langer Titel, und deshalb nicht mehr gültig"));  // Zu lang
-    }
+  @Test
+  public void testValidateFeedbackTitle_Invalid() {
+    // Ungültige Titel
+    assertThrows(
+        WrongUserInputException.class, () -> Validation.validateFeedbackTitle("")); // Zu kurz
+    assertThrows(
+        WrongUserInputException.class, () -> Validation.validateFeedbackTitle("A")); // Zu kurz
+    assertThrows(
+        WrongUserInputException.class,
+        () ->
+            Validation.validateFeedbackTitle(
+                "Sehr sehr sehr sehr sehr sehr sehr sehr sehr sehr sehr sehr sehr langer Titel, und deshalb nicht mehr gültig")); // Zu lang
+  }
 
-    // Test für die Validierung der Beschreibungen
-    @Test
-    public void testValidateComplaintDescription_Valid() {
-        // Gültige Beschreibungen
-        assertDoesNotThrow(() -> Validation.validateComplaintDescription("Es gibt ein Problem auf der Straße"));
-        assertDoesNotThrow(() -> Validation.validateComplaintDescription("Kurze Beschreibung."));
-    }
+  // Test für die Validierung der Beschreibungen
+  @Test
+  public void testValidateFeedbackContent_Valid() {
+    // Gültige Beschreibungen
+    assertDoesNotThrow(
+        () -> Validation.validateFeedbackContent("Es gibt ein Problem auf der Straße"));
+    assertDoesNotThrow(() -> Validation.validateFeedbackContent("Kurze Beschreibung."));
+  }
 
-    @Test
-    public void testValidateComplaintDescription_Invalid() {
-        // Ungültige Beschreibungen
-        assertThrows(IllegalArgumentException.class, () -> Validation.validateComplaintDescription(""));  // Zu kurz
-        assertThrows(IllegalArgumentException.class, () -> Validation.validateComplaintDescription("Kurz"));  // Zu kurz
-        assertThrows(IllegalArgumentException.class, () -> Validation.validateComplaintDescription("A".repeat(501)));  // Zu lang
-    }
+  @Test
+  public void testValidateFeedbackContent_Invalid() {
+    // Ungültige Beschreibungen
+    assertThrows(
+        WrongUserInputException.class, () -> Validation.validateFeedbackContent("")); // Zu kurz
+    assertThrows(
+        WrongUserInputException.class, () -> Validation.validateFeedbackContent("kurz")); // Zu kurz
+    assertThrows(
+        WrongUserInputException.class,
+        () -> Validation.validateFeedbackContent("A".repeat(501))); // Zu lang
+  }
 
-    /**  // Test für die Validierung der Kategorien
-     @Test void testValidateCategory_Valid() {
-     // Gültige Kategorien
-     assertDoesNotThrow(() -> Validation.validateCategory("Verkehr"));
-     assertDoesNotThrow(() -> Validation.validateCategory("Umwelt"));
-     assertDoesNotThrow(() -> Validation.validateCategory("Sicherheit"));
-     }
-
-     @Test void testValidateCategory_Invalid() {
-     // Ungültige Kategorien
-     assertThrows(IllegalArgumentException.class, () -> Validation.validateCategory("Bildung"));
-     assertThrows(IllegalArgumentException.class, () -> Validation.validateCategory("Sport"));
-     assertThrows(IllegalArgumentException.class, () -> Validation.validateCategory(""));  // Leerer Wert
-     } **/
+  /**
+   * // Test für die Validierung der Kategorien @Test void testValidateCategory_Valid() { // Gültige
+   * Kategorien assertDoesNotThrow(() -> Validation.validateCategory("Verkehr"));
+   * assertDoesNotThrow(() -> Validation.validateCategory("Umwelt")); assertDoesNotThrow(() ->
+   * Validation.validateCategory("Sicherheit")); } @Test void testValidateCategory_Invalid() { //
+   * Ungültige Kategorien assertThrows(WrongUserInputException.class, () ->
+   * Validation.validateCategory("Bildung")); assertThrows(WrongUserInputException.class, () ->
+   * Validation.validateCategory("Sport")); assertThrows(WrongUserInputException.class, () ->
+   * Validation.validateCategory("")); // Leerer Wert } *
+   */
 }

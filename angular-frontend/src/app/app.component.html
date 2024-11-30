@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beschwerdeportal</title>
+    <link rel="stylesheet" href="app.component.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <div class="navbar">
+        <img src="https://cdn-icons-png.flaticon.com/512/3131/3131333.png" alt="Logo"  width="75" style="filter: brightness(0) invert(1);">
+        <div class="logo">Beschwerdeportal</div>
+        <div class="menu">
+            <a href="#beschwerde-formular">Beschwerde schreiben</a>
+            <a href="#beschwerden-status">Beschwerden anzeigen</a>
+            <a href="#login">Ausloggen</a>
+        </div>
+    </div>
+<br>
+<br>
+    <!-- Beschwerdeformular -->
+    <section id="beschwerde-formular">
+        <h1>Beschwerdeformular</h1>
+        <form action="/submit-complaint" method="POST">
+            <label for="category">Kategorie:</label>
+            <select id="category" name="category" required>
+                <option value="" disabled selected>Bitte wählen</option>
+                <option value="service">Familie</option>
+                <option value="product">Arbeit</option>
+                <option value="delivery">Wohnen</option>
+                <option value="billing">Verkehr</option>
+                <option value="other">Sonstiges</option>
+            </select>
+
+            <label for="title">Titel der Beschwerde:</label>
+            <input type="text" id="title" name="title" placeholder="Titel eingeben" required>
+
+            <label for="complaint">Beschwerde:</label>
+            <textarea id="complaint" name="complaint" rows="6" placeholder="Beschwerde hier eingeben..." required></textarea>
+
+            <button type="submit-button">Absenden</button>
+        </form>
+    </section>
+    <br>
+    <br>
+    <!-- Beschwerden anzeigen -->
+    <section id="beschwerden-status">
+        <h1>Ihre Beschwerden</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Titel</th>
+                    <th>Kategorie</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Kindergeld zu wenig</td>
+                    <td>Familie</td>
+                    <td>Gesendet</td>
+                </tr>
+                <tr>
+                    <td>Gefährliche Kurve</td>
+                    <td>Verkehr</td>
+                    <td>In Bearbeitung</td>
+                </tr>
+                <tr>
+                    <td>Strompreiserhöhung</td>
+                    <td>Wohnen</td>
+                    <td>Bearbeitet</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+    <br>
+    <br>
+     <!-- Impressum -->
+     <footer id="impressum">
+        <h1>Impressum</h1>
+        <p><strong>Verantwortlich für den Inhalt:</strong> Felicitas Yeah!boa, Christine Peak, Katrin Knorke, Roxane Cool</p>
+        <p><strong>Adresse:</strong> Musterstraße 123, 12345 Musterstadt</p>
+        <p><strong>Telefon:</strong> +49 123 456 789</p>
+        <p><strong>E-Mail:</strong> <a href="mailto:info@beschwerdeportal.de"></a></p>
+        <p><strong>Webseite:</strong> <a href="https://www.beschwerdeportal.de" target="_blank">www.beschwerdeportal.de</a></p>
+     </footer>
+</body>
+</html>
