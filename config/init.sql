@@ -23,10 +23,10 @@ create table FEEDBACK
 );
 
 -- TABLE USER
-INSERT INTO `dev-db`.USER (USER.USER_ID, EMAIL, NAME, ROLE) VALUES (1,'citizen1@test.de', 'testcitizen1', 'citizen');
-INSERT INTO `dev-db`.USER (USER.USER_ID, EMAIL, NAME, ROLE) VALUES (10,'employee1@test.de', 'testemployee1', 'employee');
+INSERT INTO `devdb`.USER (USER.USER_ID, EMAIL, NAME, ROLE) VALUES (1,'citizen1@test.de', 'testcitizen1', 'citizen');
+INSERT INTO `devdb`.USER (USER.USER_ID, EMAIL, NAME, ROLE) VALUES (10,'employee1@test.de', 'testemployee1', 'employee');
 
-INSERT INTO `dev-db`.FEEDBACK(CATEGORY, TITLE, CONTENT, CITIZEN_ID, EMPLOYEE_ID, COMMENT, STATUS, CREATED_AT, UPDATED_AT)
+INSERT INTO `devdb`.FEEDBACK(CATEGORY, TITLE, CONTENT, CITIZEN_ID, EMPLOYEE_ID, COMMENT, STATUS, CREATED_AT, UPDATED_AT)
 VALUES (
            'REQUEST',
            'das ist ein Testitel',
