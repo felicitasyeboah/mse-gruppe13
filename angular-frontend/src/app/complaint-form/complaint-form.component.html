@@ -1,5 +1,5 @@
 <section id="beschwerde-formular">
-    <h1>Beschwerdeformular</h1>
+    <h1>Feedbackformular</h1>
     <form action="/submit-complaint" method="POST">
         <label for="category">Kategorie:</label>
         <select id="category" name="category" required>
@@ -11,10 +11,10 @@
             <option value="other">Sonstiges</option>
         </select>
 
-        <label for="title">Titel der Beschwerde:</label>
+        <label for="title">Titel des Feedbacks:</label>
         <input type="text" id="title" name="title" placeholder="Titel eingeben" required>
 
-        <label for="complaint">Beschwerde:</label>
+        <label for="complaint">Feedback:</label>
         <textarea id="complaint" name="complaint" rows="6" placeholder="Beschwerde hier eingeben..." required></textarea>
 
         <button type="submit">Absenden</button>
