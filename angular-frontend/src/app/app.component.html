@@ -3,25 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beschwerdeportal</title>
+    <title>Feedbackportal</title>
     <link rel="stylesheet" href="app.component.css">
 </head>
 <body>
     <!-- Navigation -->
     <div class="navbar">
         <img src="https://cdn-icons-png.flaticon.com/512/3131/3131333.png" alt="Logo"  width="75" style="filter: brightness(0) invert(1);">
-        <div class="logo">Beschwerdeportal</div>
+        <div class="logo">Feedbackportal</div>
         <div class="menu">
-            <a href="#beschwerde-formular">Beschwerde schreiben</a>
-            <a href="#beschwerden-status">Beschwerden anzeigen</a>
+            <a href="#feedback-formular">Feedback schreiben</a>
+            <a href="#feedback-status">Feedback anzeigen</a>
             <a href="#login">Ausloggen</a>
         </div>
     </div>
 <br>
 <br>
-    <!-- Beschwerdeformular -->
-    <section id="beschwerde-formular">
-        <h1>Beschwerdeformular</h1>
+    <!-- Feedbackformular -->
+    <section id="feedback-formular">
+        <h1>Feedbackformular</h1>
         <form action="/submit-complaint" method="POST">
             <label for="category">Kategorie:</label>
             <select id="category" name="category" required>
@@ -33,20 +33,20 @@
                 <option value="other">Sonstiges</option>
             </select>
 
-            <label for="title">Titel der Beschwerde:</label>
+            <label for="title">Titel des Feedbacks:</label>
             <input type="text" id="title" name="title" placeholder="Titel eingeben" required>
 
-            <label for="complaint">Beschwerde:</label>
-            <textarea id="complaint" name="complaint" rows="6" placeholder="Beschwerde hier eingeben..." required></textarea>
+            <label for="complaint">Feedback:</label>
+            <textarea id="complaint" name="complaint" rows="6" placeholder="Feedback hier eingeben..." required></textarea>
 
             <button type="submit-button">Absenden</button>
         </form>
     </section>
     <br>
     <br>
-    <!-- Beschwerden anzeigen -->
-    <section id="beschwerden-status">
-        <h1>Ihre Beschwerden</h1>
+    <!-- Feedback anzeigen -->
+    <section id="feedback-status">
+        <h1>Ihr Feedback</h1>
         <table>
             <thead>
                 <tr>
@@ -79,11 +79,11 @@
      <!-- Impressum -->
      <footer id="impressum">
         <h1>Impressum</h1>
-        <p><strong>Verantwortlich für den Inhalt:</strong> Felicitas Yeah!boa, Christine Peak, Katrin Knorke, Roxane Cool</p>
+        <p><strong>Verantwortlich für den Inhalt:</strong> Felicitas Yeboah, Christine Neick, Katrin Knoke, Roxane Buhl</p>
         <p><strong>Adresse:</strong> Musterstraße 123, 12345 Musterstadt</p>
         <p><strong>Telefon:</strong> +49 123 456 789</p>
-        <p><strong>E-Mail:</strong> <a href="mailto:info@beschwerdeportal.de"></a></p>
-        <p><strong>Webseite:</strong> <a href="https://www.beschwerdeportal.de" target="_blank">www.beschwerdeportal.de</a></p>
+        <p><strong>E-Mail:</strong> <a href="mailto:info@feedbackportal.de"></a></p>
+        <p><strong>Webseite:</strong> <a href="https://www.feedbackportal.de" target="_blank">www.cityfeedbackportal.de</a></p>
      </footer>
 </body>
 </html>
