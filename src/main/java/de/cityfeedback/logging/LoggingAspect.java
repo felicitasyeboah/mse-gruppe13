@@ -17,7 +17,7 @@ public class LoggingAspect {
     private static final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
 
     // Definiere ein Pointcut für alle Methoden in der Service-Schicht
-    @Pointcut("execution(* com.example.demo.service.*.*(..))")
+    @Pointcut("execution(* de.cityfeedback.feedbackverwaltung.domain.listener.*.*(..))")
     public void serviceMethods() {}
 
     // Logging vor der Methode
