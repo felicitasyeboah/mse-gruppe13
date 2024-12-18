@@ -1,89 +1,14 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Feedbackportal</title>
-    <link rel="stylesheet" href="app.component.css">
-</head>
-<body>
-    <!-- Navigation -->
-    <div class="navbar">
-        <img src="https://cdn-icons-png.flaticon.com/512/3131/3131333.png" alt="Logo"  width="75" style="filter: brightness(0) invert(1);">
-        <div class="logo">Feedbackportal</div>
-        <div class="menu">
-            <a href="#feedback-formular">Feedback schreiben</a>
-            <a href="#feedback-status">Feedback anzeigen</a>
-            <a href="#login">Ausloggen</a>
-        </div>
-    </div>
+<!-- Navigation -->
+<app-navbar></app-navbar>
 <br>
 <br>
-    <!-- Feedbackformular -->
-    <section id="feedback-formular">
-        <h1>Feedbackformular</h1>
-        <form action="/submit-complaint" method="POST">
-            <label for="category">Kategorie:</label>
-            <select id="category" name="category" required>
-                <option value="" disabled selected>Bitte wählen</option>
-                <option value="service">Familie</option>
-                <option value="product">Arbeit</option>
-                <option value="delivery">Wohnen</option>
-                <option value="billing">Verkehr</option>
-                <option value="other">Sonstiges</option>
-            </select>
-
-            <label for="title">Titel des Feedbacks:</label>
-            <input type="text" id="title" name="title" placeholder="Titel eingeben" required>
-
-            <label for="complaint">Feedback:</label>
-            <textarea id="complaint" name="complaint" rows="6" placeholder="Feedback hier eingeben..." required></textarea>
-
-            <button type="submit-button">Absenden</button>
-        </form>
-    </section>
-    <br>
-    <br>
-    <!-- Feedback anzeigen -->
-    <section id="feedback-status">
-        <h1>Ihr Feedback</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>Titel</th>
-                    <th>Kategorie</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Kindergeld zu wenig</td>
-                    <td>Familie</td>
-                    <td>Gesendet</td>
-                </tr>
-                <tr>
-                    <td>Gefährliche Kurve</td>
-                    <td>Verkehr</td>
-                    <td>In Bearbeitung</td>
-                </tr>
-                <tr>
-                    <td>Strompreiserhöhung</td>
-                    <td>Wohnen</td>
-                    <td>Bearbeitet</td>
-                </tr>
-            </tbody>
-        </table>
-    </section>
-    <br>
-    <br>
-     <!-- Impressum -->
-     <footer id="impressum">
-        <h1>Impressum</h1>
-        <p><strong>Verantwortlich für den Inhalt:</strong> Felicitas Yeboah, Christine Neick, Katrin Knoke, Roxane Buhl</p>
-        <p><strong>Adresse:</strong> Musterstraße 123, 12345 Musterstadt</p>
-        <p><strong>Telefon:</strong> +49 123 456 789</p>
-        <p><strong>E-Mail:</strong> <a href="mailto:info@feedbackportal.de"></a></p>
-        <p><strong>Webseite:</strong> <a href="https://www.feedbackportal.de" target="_blank">www.cityfeedbackportal.de</a></p>
-     </footer>
-</body>
-</html>
+<!-- Beschwerdeformular -->
+<app-complaint-form></app-complaint-form>
+<br>
+<br>
+<!-- Beschwerden anzeigen -->
+<app-complaints-list></app-complaints-list>
+<br>
+<br>
+<!-- Impressum -->
+ <app-impressum></app-impressum>
