@@ -1,4 +1,4 @@
-package de.cityfeedback.logging;
+package de.cityfeedback.feedbackverwaltung.infrastructure.aspects;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
