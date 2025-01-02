@@ -64,14 +64,14 @@ public class UserService {
         Optional<User> optionalUser = userRepository.findUserByEmail(email);
         //Optional<User> optionalUser = userRepository.findUserByEmailAndPassword(email, password);
 
+        //Testausgabe, da optional User immer null - DB-Abfrage funktioniert nicht?
         System.out.println("OPTIONALUSER in loginUser darf nicht null sein" + optionalUser.toString());
+
         if (optionalUser.isEmpty()) {
             return false;
         }
 
-
         User user = optionalUser.get();
-
 
         //temporäres Passwort als Spalte in Tabelle vorhanden
 
@@ -82,7 +82,4 @@ public class UserService {
 
     }
 
-    /*public Optional<User> getUserByEmail(String email) {
-        return userRepository.findUserByEmail(email);
-    }*/
 }

@@ -33,10 +33,12 @@ public class UserServiceTest {
 
     @BeforeEach
     void setup() {
-        // Set up test data
+
         //request = new UserRequest("XX", "XX", 1L, "XX");
 
         //!!!request und controller einfügen
+
+        // Set up test data
         String email = "email";
         String password = "123";
         String username = "name";
@@ -51,17 +53,8 @@ public class UserServiceTest {
         user.setUserStatus(AKTIV);
         user.setPassword(new Password("testpassword"));
 */
-        //!!!feedback.setCitizenId(new CitizenId(request.citizenId()));
-
-
         user = new User(userId, email, password, CITIZEN, username);
-        //user.setId(10L);
-        //user.setRole(EMPLOYEE);
-        //user.setUserName("startemployee");
-        //user.setEmail("start@test.de");
-        //user.setPassword("testpassword");
     }
-
 
 
     @Test
@@ -74,32 +67,33 @@ public class UserServiceTest {
     //UserRepository userRepository = mock(UserRepository.class);
 
     //when(userRepository.save(any(User.class))).thenReturn(user);
+
+        //Testdaten aus Datenbank - Email-Adresse und Passwort
         String email = "employee1@test.de";
         String password = "password10";
 
-        System.out.println(user.getId());
         //when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
-        System.out.println(user.toString());
+
+        //!!! ist das hier nötig?
+        UserService userService = new UserService(userRepository);
+
+        // Act
         boolean result = userService.loginUser("employee1@test.de", "password10");
+
         System.out.println(user.toString());
-        //UserService userService = new UserService(userRepository);
-
-    //Email email = new Email("citizen1@test.de");
 
 
-    /*    User user = new User();
+        /*    User user = new User();
         user.setEmail(email);
         user.setPassword(password);
         when(userRepository.findUserByEmail(email)).thenReturn(Optional.of(user));
         System.out.println(user.toString());*/
-    // Act
-   // boolean result = userService.loginUser(email, password);
 
-    // Assert
-     assertTrue(result, "Login should succeed with correct credentials");
+        // Assert
+        assertTrue(result, "Login should succeed with correct credentials");
 
-     //wird derzeit noch zu oft aufgerufen, Fehler suchen
-     verify(userRepository, times(1)).findUserByEmail(email);
+        //wird derzeit noch zu oft aufgerufen, Fehler suchen
+        verify(userRepository, times(1)).findUserByEmail(email);
 
     }
 
@@ -116,9 +110,6 @@ public class UserServiceTest {
         String userName = "testcitizen1";
 
         User mockUser = new User(userid, email, password, CITIZEN, userName);
-
-        //when(userRepository.findByEmail(email).orElseThrow(Optional.of(user));
-        //when(userRepository.findByEmail(email).thenReturn(Optional.of(user)));
 
         // Act
         boolean result = userService.loginUser(email, password);
@@ -138,9 +129,6 @@ public class UserServiceTest {
 
         String email = "nonExistentUser@email.de";
         String password = "irrelevantPassword";
-
-        //when(userRepository.findByEmail(email.email())).thenReturn(null);
-        //System.out.println(email);
 
         // Act
         boolean result = userService.loginUser(email, password);
