@@ -1,42 +1,88 @@
 package de.cityfeedback.userverwaltung.application.services;
 
 import de.cityfeedback.userverwaltung.domain.model.User;
-import de.cityfeedback.userverwaltung.domain.valueobject.Email;
-import de.cityfeedback.userverwaltung.domain.valueobject.Password;
-import de.cityfeedback.userverwaltung.domain.valueobject.UserID;
-import de.cityfeedback.userverwaltung.domain.valueobject.UserName;
 import de.cityfeedback.userverwaltung.infrastructure.repositories.UserRepository;
 import de.cityfeedback.validator.Validation;
 
-import java.util.NoSuchElementException;
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
 
-import static de.cityfeedback.userverwaltung.domain.valueobject.Role.CITIZEN;
-import static de.cityfeedback.userverwaltung.domain.valueobject.UserStatus.AKTIV;
+import java.util.List;
+import java.util.Optional;
 
+@Service
+@Transactional
 public class UserService {
-    public  final UserRepository userRepository;
+    private  final UserRepository userRepository;
+
+    //!!!Event ergänzen
+    //public final ApplicationEventPublisher eventPublisher;
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
+    //!!! Event ergänzen
+    /*public UserService(UserRepository userRepository, ApplicationEventPublisher eventPublisher) {
+        this.userRepository = userRepository;
+        this.eventPublisher = eventPublisher;
+    }
+
+    // Create the domain event
+   UserLoggedInEvent event =
+         new UserLoggedInEvent(
+            user.getId(),
+            Getter ergänzen analog zu Feedback?
+            getUserByEmail().Email()
+            feedback.getTitle(),
+            feedback.getContent(),
+            feedback.getCitizenId().citizenId(),
+            feedback.getStatus().getStatusName(),
+            feedback.getCreatedAt());
+
+    // Publish the event
+    eventPublisher.publishEvent(event);
+
+    return user;
+  }
+
+    */
+
     //userRepository.save(user);
 
-    public boolean loginUser(Email email, Password password) {
-
-        User user = userRepository.findUserByEmail(email.email());
+    public boolean loginUser(String email, String password) {
 
         // validate email
-        Validation.validateEmail(email.email());
+        Validation.validateEmail(email);
 
+        System.out.println(email + " " + password);
+        // Fetch user from repository
 
-        //User user = new User(new UserID(1L), email, new Password("abds"), CITIZEN, new UserName("testname"), AKTIV);
-        if (user == null) {
-            return false; // Benutzer nicht gefunden
+        //funktioniert noch nicht!!!
+
+        //Datenabfrage
+        Optional<User> optionalUser = userRepository.findUserByEmail(email);
+        //Optional<User> optionalUser = userRepository.findUserByEmailAndPassword(email, password);
+
+        System.out.println("OPTIONALUSER in loginUser darf nicht null sein" + optionalUser.toString());
+        if (optionalUser.isEmpty()) {
+            return false;
         }
-        System.out.println("user: " + user.toString());
-        return user.getPassword().equals(password);
 
+
+        User user = optionalUser.get();
+
+
+        //temporäres Passwort als Spalte in Tabelle vorhanden
+
+        // Validate password
+        //!! anpassen wenn Passwort gehasht wird: return passwordEncoder.matches(password.plainText(), user.getPassword());
+
+        return password.equals(user.getPassword());
 
     }
+
+    /*public Optional<User> getUserByEmail(String email) {
+        return userRepository.findUserByEmail(email);
+    }*/
 }
