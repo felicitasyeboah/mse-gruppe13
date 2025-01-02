@@ -1,9 +1,10 @@
 package de.cityfeedback.userverwaltung.domain.valueobject;
 
-import jakarta.persistence.Embeddable;
 
-@Embeddable
+import lombok.Getter;
+
+@Getter
 public enum Role {
     CITIZEN,
-    OFFICE
+    EMPLOYEE
 }
