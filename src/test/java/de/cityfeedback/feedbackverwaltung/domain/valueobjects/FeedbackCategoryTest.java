@@ -2,6 +2,7 @@ package de.cityfeedback.feedbackverwaltung.domain.valueobjects;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackCategory;
 import org.junit.jupiter.api.Test;
@@ -40,5 +41,15 @@ class FeedbackCategoryTest {
     assertThat(FeedbackCategory.COMPLAINT.getCategoryName()).isEqualTo("Beschwerde");
     assertThat(FeedbackCategory.REQUEST.getCategoryName()).isEqualTo("Anfrage");
     assertThat(FeedbackCategory.OTHER.getCategoryName()).isEqualTo("Sonstiges");
+  }
+
+  @Test
+  void shouldThrowExceptionForNullCategoryName() {
+    assertThrows(IllegalArgumentException.class, () -> FeedbackCategory.fromCategoryName(null));
+  }
+
+  @Test
+  void shouldThrowExceptionForEmptyCategoryName() {
+    assertThrows(IllegalArgumentException.class, () -> FeedbackCategory.fromCategoryName(""));
   }
 }

@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import de.cityfeedback.exception.WrongUserInputException;
+import de.cityfeedback.shared.validator.Validation;
 import org.junit.jupiter.api.Test;
 
 public class ValidationTest {

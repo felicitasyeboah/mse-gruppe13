@@ -4,7 +4,7 @@ import de.cityfeedback.feedbackverwaltung.domain.valueobject.CitizenId;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.EmployeeId;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackCategory;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackStatus;
-import de.cityfeedback.validator.Validation;
+import de.cityfeedback.shared.validator.Validation;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -80,15 +80,18 @@ public class Feedback {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Feedback feedback = (Feedback) o;
-    return Objects.equals(id, feedback.id)
-        && Objects.equals(category, feedback.category)
-        && Objects.equals(title, feedback.title)
-        && Objects.equals(content, feedback.content); // Compare all relevant fields
+    return Objects.equals(title, feedback.title)
+        && Objects.equals(content, feedback.content)
+        && category == feedback.category
+        && Objects.equals(citizenId, feedback.citizenId)
+        && Objects.equals(employeeId, feedback.employeeId)
+        && Objects.equals(comment, feedback.comment)
+        && status == feedback.status;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, category, title, content); // Hash based on the same fields
+    return Objects.hash(title, content, category, citizenId, employeeId, comment, status);
   }
 
   // Business methods
