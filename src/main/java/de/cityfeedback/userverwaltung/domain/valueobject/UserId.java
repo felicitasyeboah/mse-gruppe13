@@ -1,4 +1,4 @@
-package de.cityfeedback.userverwaltung.domain.valueobject;
+/*package de.cityfeedback.userverwaltung.domain.valueobject;
 import jakarta.persistence.Embeddable;
 
 
@@ -10,5 +10,5 @@ public record UserId(Long userId) {
         }
     }
 }
-
+*/
 

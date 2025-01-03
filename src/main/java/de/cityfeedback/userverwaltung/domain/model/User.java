@@ -16,9 +16,8 @@ import lombok.Setter;
 public class User {
 
 @Id
-@GeneratedValue(strategy = GenerationType.IDENTITY)
 @Column(name = "USER_ID")
-private UserId id;
+private long id;
 
 @Column(name = "NAME")
 private String userName;
@@ -36,7 +35,7 @@ private Role role;
 // parameterloser Konstruktor
 public User() {}
 
-    public User(UserId id, String email, String password, Role role, String userName) {
+    public User(long id, String email, String password, Role role, String userName) {
         this.id = id; // Konvertiere UserID zu Long
         this.email = email;
         this.password = password;
@@ -92,7 +91,7 @@ public User() {}
     public String toString() {
         return "User{"
                 + "id="
-                + id.userId()
+                + id
                 + ", email="
                 + email
                 + ", password='"

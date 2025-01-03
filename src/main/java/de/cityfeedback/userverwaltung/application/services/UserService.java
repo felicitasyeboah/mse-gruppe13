@@ -13,7 +13,7 @@ import java.util.Optional;
 @Service
 @Transactional
 public class UserService {
-    private  final UserRepository userRepository;
+    private final UserRepository userRepository;
 
     //!!!Event ergänzen
     //public final ApplicationEventPublisher eventPublisher;
@@ -50,36 +50,45 @@ public class UserService {
 
     //userRepository.save(user);
 
-    public boolean loginUser(String email, String password) {
+    public boolean loginUser (String email, String password){
+            // Validate email
+            Validation.validateEmail(email);
 
-        // validate email
-        Validation.validateEmail(email);
+            System.out.println(email + " " + password);
 
-        System.out.println(email + " " + password);
-        // Fetch user from repository
+            // Datenbankabfrage simulieren
+            Optional<User> optionalUser = userRepository.findByEmail(email);
 
-        //funktioniert noch nicht!!!
+            // Benutzer nicht gefunden
+            if (optionalUser.isEmpty()) {
+                return false;
+            }
 
-        //Datenabfrage
-        Optional<User> optionalUser = userRepository.findUserByEmail(email);
-        //Optional<User> optionalUser = userRepository.findUserByEmailAndPassword(email, password);
+            // Benutzer extrahieren
+            User user = optionalUser.get();
 
-        //Testausgabe, da optional User immer null - DB-Abfrage funktioniert nicht?
-        System.out.println("OPTIONALUSER in loginUser darf nicht null sein" + optionalUser.toString());
+            // Passwort prüfen
+            return password.equals(user.getPassword());
 
-        if (optionalUser.isEmpty()) {
-            return false;
+
+
+            // Fetch user from repository
+
+            //funktioniert noch nicht!!!
+
+            //Datenabfrage
+            //Optional<User> optionalUser = userRepository.findUserByEmail(email);
+            //Optional<User> optionalUser = userRepository.findUserByEmailAndPassword(email, password);
+
+
+            // User user = userRepository.
+            //Testausgabe, da optional User immer null - DB-Abfrage funktioniert nicht?
+
+            //temporäres Passwort als Spalte in Tabelle vorhanden
+
+            // Validate password
+            //!! anpassen wenn Passwort gehasht wird: return passwordEncoder.matches(password.plainText(), user.getPassword());
+
         }
-
-        User user = optionalUser.get();
-
-        //temporäres Passwort als Spalte in Tabelle vorhanden
-
-        // Validate password
-        //!! anpassen wenn Passwort gehasht wird: return passwordEncoder.matches(password.plainText(), user.getPassword());
-
-        return password.equals(user.getPassword());
-
-    }
 
 }

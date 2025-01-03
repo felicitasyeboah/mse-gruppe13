@@ -15,7 +15,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT us FROM User us WHERE LOWER(us.email) = LOWER(:email)")
     Optional<User> findUserByEmail(@Param("email") String email);
 
-    @Query("SELECT us FROM User us WHERE us.EMAIL = :email AND us.PASSWORD = :password")
-    Optional<User> findUserByEmailAndPassword(@Param("email") String email, @Param("password") String password);
+    Optional<User> findByEmail(String email);
+
+
+
+   // @Query(value = "SELECT * FROM USERS WHERE EMAIL_ADDRESS = ?1", nativeQuery = true)
+   // Optional<User> findByEmailAddress(String emailAddress);
+
+   // @Query("SELECT us FROM User us WHERE us.EMAIL = :email AND us.PASSWORD = :password")
+   // Optional<User> findUserByEmailAndPassword(@Param("email") String email, @Param("password") String password);
 
 }
