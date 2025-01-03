@@ -20,6 +20,7 @@ public class UserController {
     @PostMapping("/login")
     public String login(@RequestParam String email, @RequestParam String password) {
         boolean loginSuccessful = userService.loginUser(email, password);
+        System.out.println("Controller Login: " + email + " " + password);
         return loginSuccessful ? "Login erfolgreich" : "Login fehlgeschlagen";
     }
 

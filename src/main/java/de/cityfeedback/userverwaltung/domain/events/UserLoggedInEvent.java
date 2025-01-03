@@ -23,6 +23,7 @@ public class UserLoggedInEvent {
 
     // Konstruktor
     public UserLoggedInEvent(long id, String email, String Password, Role role, String Name) {
+        this.email = email;
         this.loggedInAt = Instant.now();
         System.out.println("Erfolgreich eingeloggt");
     }
