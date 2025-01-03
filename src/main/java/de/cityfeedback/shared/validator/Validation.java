@@ -1,4 +1,4 @@
-package de.cityfeedback.validator;
+package de.cityfeedback.shared.validator;
 
 import de.cityfeedback.exception.WrongUserInputException;
 import java.util.regex.Pattern;
