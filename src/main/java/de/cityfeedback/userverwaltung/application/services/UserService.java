@@ -1,26 +1,29 @@
 package de.cityfeedback.userverwaltung.application.services;
 
 import de.cityfeedback.userverwaltung.domain.model.User;
+import de.cityfeedback.userverwaltung.domain.events.UserLoggedInEvent;
 import de.cityfeedback.userverwaltung.infrastructure.repositories.UserRepository;
 import de.cityfeedback.validator.Validation;
 
 import jakarta.transaction.Transactional;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
 public class UserService {
     private final UserRepository userRepository;
+    public final ApplicationEventPublisher eventPublisher;
+
+    public UserService(UserRepository userRepository, ApplicationEventPublisher eventPublisher) {
+        this.eventPublisher = eventPublisher;
+        this.userRepository = userRepository;
+    }
 
     //!!!Event ergänzen
     //public final ApplicationEventPublisher eventPublisher;
-
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     //!!! Event ergänzen
     /*public UserService(UserRepository userRepository, ApplicationEventPublisher eventPublisher) {
@@ -48,9 +51,9 @@ public class UserService {
 
     */
 
-    //userRepository.save(user);
-
+    @Transactional
     public boolean loginUser (String email, String password){
+
             // Validate email
             Validation.validateEmail(email);
 
@@ -67,26 +70,22 @@ public class UserService {
             // Benutzer extrahieren
             User user = optionalUser.get();
 
+            UserLoggedInEvent event =
+                new UserLoggedInEvent(
+                        user.getId(),
+                        user.getEmail(),
+                        user.getPassword(),
+                        user.getRole(), user.getUserName());
+
+
             // Passwort prüfen
-            return password.equals(user.getPassword());
+            boolean loginSuccessful = password.equals(user.getPassword());
+            if (loginSuccessful) {
+                eventPublisher.publishEvent(event);
+            }
+            return loginSuccessful;
 
-
-
-            // Fetch user from repository
-
-            //funktioniert noch nicht!!!
-
-            //Datenabfrage
-            //Optional<User> optionalUser = userRepository.findUserByEmail(email);
-            //Optional<User> optionalUser = userRepository.findUserByEmailAndPassword(email, password);
-
-
-            // User user = userRepository.
-            //Testausgabe, da optional User immer null - DB-Abfrage funktioniert nicht?
-
-            //temporäres Passwort als Spalte in Tabelle vorhanden
-
-            // Validate password
+        // Validate password
             //!! anpassen wenn Passwort gehasht wird: return passwordEncoder.matches(password.plainText(), user.getPassword());
 
         }
