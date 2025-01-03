@@ -1,42 +1,94 @@
 package de.cityfeedback.userverwaltung.application.services;
 
 import de.cityfeedback.userverwaltung.domain.model.User;
-import de.cityfeedback.userverwaltung.domain.valueobject.Email;
-import de.cityfeedback.userverwaltung.domain.valueobject.Password;
-import de.cityfeedback.userverwaltung.domain.valueobject.UserID;
-import de.cityfeedback.userverwaltung.domain.valueobject.UserName;
+import de.cityfeedback.userverwaltung.domain.events.UserLoggedInEvent;
 import de.cityfeedback.userverwaltung.infrastructure.repositories.UserRepository;
 import de.cityfeedback.validator.Validation;
 
-import java.util.NoSuchElementException;
+import jakarta.transaction.Transactional;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Service;
 
-import static de.cityfeedback.userverwaltung.domain.valueobject.Role.CITIZEN;
-import static de.cityfeedback.userverwaltung.domain.valueobject.UserStatus.AKTIV;
+import java.util.List;
+import java.util.Optional;
 
+@Service
 public class UserService {
-    public  final UserRepository userRepository;
+    private final UserRepository userRepository;
+    public final ApplicationEventPublisher eventPublisher;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, ApplicationEventPublisher eventPublisher) {
+        this.eventPublisher = eventPublisher;
         this.userRepository = userRepository;
     }
 
-    //userRepository.save(user);
+    //!!!Event ergänzen
+    //public final ApplicationEventPublisher eventPublisher;
 
-    public boolean loginUser(Email email, Password password) {
-
-        User user = userRepository.findUserByEmail(email.email());
-
-        // validate email
-        Validation.validateEmail(email.email());
-
-
-        //User user = new User(new UserID(1L), email, new Password("abds"), CITIZEN, new UserName("testname"), AKTIV);
-        if (user == null) {
-            return false; // Benutzer nicht gefunden
-        }
-        System.out.println("user: " + user.toString());
-        return user.getPassword().equals(password);
-
-
+    //!!! Event ergänzen
+    /*public UserService(UserRepository userRepository, ApplicationEventPublisher eventPublisher) {
+        this.userRepository = userRepository;
+        this.eventPublisher = eventPublisher;
     }
+
+    // Create the domain event
+   UserLoggedInEvent event =
+         new UserLoggedInEvent(
+            user.getId(),
+            Getter ergänzen analog zu Feedback?
+            getUserByEmail().Email()
+            feedback.getTitle(),
+            feedback.getContent(),
+            feedback.getCitizenId().citizenId(),
+            feedback.getStatus().getStatusName(),
+            feedback.getCreatedAt());
+
+    // Publish the event
+    eventPublisher.publishEvent(event);
+
+    return user;
+  }
+
+    */
+
+    @Transactional
+    public boolean loginUser (String email, String password){
+
+            // Validate email
+            Validation.validateEmail(email);
+
+            System.out.println(email + " " + password);
+
+            // Datenbankabfrage simulieren
+            Optional<User> optionalUser = userRepository.findByEmail(email);
+
+            // Benutzer nicht gefunden
+            if (optionalUser.isEmpty()) {
+                return false;
+            }
+
+            // Benutzer extrahieren
+            User user = optionalUser.get();
+
+            UserLoggedInEvent event =
+                new UserLoggedInEvent(
+                        user.getId(),
+                        user.getEmail(),
+                         user.getPassword(),
+                        user.getRole(), user.getUserName()
+                        );
+
+
+            // Passwort prüfen
+            boolean loginSuccessful = password.equals(user.getPassword());
+            if (loginSuccessful) {
+                eventPublisher.publishEvent(event);
+            }
+            return loginSuccessful;
+
+        // Validate password
+            //!! anpassen wenn Passwort gehasht wird: return passwordEncoder.matches(password.plainText(), user.getPassword());
+
+        }
+
 }
