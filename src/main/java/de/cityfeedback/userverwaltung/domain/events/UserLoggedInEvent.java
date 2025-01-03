@@ -14,17 +14,15 @@ import java.time.LocalDateTime;
 public class UserLoggedInEvent {
 
 
-    Long UserId;
+    Long userId;
     String email;
     String username;
     String password;
     Role role;
     private final Instant loggedInAt;
 
-    // Konstruktor
     public UserLoggedInEvent(long id, String email, String Password, Role role, String Name) {
-        this.email = email;
         this.loggedInAt = Instant.now();
         System.out.println("Erfolgreich eingeloggt");
-    }
+}
 }

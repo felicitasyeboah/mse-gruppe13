@@ -74,8 +74,9 @@ public class UserService {
                 new UserLoggedInEvent(
                         user.getId(),
                         user.getEmail(),
-                        user.getPassword(),
-                        user.getRole(), user.getUserName());
+                         user.getPassword(),
+                        user.getRole(), user.getUserName()
+                        );
 
 
             // Passwort prüfen

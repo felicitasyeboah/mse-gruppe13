@@ -1,4 +1,4 @@
-package de.cityfeedback.userverwaltung.application.listeners;
+package de.cityfeedback.userverwaltung.domain.listener;
 
 import de.cityfeedback.userverwaltung.domain.events.UserLoggedInEvent;
 import org.springframework.context.event.EventListener;

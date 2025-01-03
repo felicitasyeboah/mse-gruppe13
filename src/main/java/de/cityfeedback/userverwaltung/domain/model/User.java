@@ -42,32 +42,8 @@ public User() {}
         this.role = role;
         this.userName = userName;
 
-        //!!! Validieren
-        //analog zu Feedback
-        //Validation.validateFeedbackContent(this.content);
-        //    Validation.validateFeedbackTitle(this.title);
-
     }
 
-
-
-    // Getter und Setter (optional, falls benötigt)
-    public String getEmail() {
-    return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    // Getter und Setter (optional, falls benötigt)
-    public String getPassword () {
-        return this.password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     @Override
     public boolean equals(Object o) {
