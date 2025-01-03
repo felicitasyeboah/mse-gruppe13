@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class DomainEventLoggingAspect {
 
-  private static final Logger logger = LoggerFactory.getLogger(DomainEventLoggingAspect.class);
+  static Logger logger = LoggerFactory.getLogger(DomainEventLoggingAspect.class);
 
   // Definiere ein Pointcut für alle Methoden in der Service-Schicht
   @Pointcut("execution(* de.cityfeedback.feedbackverwaltung.domain.listener.*.*(..))")
