@@ -21,6 +21,7 @@ public enum FeedbackCategory {
         return category;
       }
     }
-    throw new IllegalArgumentException("No enum constant with category name: " + categoryName);
+    throw new IllegalArgumentException(
+        "Invalid Category! No enum constant with category name: " + categoryName);
   }
 }

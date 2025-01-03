@@ -21,6 +21,7 @@ public enum FeedbackStatus {
         return status;
       }
     }
-    throw new IllegalArgumentException("No enum constant with status name: " + statusName);
+    throw new IllegalArgumentException(
+        "Invalid Status! No enum constant with status name: " + statusName);
   }
 }
