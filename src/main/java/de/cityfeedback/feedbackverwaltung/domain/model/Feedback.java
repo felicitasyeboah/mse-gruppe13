@@ -4,7 +4,7 @@ import de.cityfeedback.feedbackverwaltung.domain.valueobject.CitizenId;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.EmployeeId;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackCategory;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackStatus;
-import de.cityfeedback.validator.Validation;
+import de.cityfeedback.shared.validator.Validation;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
