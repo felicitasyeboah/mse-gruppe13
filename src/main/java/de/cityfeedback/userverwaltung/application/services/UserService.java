@@ -3,7 +3,7 @@ package de.cityfeedback.userverwaltung.application.services;
 import de.cityfeedback.userverwaltung.domain.model.User;
 import de.cityfeedback.userverwaltung.domain.events.UserLoggedInEvent;
 import de.cityfeedback.userverwaltung.infrastructure.repositories.UserRepository;
-import de.cityfeedback.validator.Validation;
+import de.cityfeedback.shared.validator.Validation;
 
 import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
@@ -52,7 +52,7 @@ public class UserService {
     */
 
     @Transactional
-    public boolean loginUser (String email, String password){
+    public boolean loginUser (String email, String password, User user){
 
             // Validate email
             Validation.validateEmail(email);
@@ -68,7 +68,7 @@ public class UserService {
             }
 
             // Benutzer extrahieren
-            User user = optionalUser.get();
+            user = optionalUser.get();
 
             UserLoggedInEvent event =
                 new UserLoggedInEvent(
@@ -81,6 +81,7 @@ public class UserService {
 
             // Passwort prüfen
             boolean loginSuccessful = password.equals(user.getPassword());
+            userRepository.save(user);
             if (loginSuccessful) {
                 eventPublisher.publishEvent(event);
             }
