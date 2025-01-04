@@ -52,7 +52,7 @@ public class UserService {
     */
 
     @Transactional
-    public boolean loginUser (String email, String password, User user){
+    public boolean loginUser (String email, String password){
 
             // Validate email
             Validation.validateEmail(email);
@@ -68,7 +68,7 @@ public class UserService {
             }
 
             // Benutzer extrahieren
-            user = optionalUser.get();
+            User user = optionalUser.get();
 
             UserLoggedInEvent event =
                 new UserLoggedInEvent(
