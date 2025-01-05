@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -20,4 +20,33 @@ export class ApiService {
     const userFeedbackUrl = `${this.feedbackEndpoint}/user/${userId}`;
     return this.http.get<any>(userFeedbackUrl);
   }
+  /**
+   * Creates a new feedback.
+   * @param feedback - The feedback request object.
+   * @returns An Observable of the API response.
+   */
+  createFeedback(feedback: FeedbackRequest): Observable<ApiResponse> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post<ApiResponse>(this.feedbackEndpoint, feedback, {
+      headers,
+    });
+  }
+}
+
+/**
+ * Interface for FeedbackRequest matching the server-side FeedbackRequest record.
+ */
+export interface FeedbackRequest {
+  title: string;
+  content: string;
+  citizenId: number;
+  category: string;
+}
+
+/**
+ * Interface for the ApiResponse returned by the server.
+ */
+export interface ApiResponse {
+  message: string;
+  data: any;
 }

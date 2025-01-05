@@ -1,22 +1,40 @@
-<section id="beschwerde-formular">
-    <h1>Feedbackformular</h1>
-    <form action="/submit-complaint" method="POST">
-        <label for="category">Kategorie:</label>
-        <select id="category" name="category" required>
-            <option value="" disabled selected>Bitte wählen</option>
-            <option value="service">Familie</option>
-            <option value="product">Arbeit</option>
-            <option value="delivery">Wohnen</option>
-            <option value="billing">Verkehr</option>
-            <option value="other">Sonstiges</option>
-        </select>
+<section id="feedback-form">
+  <h1>Feedbackformular</h1>
+  <!-- Response Message -->
+  <div *ngIf="responseMessage" [class]="isError ? 'error' : 'success'">
+    {{ responseMessage }}
+  </div>
+  <form (ngSubmit)="submitFeedback()" #feedbackForm="ngForm">
+    <!-- Category Dropdown -->
+    <label for="category">Kategorie:</label>
+    <select id="category" name="category" [(ngModel)]="feedback.category">
+      <option value="" disabled selected>Bitte wählen</option>
+      <option value="Anfrage">Anfrage</option>
+      <option value="Beschwerde">Beschwerde</option>
+      <option value="Sonstiges">Sonstiges</option>
+    </select>
 
-        <label for="title">Titel des Feedbacks:</label>
-        <input type="text" id="title" name="title" placeholder="Titel eingeben" required>
+    <!-- Title Input -->
+    <label for="title">Titel des Feedbacks:</label>
+    <input
+      type="text"
+      id="title"
+      name="title"
+      [(ngModel)]="feedback.title"
+      placeholder="Titel eingeben"
+    />
 
-        <label for="complaint">Feedback:</label>
-        <textarea id="complaint" name="complaint" rows="6" placeholder="Beschwerde hier eingeben..." required></textarea>
+    <!-- Feedback Content -->
+    <label for="content">Feedback:</label>
+    <textarea
+      id="content"
+      name="content"
+      [(ngModel)]="feedback.content"
+      rows="6"
+      placeholder="Beschwerde hier eingeben..."
+    ></textarea>
 
-        <button type="submit">Absenden</button>
-    </form>
+    <!-- Submit Button -->
+    <button type="submit">Absenden</button>
+  </form>
 </section>
