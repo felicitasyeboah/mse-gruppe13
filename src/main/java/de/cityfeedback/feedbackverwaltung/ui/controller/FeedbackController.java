@@ -81,4 +81,9 @@ public class FeedbackController {
           HttpStatus.BAD_REQUEST);
     }
   }
+
+  @GetMapping("/all-open")
+  public List<Feedback> getOpenFeedbacks() {
+    return feedbackService.findAllOpenFeedbacks();
+  }
 }

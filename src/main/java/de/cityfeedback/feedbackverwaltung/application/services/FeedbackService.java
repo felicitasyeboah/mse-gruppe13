@@ -102,4 +102,9 @@ public class FeedbackService {
     }
     return feedbackRepository.save(feedback);
   }
+
+  public List<Feedback> findAllOpenFeedbacks() {
+    // find all feedbacks that are not in status closed
+    return feedbackRepository.findAllByStatusNot(FeedbackStatus.CLOSED);
+  }
 }
