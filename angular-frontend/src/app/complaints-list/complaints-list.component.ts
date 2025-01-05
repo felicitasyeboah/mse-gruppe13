@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ApiService } from '../services/api.service';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-complaints-list',
@@ -12,7 +13,7 @@ export class ComplaintsListComponent {
   data: any; // to store the fetched data
   errorMessage: string = ''; // to store any error message
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService, private router: Router) {}
 
   ngOnInit(): void {
     // Call the service method to fetch data
@@ -27,5 +28,10 @@ export class ComplaintsListComponent {
         console.error(error);
       },
     );
+  }
+
+
+  goToDetail(id: string): void {
+    this.router.navigate(['/feedback', id]);
   }
 }

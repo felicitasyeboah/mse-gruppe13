@@ -31,6 +31,10 @@ export class ApiService {
       headers,
     });
   }
+
+  getFeedbackById(id: string): Observable<any> {
+    return this.http.get<any>(`${this.feedbackEndpoint}/feedback/${id}`);
+  }
 }
 
 /**
