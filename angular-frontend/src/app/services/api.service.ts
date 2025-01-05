@@ -33,7 +33,8 @@ export class ApiService {
   }
 
   getFeedbackById(id: string): Observable<any> {
-    return this.http.get<any>(`${this.feedbackEndpoint}/feedback/${id}`);
+    const detailFeedbackUrl = `${this.feedbackEndpoint}/feedback/${id}`;
+    return this.http.get<any>(detailFeedbackUrl);
   }
 }
 

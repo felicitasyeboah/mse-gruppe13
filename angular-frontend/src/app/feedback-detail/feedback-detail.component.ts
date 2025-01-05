@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../services/api.service';
+import {CommonModule} from '@angular/common';
 
 @Component({
   selector: 'app-feedback-detail',
+  imports: [CommonModule],
   templateUrl: './feedback-detail.component.html',
 })
 export class FeedbackDetailComponent implements OnInit {

@@ -6,10 +6,13 @@ import de.cityfeedback.feedbackverwaltung.domain.model.Feedback;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackCategory;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackStatus;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/feedback")
 public class FeedbackController {
@@ -18,6 +21,11 @@ public class FeedbackController {
 
   public FeedbackController(FeedbackService feedbackService) {
     this.feedbackService = feedbackService;
+  }
+
+  @GetMapping("/data")
+  public ResponseEntity<String> getData() {
+    return ResponseEntity.ok("Daten vom Backend");
   }
 
   @PostMapping
@@ -57,4 +65,14 @@ public class FeedbackController {
   public Feedback updateStatus(@PathVariable Long feedbackId, @RequestParam String status) {
     return feedbackService.updateFeedbackStatus(feedbackId, FeedbackStatus.fromStatusName(status));
   }
+
+  /*@GetMapping("/{id}")
+  public ResponseEntity<Feedback> getFeedbackById(@PathVariable Long id) {
+     Optional<Feedback> feedback = feedbackService.findById(id);
+    if (feedback.isPresent()) {
+      return ResponseEntity.ok(feedback.get());
+    } else {
+      return ResponseEntity.notFound().build();
+    }
+  }*/
 }
