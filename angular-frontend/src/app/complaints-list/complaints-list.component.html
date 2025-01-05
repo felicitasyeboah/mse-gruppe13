@@ -1,5 +1,12 @@
 <section id="beschwerden-status">
     <h1>Ihr Feedback</h1>
+  <div *ngIf="data">
+    <pre>{{ data | json }}</pre>  <!-- Display the fetched data -->
+  </div>
+
+  <div *ngIf="errorMessage">
+    <p>Error: {{ errorMessage }}</p>  <!-- Display the error message -->
+  </div>
     <table>
         <thead>
             <tr>
