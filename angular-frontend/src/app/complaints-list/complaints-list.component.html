@@ -1,36 +1,58 @@
 <section id="beschwerden-status">
     <h1>Ihr Feedback</h1>
   <div *ngIf="data">
-    <pre>{{ data | json }}</pre>  <!-- Display the fetched data -->
+    <!-- <pre>{{ data | json }}</pre>   Display the fetched data -->
+    <table *ngIf="data && data.length > 0" class="feedback-table">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Titel</th>
+        <th>Kategorie</th>
+        <th>Inhalt</th>
+        <th>Status</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let feedback of data">
+        <td>{{ feedback.id }}</td>
+        <td>{{ feedback.title }}</td>
+        <td>{{ feedback.category }}</td>
+        <td>{{ feedback.content }}</td>
+        <td>{{ feedback.status }}</td>
+      </tr>
+      </tbody>
+    </table>
+
   </div>
 
   <div *ngIf="errorMessage">
     <p>Error: {{ errorMessage }}</p>  <!-- Display the error message -->
-  </div>
-    <table>
-        <thead>
-            <tr>
-                <th>Titel</th>
-                <th>Kategorie</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Kindergeld zu wenig</td>
-                <td>Familie</td>
-                <td>Gesendet</td>
-            </tr>
-            <tr>
-                <td>Gefährliche Kurve</td>
-                <td>Verkehr</td>
-                <td>In Bearbeitung</td>
-            </tr>
-            <tr>
-                <td>Strompreiserhöhung</td>
-                <td>Wohnen</td>
-                <td>Bearbeitet</td>
-            </tr>
-        </tbody>
-    </table>
+ </div>
+  <!--     <table>
+          <thead>
+              <tr>
+                  <th>Titel</th>
+                  <th>Kategorie</th>
+                  <th>Status</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr>
+                  <td>Kindergeld zu wenig</td>
+                  <td>Familie</td>
+                  <td>Gesendet</td>
+              </tr>
+              <tr>
+                  <td>Gefährliche Kurve</td>
+                  <td>Verkehr</td>
+                  <td>In Bearbeitung</td>
+              </tr>
+              <tr>
+                  <td>Strompreiserhöhung</td>
+                  <td>Wohnen</td>
+                  <td>Bearbeitet</td>
+              </tr>
+          </tbody>
+      </table> -->
 </section>
+
