@@ -104,16 +104,11 @@ public class Feedback {
   public void addComment(String comment) {
     this.comment = comment;
     Validation.validateComment(comment);
+    this.status = FeedbackStatus.IN_PROGRESS;
     this.updatedAt = LocalDateTime.now();
   }
 
-  public void updateStatus(FeedbackStatus status) {
-    this.status = status;
-    this.updatedAt = LocalDateTime.now();
-  }
-
-  public void closeFeedback(String comment) {
-    this.comment = comment;
+  public void closeFeedback() {
     this.status = FeedbackStatus.CLOSED;
     this.updatedAt = LocalDateTime.now();
   }
