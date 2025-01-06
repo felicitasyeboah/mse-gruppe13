@@ -100,9 +100,10 @@ class FeedbackServiceTest {
     when(feedbackRepository.findById(feedback.getId())).thenReturn(Optional.empty());
 
     // Act & Assert
+    Long feedbackId = feedback.getId();
     assertThrows(
         EntityNotFoundException.class,
-        () -> feedbackService.assignFeedbackToEmployee(feedback.getId(), employeeId));
+        () -> feedbackService.assignFeedbackToEmployee(feedbackId, employeeId));
   }
 
   @Test
@@ -128,9 +129,10 @@ class FeedbackServiceTest {
     when(feedbackRepository.findById(feedback.getId())).thenReturn(Optional.empty());
 
     // Act & Assert
+    Long feedbackId = feedback.getId();
     assertThrows(
         EntityNotFoundException.class,
-        () -> feedbackService.addCommentToFeedback(feedback.getId(), comment));
+        () -> feedbackService.addCommentToFeedback(feedbackId, comment));
   }
 
   @Test

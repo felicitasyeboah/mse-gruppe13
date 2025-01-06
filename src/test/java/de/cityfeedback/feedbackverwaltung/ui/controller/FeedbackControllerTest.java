@@ -56,7 +56,6 @@ class FeedbackControllerTest {
 
     FeedbackResponse expectedResponse = FeedbackResponse.fromFeedback(feedback);
     String expectedMessage = "Feedback created successfully with ID: " + feedback.getId();
-    ApiResponse expectedApiResponse = new ApiResponse(expectedMessage, expectedResponse);
 
     // Mock the service behavior
     when(feedbackService.createFeedback(
