@@ -64,6 +64,17 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
+         <!-- Spring AOP -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
+    <!-- Logging Framework (Falls noch nicht vorhanden) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-logging</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

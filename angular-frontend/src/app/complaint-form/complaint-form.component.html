@@ -1,0 +1,40 @@
+<section id="feedback-form">
+  <h1>Feedbackformular</h1>
+  <!-- Response Message -->
+  <div *ngIf="responseMessage" [class]="isError ? 'error' : 'success'">
+    {{ responseMessage }}
+  </div>
+  <form (ngSubmit)="submitFeedback()" #feedbackForm="ngForm">
+    <!-- Category Dropdown -->
+    <label for="category">Kategorie:</label>
+    <select id="category" name="category" [(ngModel)]="feedback.category">
+      <option value="" disabled selected>Bitte wählen</option>
+      <option value="Anfrage">Anfrage</option>
+      <option value="Beschwerde">Beschwerde</option>
+      <option value="Sonstiges">Sonstiges</option>
+    </select>
+
+    <!-- Title Input -->
+    <label for="title">Titel des Feedbacks:</label>
+    <input
+      type="text"
+      id="title"
+      name="title"
+      [(ngModel)]="feedback.title"
+      placeholder="Titel eingeben"
+    />
+
+    <!-- Feedback Content -->
+    <label for="content">Feedback:</label>
+    <textarea
+      id="content"
+      name="content"
+      [(ngModel)]="feedback.content"
+      rows="6"
+      placeholder="Beschwerde hier eingeben..."
+    ></textarea>
+
+    <!-- Submit Button -->
+    <button type="submit">Absenden</button>
+  </form>
+</section>
