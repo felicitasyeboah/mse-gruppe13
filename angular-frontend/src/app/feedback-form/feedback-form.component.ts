@@ -8,12 +8,12 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-complaint-form',
+  selector: 'app-feedback-form',
   imports: [FormsModule, CommonModule],
-  templateUrl: './complaint-form.component.html',
-  styleUrl: './complaint-form.component.css',
+  templateUrl: './feedback-form.component.html',
+  styleUrl: './feedback-form.component.css',
 })
-export class ComplaintFormComponent {
+export class FeedbackFormComponent {
   feedback: FeedbackRequest = {
     title: '',
     content: '',

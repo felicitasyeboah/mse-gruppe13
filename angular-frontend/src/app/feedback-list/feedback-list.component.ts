@@ -3,12 +3,12 @@ import { ApiService } from '../services/api.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-complaints-list',
+  selector: 'app-feedback-list',
   imports: [CommonModule],
-  templateUrl: './complaints-list.component.html',
-  styleUrl: './complaints-list.component.css',
+  templateUrl: './feedback-list.component.html',
+  styleUrl: './feedback-list.component.css',
 })
-export class ComplaintsListComponent {
+export class FeedbackListComponent {
   data: any; // to store the fetched data
   errorMessage: string = ''; // to store any error message
 

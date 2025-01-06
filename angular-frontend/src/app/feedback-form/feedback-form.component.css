@@ -1,0 +1,32 @@
+/* Formular */
+label {
+  display: block;
+  margin: 15px 0 5px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+select, input, textarea, button {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+button {
+  background-image: linear-gradient(135deg, #081d92, #4b0daf);
+  color: white;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+
+  background-color: #37d196;
+}
+
+
+
