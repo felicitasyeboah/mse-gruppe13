@@ -6,7 +6,7 @@ name: CI Pipeline
 on:
   # Der Workflow wird bei jedem Push oder Pull Request ausgeführt (nur der main-Branch)
   push:
-    branches: [ "main", "felicitas" ]
+    branches: [ "main", "felicitas", "dev" ]
   pull_request:
     branches: [ "main" ]
 
