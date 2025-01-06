@@ -72,20 +72,10 @@ class FeedbackTest {
   }
 
   @Test
-  void updateStatusChangesStatusAndTimestamp() {
-    Feedback feedback = new Feedback();
-    feedback.updateStatus(FeedbackStatus.CLOSED);
-
-    assertEquals(FeedbackStatus.CLOSED, feedback.getStatus());
-    assertNotNull(feedback.getUpdatedAt());
-  }
-
-  @Test
   void closeFeedbackUpdatesCommentStatusAndTimestamp() {
     Feedback feedback = new Feedback();
-    feedback.closeFeedback("Closing comment");
+    feedback.closeFeedback();
 
-    assertEquals("Closing comment", feedback.getComment());
     assertEquals(FeedbackStatus.CLOSED, feedback.getStatus());
     assertNotNull(feedback.getUpdatedAt());
   }

@@ -2,6 +2,8 @@ package de.cityfeedback.feedbackverwaltung.infrastructure.repositories;
 
 import de.cityfeedback.feedbackverwaltung.domain.model.Feedback;
 import java.util.List;
+
+import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -15,4 +17,6 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
   @Modifying
   @Query("update Feedback f set f.updatedAt = CURRENT_TIMESTAMP where f.id = :feedback")
   Feedback updateFeedback(@Param("feedback") Feedback feedback);
+
+  List<Feedback> findAllByStatusNot(FeedbackStatus feedbackStatus);
 }
