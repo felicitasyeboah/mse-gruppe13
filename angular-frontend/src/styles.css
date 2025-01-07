@@ -1,13 +1,50 @@
 /* You can add global styles to this file, and also import other style files */
 /* Grundlegendes Styling */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
+
 body {
-    font-family: 'Arial', sans-serif;
-    line-height: 1.6;
-    background-color: #e8ecf8;
-    color: #20123f;
+  font-family: 'Arial', sans-serif;
+  line-height: 1.6;
+  background-color: #e8ecf8;
+  color: #20123f;
+  overflow-y: scroll;
+}
+
+/* Smooth Scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+.success {
+  color: green;
+  font-weight: bold;
+  margin-bottom: 1em;
+}
+
+.error {
+  color: red;
+  font-weight: bold;
+  margin-bottom: 1em;
+}
+
+/* Abschnitt-Styling */
+section {
+  padding: 40px 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+section h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 28px;
+  color: #23144d;
 }

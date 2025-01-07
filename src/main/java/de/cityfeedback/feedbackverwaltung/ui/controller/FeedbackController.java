@@ -1,6 +1,9 @@
 package de.cityfeedback.feedbackverwaltung.ui.controller;
 
 import de.cityfeedback.feedbackverwaltung.application.dto.ApiResponse;
+import de.cityfeedback.feedbackverwaltung.application.dto.FeedbackCreateRequest;
+import de.cityfeedback.feedbackverwaltung.application.dto.FeedbackResponse;
+import de.cityfeedback.feedbackverwaltung.application.dto.FeedbackUpdateRequest;
 import de.cityfeedback.feedbackverwaltung.application.services.FeedbackService;
 import de.cityfeedback.feedbackverwaltung.domain.model.Feedback;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackCategory;
@@ -29,7 +32,7 @@ public class FeedbackController {
   }
 
   @PostMapping
-  public ResponseEntity<ApiResponse> createFeedback(@RequestBody FeedbackRequest request) {
+  public ResponseEntity<ApiResponse> createFeedback(@RequestBody FeedbackCreateRequest request) {
     try {
       String title = request.title();
       String content = request.content();
@@ -38,11 +41,13 @@ public class FeedbackController {
 
       Feedback createdFeedback =
           feedbackService.createFeedback(title, content, citizenId, category);
+      FeedbackResponse feedbackResponse = FeedbackResponse.fromFeedback(createdFeedback);
+
       // Create the response message
       String message = "Feedback created successfully with ID: " + createdFeedback.getId();
 
       // Return response to the user
-      ApiResponse response = new ApiResponse(message, createdFeedback);
+      ApiResponse response = new ApiResponse(message, feedbackResponse);
       return new ResponseEntity<>(response, HttpStatus.CREATED);
     } catch (Exception e) {
       ApiResponse response = new ApiResponse("Error creating feedback. - " + e.getMessage(), null);
@@ -61,9 +66,33 @@ public class FeedbackController {
     return feedbackService.findAllFeedbacksForCitizen(citizenId);
   }
 
-  @PostMapping("/status/{feedbackId}")
-  public Feedback updateStatus(@PathVariable Long feedbackId, @RequestParam String status) {
-    return feedbackService.updateFeedbackStatus(feedbackId, FeedbackStatus.fromStatusName(status));
+  @PatchMapping("/{feedbackId}")
+  public ResponseEntity<ApiResponse> updateFeedback(
+      @PathVariable Long feedbackId, @RequestBody FeedbackUpdateRequest request) {
+    try {
+      Feedback updatedFeedback =
+          feedbackService.updateFeedback(
+              feedbackId,
+              request.comment(),
+              request.userId(),
+              request.userRole(),
+              request.updateType());
+      FeedbackResponse feedbackResponse = FeedbackResponse.fromFeedback(updatedFeedback);
+
+      // Create the response with message
+      ApiResponse response = new ApiResponse("Feedback updated successfully", feedbackResponse);
+
+      return new ResponseEntity<>(response, HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<>(
+          new ApiResponse("Error updating feedback. - " + e.getMessage(), null),
+          HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @GetMapping("/all-open")
+  public List<Feedback> getOpenFeedbacks() {
+    return feedbackService.findAllOpenFeedbacks();
   }
 
   /*@GetMapping("/{id}")

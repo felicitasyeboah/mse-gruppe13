@@ -5,6 +5,8 @@ import de.cityfeedback.feedbackverwaltung.domain.model.Feedback;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.*;
 import de.cityfeedback.feedbackverwaltung.infrastructure.repositories.FeedbackRepository;
 import jakarta.persistence.EntityNotFoundException;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -45,15 +47,6 @@ public class FeedbackService {
     return feedback;
   }
 
-  public Feedback updateFeedbackStatus(Long feedbackId, FeedbackStatus status) {
-    Feedback feedback =
-        feedbackRepository
-            .findById(feedbackId)
-            .orElseThrow(() -> new EntityNotFoundException("Feedback not found"));
-    feedback.updateStatus(status);
-    return feedbackRepository.save(feedback);
-  }
-
   public Feedback assignFeedbackToEmployee(Long feedbackId, Long employeeId) {
     Feedback feedback =
         feedbackRepository
@@ -75,5 +68,43 @@ public class FeedbackService {
   public List<Feedback> findAllFeedbacksForCitizen(Long citizenId) {
     System.out.println("all by userid " + feedbackRepository.findAllByCitizenId(citizenId));
     return feedbackRepository.findAllByCitizenId(citizenId);
+  }
+
+  @Transactional
+  public Feedback updateFeedback(
+      Long feedbackId, String comment, Long userId, String userRole, String updateType) {
+    Feedback feedback =
+        feedbackRepository
+            .findById(feedbackId)
+            .orElseThrow(() -> new EntityNotFoundException("Feedback not found"));
+
+    // Check if the employeeId matches the employeeId from the requested userId
+    if (feedback.getEmployeeId() != null
+        && !feedback.getEmployeeId().employeeId().equals(userId)
+        && !userRole.equals("EMPLOYEE")) {
+      throw new IllegalArgumentException(
+          "Unauthorized to update this feedback. You are not the assigned employee or have not the role of an employee.");
+    }
+
+    // Update feedback based on updateType
+    switch (updateType.toLowerCase()) {
+      case "assign":
+        feedback.assignToEmployee(new EmployeeId(userId));
+        break;
+      case "comment":
+        feedback.addComment(comment);
+        break;
+      case "close":
+        feedback.closeFeedback();
+        break;
+      default:
+        throw new IllegalArgumentException("Invalid update type");
+    }
+    return feedbackRepository.save(feedback);
+  }
+
+  public List<Feedback> findAllOpenFeedbacks() {
+    // find all feedbacks that are not in status closed
+    return feedbackRepository.findAllByStatusNot(FeedbackStatus.CLOSED);
   }
 }
