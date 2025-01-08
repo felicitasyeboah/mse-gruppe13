@@ -77,7 +77,7 @@ class FeedbackControllerTest {
         .andExpect(MockMvcResultMatchers.jsonPath("$.data.title").value(feedback.getTitle()))
         .andExpect(MockMvcResultMatchers.jsonPath("$.data.content").value(feedback.getContent()))
         .andExpect(
-            MockMvcResultMatchers.jsonPath("$.data.categoryName")
+            MockMvcResultMatchers.jsonPath("$.data.category")
                 .value(feedback.getCategory().getCategoryName()));
 
     // Act: Call the controller method directly

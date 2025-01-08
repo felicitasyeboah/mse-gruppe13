@@ -20,8 +20,8 @@ public record FeedbackDto(
       String title,
       String content,
       Long citizenId,
-      String categoryName,
       String comment,
+      String categoryName,
       Long employeeId) {
     this(null, title, content, categoryName, citizenId, employeeId, comment, null, null, null);
   }

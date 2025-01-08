@@ -33,8 +33,7 @@ class FeedbackServiceTest {
   @BeforeEach
   void setup() {
     // Set up test data
-    request =
-        new FeedbackDto("Issue", "Details of the issue", 1L, "Beschwerde", "Beschwerde", null);
+    request = new FeedbackDto("Issue", "Details of the issue", 1L, null, "Beschwerde", null);
     category = FeedbackCategory.fromCategoryName(request.category());
     feedback = new Feedback();
     feedback.setId(1L);
