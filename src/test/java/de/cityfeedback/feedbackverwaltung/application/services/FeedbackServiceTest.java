@@ -3,10 +3,10 @@ package de.cityfeedback.feedbackverwaltung.application.services;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import de.cityfeedback.feedbackverwaltung.application.dto.FeedbackDto;
 import de.cityfeedback.feedbackverwaltung.domain.model.Feedback;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.*;
 import de.cityfeedback.feedbackverwaltung.infrastructure.repositories.FeedbackRepository;
-import de.cityfeedback.feedbackverwaltung.application.dto.FeedbackCreateRequest;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
@@ -27,16 +27,18 @@ class FeedbackServiceTest {
   @Autowired private FeedbackService feedbackService;
 
   private Feedback feedback;
-  private FeedbackCreateRequest request;
+  private FeedbackDto request;
+  FeedbackCategory category;
 
   @BeforeEach
   void setup() {
     // Set up test data
     request =
-        new FeedbackCreateRequest("Issue", "Details of the issue", 1L, null, "Beschwerde", null);
+        new FeedbackDto("Issue", "Details of the issue", 1L, "Beschwerde", "Beschwerde", null);
+    category = FeedbackCategory.fromCategoryName(request.category());
     feedback = new Feedback();
     feedback.setId(1L);
-    feedback.setCategory(FeedbackCategory.COMPLAINT);
+    feedback.setCategory(category);
     feedback.setTitle(request.title());
     feedback.setContent(request.content());
     feedback.setCitizenId(new CitizenId(request.citizenId()));
@@ -50,7 +52,7 @@ class FeedbackServiceTest {
     // Act
     Feedback createdFeedback =
         feedbackService.createFeedback(
-            request.title(), request.content(), request.citizenId(), FeedbackCategory.COMPLAINT);
+            request.title(), request.content(), request.citizenId(), category);
 
     // Assert
     assertNotNull(createdFeedback);
@@ -143,12 +145,12 @@ class FeedbackServiceTest {
         .thenReturn(feedbacks);
 
     // Act
-    List<Feedback> foundFeedbacks =
+    List<FeedbackDto> foundFeedbacks =
         feedbackService.findAllFeedbacksForCitizen(feedback.getCitizenId().citizenId());
 
     // Assert
     assertNotNull(foundFeedbacks);
     assertEquals(1, foundFeedbacks.size());
-    assertEquals(feedback.getId(), foundFeedbacks.get(0).getId());
+    assertEquals(feedback.getId(), foundFeedbacks.get(0).id());
   }
 }

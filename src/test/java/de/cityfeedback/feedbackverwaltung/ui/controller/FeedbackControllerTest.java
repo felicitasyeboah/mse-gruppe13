@@ -7,8 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import de.cityfeedback.feedbackverwaltung.application.dto.ApiResponse;
-import de.cityfeedback.feedbackverwaltung.application.dto.FeedbackCreateRequest;
-import de.cityfeedback.feedbackverwaltung.application.dto.FeedbackResponse;
+import de.cityfeedback.feedbackverwaltung.application.dto.FeedbackDto;
 import de.cityfeedback.feedbackverwaltung.application.services.FeedbackService;
 import de.cityfeedback.feedbackverwaltung.domain.model.Feedback;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.CitizenId;
@@ -44,17 +43,17 @@ class FeedbackControllerTest {
   @Test
   void createFeedback_ShouldReturnCreatedResponse() throws Exception {
     // Arrange: Create a request object and expected feedback entity
-    FeedbackCreateRequest request =
-        new FeedbackCreateRequest("Issue", "Details of the issue", 1L, null, "Beschwerde", null);
+    FeedbackDto request =
+        new FeedbackDto("Issue", "Details of the issue", 1L, null, "Beschwerde", null);
 
     Feedback feedback = new Feedback();
     feedback.setId(1L);
     feedback.setCitizenId(new CitizenId(request.citizenId()));
-    feedback.setCategory(FeedbackCategory.COMPLAINT);
+    feedback.setCategory(FeedbackCategory.fromCategoryName(request.category()));
     feedback.setTitle(request.title());
     feedback.setContent(request.content());
 
-    FeedbackResponse expectedResponse = FeedbackResponse.fromFeedback(feedback);
+    FeedbackDto expectedResponse = FeedbackDto.fromFeedback(feedback);
     String expectedMessage = "Feedback created successfully with ID: " + feedback.getId();
 
     // Mock the service behavior
@@ -91,13 +90,10 @@ class FeedbackControllerTest {
     ApiResponse actualApiResponse = response.getBody();
     assertNotNull(actualApiResponse);
     assertEquals(expectedMessage, actualApiResponse.getMessage());
-    assertEquals(expectedResponse.id(), ((FeedbackResponse) actualApiResponse.getData()).id());
+    assertEquals(expectedResponse.id(), ((FeedbackDto) actualApiResponse.getData()).id());
+    assertEquals(expectedResponse.title(), ((FeedbackDto) actualApiResponse.getData()).title());
+    assertEquals(expectedResponse.content(), ((FeedbackDto) actualApiResponse.getData()).content());
     assertEquals(
-        expectedResponse.title(), ((FeedbackResponse) actualApiResponse.getData()).title());
-    assertEquals(
-        expectedResponse.content(), ((FeedbackResponse) actualApiResponse.getData()).content());
-    assertEquals(
-        expectedResponse.categoryName(),
-        ((FeedbackResponse) actualApiResponse.getData()).categoryName());
+        expectedResponse.category(), ((FeedbackDto) actualApiResponse.getData()).category());
   }
 }
