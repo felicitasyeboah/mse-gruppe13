@@ -9,8 +9,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 @Service
 public class UserService {
@@ -22,44 +21,13 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    //!!!Event ergänzen
-    //public final ApplicationEventPublisher eventPublisher;
 
-    //!!! Event ergänzen
-    /*public UserService(UserRepository userRepository, ApplicationEventPublisher eventPublisher) {
-        this.userRepository = userRepository;
-        this.eventPublisher = eventPublisher;
-    }
 
-    // Create the domain event
-   UserLoggedInEvent event =
-         new UserLoggedInEvent(
-            user.getId(),
-            Getter ergänzen analog zu Feedback?
-            getUserByEmail().Email()
-            feedback.getTitle(),
-            feedback.getContent(),
-            feedback.getCitizenId().citizenId(),
-            feedback.getStatus().getStatusName(),
-            feedback.getCreatedAt());
-
-    // Publish the event
-    eventPublisher.publishEvent(event);
-
-    return user;
-  }
-
-    */
-
-    @Transactional
+    /*@Transactional
     public boolean loginUser (String email, String password){
-
             // Validate email
             Validation.validateEmail(email);
 
-            System.out.println(email + " " + password);
-
-            // Datenbankabfrage simulieren
             Optional<User> optionalUser = userRepository.findByEmail(email);
 
             // Benutzer nicht gefunden
@@ -78,7 +46,6 @@ public class UserService {
                         user.getRole(), user.getUserName()
                         );
 
-
             // Passwort prüfen
             boolean loginSuccessful = password.equals(user.getPassword());
             userRepository.save(user);
@@ -92,4 +59,47 @@ public class UserService {
 
         }
 
+*/
+    @Transactional
+    public boolean authenticateUser(String email, String password) {
+        validateEmail(email);
+
+        User user = findUser(email);
+        if (!isPasswordValid(password, user.getPassword())) {
+            return false;
+        }
+System.out.println(user.toString());
+        publishLoginEvent(user);
+        updateUserLogin(user);
+        return true;
+    }
+
+    private void validateEmail(String email) {
+        Validation.validateEmail(email);
+    }
+
+    public User findUser(String email) {
+      //Exceptions definieren
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new NoSuchElementException("User not found for email: " + email));
+    }
+
+    private boolean isPasswordValid(String inputPassword, String storedPassword) {
+        return inputPassword.equals(storedPassword);
+    }
+
+    private void publishLoginEvent(User user) {
+        UserLoggedInEvent event = new UserLoggedInEvent(
+                user.getId(),
+                user.getEmail(),
+                user.getPassword(),
+                user.getRole(),
+                user.getUserName()
+        );
+        eventPublisher.publishEvent(event);
+    }
+
+    private void updateUserLogin(User user) {
+        userRepository.save(user);
+    }
 }
