@@ -21,8 +21,26 @@ public class UserController {
         this.userService = userService;
     }
 
-
     @PostMapping("/login")
+    public ApiResponse login(@RequestParam String email, @RequestParam String password) {
+        validateInput(email, password);
+
+        boolean loginSuccessful = userService.authenticateUser(email, password);
+        if (!loginSuccessful) {
+            throw new IllegalArgumentException("Login fehlgeschlagen. Ungültige E-Mail oder Passwort.");
+        }
+
+        User user = userService.findUser(email);
+        UserResponse userResponse = UserResponse.fromUser(user);
+        return new ApiResponse("Erfolgreich eingeloggt.", userResponse);
+    }
+
+    private void validateInput(String email, String password) {
+        if (email == null || email.isEmpty() || password == null || password.isEmpty()) {
+            throw new IllegalArgumentException("E-Mail oder Passwort darf nicht leer sein.");
+        }
+    }
+   /* @PostMapping("/login")
     public ApiResponse login(@RequestParam String email, @RequestParam String password) {
         //Exception-Handling
         //leere Eingaben abfangen?
@@ -50,6 +68,8 @@ public class UserController {
             return createErrorResponse("Ein unerwarteter Fehler ist aufgetreten: " + e.getMessage());
         }
     }
+*/
+
 
     private boolean isInputInvalid(String email, String password) {
         return email == null || email.isEmpty() || password == null || password.isEmpty();
