@@ -1,4 +1,4 @@
-package de.cityfeedback.userverwaltung.ui.controller;
+/*package de.cityfeedback.userverwaltung.ui.controller;
 
 import de.cityfeedback.feedbackverwaltung.application.dto.ApiResponse;
 import org.springframework.http.HttpStatus;
@@ -32,4 +32,4 @@ public class GlobalExceptionHandler {
         ApiResponse response = new ApiResponse("Ungültige Eingabe: " + ex.getMessage(), null);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
-}
+}*/
