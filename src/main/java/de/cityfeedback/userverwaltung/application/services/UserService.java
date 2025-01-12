@@ -1,5 +1,6 @@
 package de.cityfeedback.userverwaltung.application.services;
 
+import de.cityfeedback.exception.WrongUserInputException;
 import de.cityfeedback.userverwaltung.domain.model.User;
 import de.cityfeedback.userverwaltung.domain.events.UserLoggedInEvent;
 import de.cityfeedback.userverwaltung.infrastructure.repositories.UserRepository;
@@ -60,28 +61,36 @@ public class UserService {
         }
 
 */
-    @Transactional
+    /*@Transactional
     public boolean authenticateUser(String email, String password) {
-        validateEmail(email);
+       User user = findUserByEmailAndPassword(email, password);
 
-        User user = findUser(email);
         if (!isPasswordValid(password, user.getPassword())) {
             return false;
         }
-System.out.println(user.toString());
+
+        System.out.println(user.toString());
         publishLoginEvent(user);
         updateUserLogin(user);
         return true;
+    }*/
+
+    public User authenticateUser(String email, String password) {
+        User user = findUserByEmailAndPassword(email, password);
+        if ((user != null) & (!isPasswordValid(password, user.getPassword()))) {
+            return null;
+        }
+
+        System.out.println(user.toString());
+        publishLoginEvent(user);
+        updateUserLogin(user);
+        return user;
     }
 
-    private void validateEmail(String email) {
-        Validation.validateEmail(email);
-    }
-
-    public User findUser(String email) {
+   public User findUserByEmailAndPassword(String email, String Password) {
       //Exceptions definieren
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new NoSuchElementException("User not found for email: " + email));
+                .orElseThrow(() -> new WrongUserInputException("Ungültige E-Mail oder Passwort."));
     }
 
     private boolean isPasswordValid(String inputPassword, String storedPassword) {

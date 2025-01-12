@@ -3,6 +3,7 @@ package de.cityfeedback.userverwaltung.application.services;
 import static de.cityfeedback.userverwaltung.domain.valueobject.Role.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import de.cityfeedback.exception.WrongUserInputException;
 import de.cityfeedback.userverwaltung.domain.model.User;
 import de.cityfeedback.userverwaltung.infrastructure.repositories.UserRepository;
 
@@ -49,9 +50,9 @@ public class UserServiceTest {
     public void shouldLoginSuccessfullyWithValidCredentials() {
         when(userRepository.findByEmail(VALID_EMAIL)).thenReturn(Optional.of(mockUser));
 
-        boolean result = userService.authenticateUser(VALID_EMAIL, VALID_PASSWORD);
+        User result = userService.authenticateUser(VALID_EMAIL, VALID_PASSWORD);
 
-        assertTrue(result, "Login should succeed with correct credentials");
+        assertNotNull(result, "Login should succeed with correct credentials");
         verify(userRepository, times(1)).findByEmail(VALID_EMAIL);
     }
 
@@ -59,9 +60,9 @@ public class UserServiceTest {
     public void shouldFailLoginWithInvalidPassword() {
         when(userRepository.findByEmail(VALID_EMAIL)).thenReturn(Optional.of(mockUser));
 
-        boolean result = userService.authenticateUser(VALID_EMAIL, INVALID_PASSWORD);
+        User result = userService.authenticateUser(VALID_EMAIL, INVALID_PASSWORD);
 
-        assertFalse(result, "Login should fail with incorrect password");
+        assertNull(result, "Login should fail with incorrect password");
         verify(userRepository, times(1)).findByEmail(VALID_EMAIL);
     }
 
@@ -70,17 +71,17 @@ public class UserServiceTest {
      public void shouldFailLoginWhenUserNotFound() {
             when(userRepository.findByEmail(INVALID_EMAIL)).thenReturn(Optional.empty());
 
-            Exception exception = assertThrows(NoSuchElementException.class,
+            Exception exception = assertThrows(WrongUserInputException.class,
                     () -> userService.authenticateUser(INVALID_EMAIL, VALID_PASSWORD));
 
-            assertEquals("User not found for email: " + INVALID_EMAIL, exception.getMessage());
+            assertEquals("Ungültige E-Mail oder Passwort.", exception.getMessage());
             verify(userRepository, times(1)).findByEmail(INVALID_EMAIL);
         }
 
     @Test
     public void testLogin_Failure_InvalidEmailFormat() {
         // Act & Assert
-        assertThrows(NoSuchElementException.class, () -> {
+        assertThrows(WrongUserInputException.class, () -> {
             userService.authenticateUser(INVALID_EMAIL, VALID_PASSWORD);
         });
     }
@@ -95,9 +96,9 @@ public class UserServiceTest {
         mockUsers.add(mockUser);
 
         when(userRepository.findByEmail(VALID_EMAIL)).thenReturn(Optional.of(mockUser));
-        boolean result = userService.authenticateUser(VALID_EMAIL, VALID_PASSWORD);
+        User result = userService.authenticateUser(VALID_EMAIL, VALID_PASSWORD);
 
-        assertTrue(result, "Login should succeed even with a large user base");
+        assertNotNull(result, "Login should succeed even with a large user base");
         verify(userRepository, times(1)).findByEmail(VALID_EMAIL);
     }
 

@@ -1,6 +1,8 @@
 package de.cityfeedback.userverwaltung.ui.controller;
 
+import de.cityfeedback.exception.WrongUserInputException;
 import de.cityfeedback.feedbackverwaltung.application.dto.ApiResponse;
+import de.cityfeedback.shared.validator.Validation;
 import de.cityfeedback.userverwaltung.application.dto.UserResponse;
 import de.cityfeedback.userverwaltung.application.services.UserService;
 import de.cityfeedback.userverwaltung.domain.model.User;
@@ -25,12 +27,34 @@ public class UserController {
     public ApiResponse login(@RequestParam String email, @RequestParam String password) {
         validateInput(email, password);
 
+        User user = userService.authenticateUser(email, password);
+
+        if (user == null) {
+            throw new WrongUserInputException("Login fehlgeschlagen. Ungültige E-Mail oder Passwort.");
+        }
+
+        //User user = userService.findUserByEmailAndPassword(email, password);
+        UserResponse userResponse = UserResponse.fromUser(user);
+        return new ApiResponse("Erfolgreich eingeloggt.", userResponse);
+    }
+
+    private void validateInput(String email, String password) {
+        Validation.validateEmail(email);
+        Validation.validatePassword(password);
+        /*if (email == null || email.isEmpty() || password == null || password.isEmpty()) {
+            throw new WrongUserInputException("E-Mail oder Passwort darf nicht leer sein.");
+        }*/
+    }
+
+    /*@PostMapping("/login")
+    public ApiResponse login(@RequestParam String email, @RequestParam String password) {
+        validateInput(email, password);
         boolean loginSuccessful = userService.authenticateUser(email, password);
         if (!loginSuccessful) {
             throw new IllegalArgumentException("Login fehlgeschlagen. Ungültige E-Mail oder Passwort.");
         }
 
-        User user = userService.findUser(email);
+        User user = userService.findUserByEmailAndPassword(email, password);
         UserResponse userResponse = UserResponse.fromUser(user);
         return new ApiResponse("Erfolgreich eingeloggt.", userResponse);
     }
@@ -40,6 +64,8 @@ public class UserController {
             throw new IllegalArgumentException("E-Mail oder Passwort darf nicht leer sein.");
         }
     }
+    */
+
    /* @PostMapping("/login")
     public ApiResponse login(@RequestParam String email, @RequestParam String password) {
         //Exception-Handling

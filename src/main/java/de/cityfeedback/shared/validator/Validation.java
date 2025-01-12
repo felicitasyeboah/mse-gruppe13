@@ -31,6 +31,13 @@ public class Validation {
     }
   }
 
+  // Validierung des Passworts
+  public static void validatePassword(String password) {
+    if (password == null) {
+      throw new WrongUserInputException("Passwort darf nicht leer sein.");
+    }
+  }
+
   // Validierung des Beschwerdetitels
   public static void validateFeedbackTitle(String title) {
     if (title == null || !Pattern.matches(FEEDBACK_TITLE_REGEX, title)) {
