@@ -28,7 +28,6 @@ public class UserController {
         try {
             validateInput(email, password);
 
-
             User user = userService.authenticateUser(email, password);
 
          /*   if (user == null) {

@@ -8,6 +8,8 @@ import de.cityfeedback.userverwaltung.infrastructure.repositories.UserRepository
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
+
 @Service
 public class UserService {
     private final UserRepository userRepository;
@@ -21,7 +23,7 @@ public class UserService {
     public User authenticateUser(String email, String password) {
         User user = findUserByEmail(email);
 
-        if (user != null) {validatePassword(password, user.getPassword());}
+        validatePassword(password, user.getPassword());
 
         System.out.println(user.toString());
         publishLoginEvent(user);
@@ -31,7 +33,7 @@ public class UserService {
 
    public User findUserByEmail(String email) {
       return userRepository.findByEmail(email)
-                .orElseThrow(() -> new WrongUserInputException("Ungültige E-Mail oder Passwort."));
+                .orElseThrow(() -> new NoSuchElementException("Ungültige E-Mail oder Passwort."));
     }
 
     private void validatePassword(String inputPassword, String storedPassword) {
