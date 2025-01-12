@@ -60,10 +60,18 @@ public class UserServiceTest {
     public void shouldFailLoginWithInvalidPassword() {
         when(userRepository.findByEmail(VALID_EMAIL)).thenReturn(Optional.of(mockUser));
 
+        Exception exception = assertThrows(WrongUserInputException.class,
+                () -> userService.authenticateUser(VALID_EMAIL, INVALID_PASSWORD));
+
+        assertEquals("Das eingegebene Passwort ist falsch.", exception.getMessage());
+        verify(userRepository, times(1)).findByEmail(VALID_EMAIL);
+
+        /* when(userRepository.findByEmail(VALID_EMAIL)).thenReturn(Optional.of(mockUser));
+
         User result = userService.authenticateUser(VALID_EMAIL, INVALID_PASSWORD);
 
         assertNull(result, "Login should fail with incorrect password");
-        verify(userRepository, times(1)).findByEmail(VALID_EMAIL);
+        verify(userRepository, times(1)).findByEmail(VALID_EMAIL);*/
     }
 
 

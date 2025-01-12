@@ -25,17 +25,24 @@ public class UserController {
 
     @PostMapping("/login")
     public ApiResponse login(@RequestParam String email, @RequestParam String password) {
-        validateInput(email, password);
+        try {
+            validateInput(email, password);
 
-        User user = userService.authenticateUser(email, password);
 
-        if (user == null) {
-            throw new WrongUserInputException("Login fehlgeschlagen. Ungültige E-Mail oder Passwort.");
+            User user = userService.authenticateUser(email, password);
+
+         /*   if (user == null) {
+                throw new WrongUserInputException("Login fehlgeschlagen. Ungültige E-Mail oder Passwort.");
+            }*/
+
+            //User user = userService.findUserByEmailAndPassword(email, password);
+            UserResponse userResponse = UserResponse.fromUser(user);
+            return new ApiResponse("Erfolgreich eingeloggt.", userResponse);
+
         }
-
-        //User user = userService.findUserByEmailAndPassword(email, password);
-        UserResponse userResponse = UserResponse.fromUser(user);
-        return new ApiResponse("Erfolgreich eingeloggt.", userResponse);
+        catch (Exception e) {
+            return new ApiResponse("Fehler beim Login: " + e.getMessage(), null);
+        }
     }
 
     private void validateInput(String email, String password) {

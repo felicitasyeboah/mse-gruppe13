@@ -34,7 +34,7 @@ public class Validation {
   // Validierung des Passworts
   public static void validatePassword(String password) {
     if (password == null) {
-      throw new WrongUserInputException("Passwort darf nicht leer sein.");
+      throw new WrongUserInputException("Bitte Passwort eingeben.");
     }
   }
 
