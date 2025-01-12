@@ -33,7 +33,7 @@ public class Validation {
 
   // Validierung des Passworts
   public static void validatePassword(String password) {
-    if (password == null || password == "")  {
+    if (password == null || password.trim().isEmpty()) {
       throw new WrongUserInputException("Bitte Passwort eingeben.");
     }
   }
