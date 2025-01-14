@@ -1,7 +1,6 @@
 package de.cityfeedback.userverwaltung.application.services;
 
 import de.cityfeedback.exception.WrongUserInputException;
-import de.cityfeedback.shared.validator.Validation;
 import de.cityfeedback.userverwaltung.domain.model.User;
 import de.cityfeedback.userverwaltung.domain.events.UserLoggedInEvent;
 import de.cityfeedback.userverwaltung.infrastructure.repositories.UserRepository;
@@ -27,14 +26,13 @@ public class UserService {
 
         validatePassword(password, user.getPassword());
 
-        System.out.println(user.toString());
         publishLoginEvent(user);
         return user;
     }
 
    public User findUserByEmail(String email) {
       return userRepository.findByEmail(email)
-                .orElseThrow(() -> new NoSuchElementException("Ungültige E-Mail oder Passwort."));
+                .orElseThrow(() -> new NoSuchElementException("Kein Nutzer mit dieser E-Mail-Adresse."));
     }
 
 

@@ -45,7 +45,6 @@ public class UserServiceTest {
         mockUser = new User(10L, VALID_EMAIL, VALID_PASSWORD, CITIZEN, "testemployee1");
     }
 
-
     @Test
     public void shouldLoginSuccessfullyWithValidCredentials() {
         when(userRepository.findByEmail(VALID_EMAIL)).thenReturn(Optional.of(mockUser));
@@ -76,7 +75,7 @@ public class UserServiceTest {
             Exception exception = assertThrows(NoSuchElementException.class,
                     () -> userService.authenticateUser(INVALID_EMAIL, VALID_PASSWORD));
 
-            assertEquals("Ungültige E-Mail oder Passwort.", exception.getMessage());
+            assertEquals("Kein Nutzer mit dieser E-Mail-Adresse.", exception.getMessage());
             verify(userRepository, times(1)).findByEmail(INVALID_EMAIL);
         }
 

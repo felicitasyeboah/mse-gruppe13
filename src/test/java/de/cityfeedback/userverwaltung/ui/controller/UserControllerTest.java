@@ -1,7 +1,6 @@
 package de.cityfeedback.userverwaltung.ui.controller;
 
 import de.cityfeedback.feedbackverwaltung.application.dto.ApiResponse;
-import de.cityfeedback.shared.validator.Validation;
 import de.cityfeedback.userverwaltung.application.dto.UserResponse;
 import de.cityfeedback.userverwaltung.application.services.UserService;
 import de.cityfeedback.userverwaltung.domain.model.User;
@@ -10,8 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -49,15 +46,11 @@ class UserControllerTest {
         verify(userService, times(1)).authenticateUser(email, password);
     }
 
-
     @Test
     void login_invalidEmail_throwsValidationException() {
         // Arrange
         String invalidEmail = "invalid-email";
         String password = "ValidPassword123";
-
-        //when(userService.authenticateUser(invalidEmail, password))
-        //        .thenThrow(new NoSuchElementException("Ungültige E-Mail oder Passwort."));
 
         // Act & Assert
         ApiResponse response = userController.login(invalidEmail, password);
