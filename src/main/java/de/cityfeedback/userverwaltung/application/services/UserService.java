@@ -1,16 +1,14 @@
 package de.cityfeedback.userverwaltung.application.services;
 
+import de.cityfeedback.exception.WrongUserInputException;
 import de.cityfeedback.userverwaltung.domain.model.User;
 import de.cityfeedback.userverwaltung.domain.events.UserLoggedInEvent;
 import de.cityfeedback.userverwaltung.infrastructure.repositories.UserRepository;
-import de.cityfeedback.shared.validator.Validation;
 
-import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 @Service
 public class UserService {
@@ -22,44 +20,57 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    //!!!Event ergänzen
-    //public final ApplicationEventPublisher eventPublisher;
+    public User authenticateUser(String email, String password) {
+        User user = findUserByEmail(email);
 
-    //!!! Event ergänzen
-    /*public UserService(UserRepository userRepository, ApplicationEventPublisher eventPublisher) {
-        this.userRepository = userRepository;
-        this.eventPublisher = eventPublisher;
+        validatePassword(password, user.getPassword());
+
+        System.out.println(user.toString());
+        publishLoginEvent(user);
+        //updateUserLogin(user);
+        return user;
     }
 
-    // Create the domain event
-   UserLoggedInEvent event =
-         new UserLoggedInEvent(
-            user.getId(),
-            Getter ergänzen analog zu Feedback?
-            getUserByEmail().Email()
-            feedback.getTitle(),
-            feedback.getContent(),
-            feedback.getCitizenId().citizenId(),
-            feedback.getStatus().getStatusName(),
-            feedback.getCreatedAt());
+   public User findUserByEmail(String email) {
+      return userRepository.findByEmail(email)
+                .orElseThrow(() -> new NoSuchElementException("Ungültige E-Mail oder Passwort."));
+    }
 
-    // Publish the event
-    eventPublisher.publishEvent(event);
+    private void validatePassword(String inputPassword, String storedPassword) {
+        if (!inputPassword.equals(storedPassword)) {
+            throw new WrongUserInputException("Das eingegebene Passwort ist falsch.");
+        }
+    }
 
-    return user;
-  }
+    private void publishLoginEvent(User user) {
+        UserLoggedInEvent event = new UserLoggedInEvent(
+                user.getId(),
+                user.getEmail(),
+                user.getPassword(),
+                user.getRole(),
+                user.getUserName()
+        );
+        eventPublisher.publishEvent(event);
+    }
 
-    */
 
-    @Transactional
+}
+
+
+/*private void updateUserLogin(User user) {
+        userRepository.save(user);
+    }*/
+    /*private boolean isPasswordValid(String inputPassword, String storedPassword) {
+        return inputPassword.equals(storedPassword);
+    }*/
+
+
+
+    /*@Transactional
     public boolean loginUser (String email, String password){
-
             // Validate email
             Validation.validateEmail(email);
 
-            System.out.println(email + " " + password);
-
-            // Datenbankabfrage simulieren
             Optional<User> optionalUser = userRepository.findByEmail(email);
 
             // Benutzer nicht gefunden
@@ -78,7 +89,6 @@ public class UserService {
                         user.getRole(), user.getUserName()
                         );
 
-
             // Passwort prüfen
             boolean loginSuccessful = password.equals(user.getPassword());
             userRepository.save(user);
@@ -92,4 +102,17 @@ public class UserService {
 
         }
 
-}
+*/
+    /*@Transactional
+    public boolean authenticateUser(String email, String password) {
+       User user = findUserByEmailAndPassword(email, password);
+
+        if (!isPasswordValid(password, user.getPassword())) {
+            return false;
+        }
+
+        System.out.println(user.toString());
+        publishLoginEvent(user);
+        updateUserLogin(user);
+        return true;
+    }*/
