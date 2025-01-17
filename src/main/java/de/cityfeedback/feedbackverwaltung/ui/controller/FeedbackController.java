@@ -6,7 +6,6 @@ import de.cityfeedback.feedbackverwaltung.application.dto.FeedbackUpdateRequest;
 import de.cityfeedback.feedbackverwaltung.application.services.FeedbackService;
 import de.cityfeedback.feedbackverwaltung.domain.model.Feedback;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackCategory;
-
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

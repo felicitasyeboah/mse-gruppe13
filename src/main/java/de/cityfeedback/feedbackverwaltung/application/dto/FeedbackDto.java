@@ -1,7 +1,6 @@
 package de.cityfeedback.feedbackverwaltung.application.dto;
 
 import de.cityfeedback.feedbackverwaltung.domain.model.Feedback;
-
 import java.time.LocalDateTime;
 
 public record FeedbackDto(
