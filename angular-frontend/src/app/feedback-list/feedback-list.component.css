@@ -21,6 +21,10 @@ table tr:nth-child(even) {
   background-color: #f9f9f9;
 }
 
+table td {
+  cursor: pointer;
+}
+
 /* Responsive Tabelle */
 @media (max-width: 768px) {
   table {

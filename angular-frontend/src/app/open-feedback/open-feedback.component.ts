@@ -33,8 +33,8 @@ export class OpenFeedbackComponent {
       },
     );
   }
-  goToDetail(id: string): void {
-    this.router.navigate(['/feedback', id]);
+  goToEdit(id: string): void {
+    this.router.navigate(['/edit-feedback', id]);
   }
 
 }

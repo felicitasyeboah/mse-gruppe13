@@ -31,9 +31,13 @@ export class ApiService {
       headers,
     });
   }
-
-  getFeedbackById(id: string): Observable<any> {
-    const detailFeedbackUrl = `${this.feedbackEndpoint}/feedback/${id}`;
+  /**
+   * Fetches a specific feedback from a specific user.
+   * @param feedbackId - The ID of the user whose feedbacks are being retrieved.
+   * @returns An Observable of the feedbacks.
+   */
+  getFeedbackById(feedbackId: string): Observable<any> {
+    const detailFeedbackUrl = `${this.feedbackEndpoint}/feedback/${feedbackId}`;
     return this.http.get<any>(detailFeedbackUrl);
   }
 }

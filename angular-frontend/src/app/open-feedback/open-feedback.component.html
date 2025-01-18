@@ -15,7 +15,7 @@
       </thead>
       <tbody>
       <tr *ngFor="let feedback of data"  class="clickable-row">
-        <td class="icon" (click)="goToDetail(feedback.id)"><figure><img src="/icon_edit.png" alt="icon bearbeiten"> </figure> </td>
+        <td class="icon" (click)="goToEdit(feedback.id)"><figure><img src="/icon_edit.png" alt="icon bearbeiten"> </figure> </td>
         <td>{{ feedback.id }}</td>
         <td>{{ feedback.title }}</td>
         <td>{{ feedback.category }}</td>

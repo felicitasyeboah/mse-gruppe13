@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../services/api.service';
-import {CommonModule} from '@angular/common';
+import {CommonModule, NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-feedback-detail',
-  imports: [CommonModule],
+  imports: [
+    NgIf
+  ],
   templateUrl: './feedback-detail.component.html',
 })
 export class FeedbackDetailComponent implements OnInit {

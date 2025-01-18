@@ -14,7 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "http://localhost:4200")
+
 @RestController
 @RequestMapping("/feedback")
 public class FeedbackController {
@@ -25,10 +25,6 @@ public class FeedbackController {
     this.feedbackService = feedbackService;
   }
 
-  @GetMapping("/data")
-  public ResponseEntity<String> getData() {
-    return ResponseEntity.ok("Daten vom Backend");
-  }
 
   @PostMapping
   public ResponseEntity<ApiResponse> createFeedback(@RequestBody FeedbackDto request) {
