@@ -1,5 +1,6 @@
 package de.cityfeedback.feedbackverwaltung.application.services;
 
+import de.cityfeedback.feedbackverwaltung.application.dto.FeedbackDto;
 import de.cityfeedback.feedbackverwaltung.domain.events.FeedbackCreatedEvent;
 import de.cityfeedback.feedbackverwaltung.domain.model.Feedback;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.*;
@@ -8,6 +9,8 @@ import jakarta.persistence.EntityNotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,9 +68,9 @@ public class FeedbackService {
     return feedbackRepository.save(feedback);
   }
 
-  public List<Feedback> findAllFeedbacksForCitizen(Long citizenId) {
-    System.out.println("all by userid " + feedbackRepository.findAllByCitizenId(citizenId));
-    return feedbackRepository.findAllByCitizenId(citizenId);
+  public List<FeedbackDto> findAllFeedbacksForCitizen(Long citizenId) {
+    List<Feedback> feedbacks = feedbackRepository.findAllByCitizenId(citizenId);
+    return feedbacks.stream().map(FeedbackDto::fromFeedback).toList();
   }
 
   @Transactional
@@ -103,8 +106,9 @@ public class FeedbackService {
     return feedbackRepository.save(feedback);
   }
 
-  public List<Feedback> findAllOpenFeedbacks() {
+  public List<FeedbackDto> findAllOpenFeedbacks() {
     // find all feedbacks that are not in status closed
-    return feedbackRepository.findAllByStatusNot(FeedbackStatus.CLOSED);
+    List<Feedback> feedbacks = feedbackRepository.findAllByStatusNot(FeedbackStatus.CLOSED);
+    return feedbacks.stream().map(FeedbackDto::fromFeedback).toList();
   }
 }
