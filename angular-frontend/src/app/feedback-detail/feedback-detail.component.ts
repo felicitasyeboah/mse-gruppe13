@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../services/api.service';
-import {CommonModule, NgIf} from '@angular/common';
+import { NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-feedback-detail',

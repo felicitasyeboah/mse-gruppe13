@@ -8,7 +8,6 @@ import de.cityfeedback.feedbackverwaltung.domain.model.Feedback;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackCategory;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
