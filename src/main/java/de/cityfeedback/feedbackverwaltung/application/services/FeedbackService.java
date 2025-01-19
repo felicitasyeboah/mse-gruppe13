@@ -100,6 +100,12 @@ public class FeedbackService {
       default:
         throw new IllegalArgumentException("Invalid update type");
     }
+    // Create the domain event
+    FeedbackUpdatedEvent event =
+        new FeedbackUpdatedEvent(
+            feedback.getId(), feedback.getUpdatedAt(), feedback.getStatus().getStatusName());
+    // Publish the event
+    eventPublisher.publishEvent(event);
     return feedbackRepository.save(feedback);
   }
 
