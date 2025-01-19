@@ -52,11 +52,10 @@ public class User {
         && Objects.equals(userName, user.userName);
   }
 
-  /*@Override
+  @Override
   public int hashCode() {
-      return Objects.hash(
-              id, category, title, content, citizenId, employeeId, comment, status, createdAt, updatedAt);
-  }*/
+    return Objects.hash(id, email, password, role, userName);
+  }
 
   @Override
   public String toString() {
