@@ -1,10 +1,8 @@
 package de.cityfeedback.feedbackverwaltung.ui.controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -30,6 +28,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.List;
 
 @ExtendWith(MockitoExtension.class) // This is the key to initialize mocks properly
 class FeedbackControllerTest {
@@ -101,6 +101,44 @@ class FeedbackControllerTest {
     assertEquals(expectedResponse.content(), ((FeedbackDto) actualApiResponse.getData()).content());
     assertEquals(
         expectedResponse.category(), ((FeedbackDto) actualApiResponse.getData()).category());
+  }
+
+  @Test
+  void createFeedback_ShouldReturnBadRequest_WhenExceptionIsThrown() throws Exception {
+    // Arrange: Create a request object
+    FeedbackDto request =
+        new FeedbackDto("Issue", "Details of the issue", 1L, null, "Beschwerde", null);
+
+    // Mock the service to throw an exception
+    when(feedbackService.createFeedback(
+            Mockito.anyString(),
+            Mockito.anyString(),
+            Mockito.anyLong(),
+            Mockito.any(FeedbackCategory.class)))
+        .thenThrow(new RuntimeException("Test exception"));
+
+    // Act: Perform the POST request using MockMvc
+    mockMvc
+        .perform(
+            post("/feedback")
+                .contentType("application/json")
+                .content(
+                    "{ \"title\": \"Issue\", \"content\": \"Details of the issue\", \"citizenId\": 1, \"category\": \"Beschwerde\" }"))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value("Error creating feedback. - Test exception"))
+        .andExpect(jsonPath("$.data").isEmpty());
+
+    // Act: Call the controller method directly
+    ResponseEntity<ApiResponse> response = feedbackController.createFeedback(request);
+
+    // Assert: Validate the response
+    assertNotNull(response);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+
+    ApiResponse actualApiResponse = response.getBody();
+    assertNotNull(actualApiResponse);
+    assertEquals("Error creating feedback. - Test exception", actualApiResponse.getMessage());
+    assertNull(actualApiResponse.getData());
   }
 
   @Test
@@ -218,5 +256,79 @@ class FeedbackControllerTest {
 
     verify(feedbackService, times(1))
         .updateFeedback(feedbackId, "Updated comment", 102L, "EMPLOYEE", "comment");
+  }
+
+  @Test
+  void getFeedbacksByUserId_ShouldReturnFeedbackList_WhenFeedbacksExist() throws Exception {
+    Long citizenId = 1L;
+    List<FeedbackDto> feedbackList =
+        List.of(
+            new FeedbackDto("Issue1", "Details of issue 1", citizenId, null, "Beschwerde", null),
+            new FeedbackDto("Issue2", "Details of issue 2", citizenId, null, "Anfrage", null));
+
+    when(feedbackService.findAllFeedbacksForCitizen(citizenId)).thenReturn(feedbackList);
+
+    mockMvc
+        .perform(get("/feedback/user/" + citizenId).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.data[0].title").value("Issue1"))
+        .andExpect(jsonPath("$.data[0].content").value("Details of issue 1"))
+        .andExpect(jsonPath("$.data[0].category").value("Beschwerde"))
+        .andExpect(jsonPath("$.data[1].title").value("Issue2"))
+        .andExpect(jsonPath("$.data[1].content").value("Details of issue 2"))
+        .andExpect(jsonPath("$.data[1].category").value("Anfrage"));
+
+    verify(feedbackService, times(1)).findAllFeedbacksForCitizen(citizenId);
+  }
+
+  @Test
+  void getFeedbacksByUserId_ShouldReturnBadRequest_WhenExceptionIsThrown() throws Exception {
+    Long citizenId = 1L;
+
+    when(feedbackService.findAllFeedbacksForCitizen(citizenId))
+        .thenThrow(new RuntimeException("Test exception"));
+
+    mockMvc
+        .perform(get("/feedback/user/" + citizenId).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value("Error retrieving feedbacks. - Test exception"))
+        .andExpect(jsonPath("$.data").isEmpty());
+
+    verify(feedbackService, times(1)).findAllFeedbacksForCitizen(citizenId);
+  }
+
+  @Test
+  void getOpenFeedbacks_ShouldReturnOpenFeedbackList_WhenFeedbacksExist() throws Exception {
+    List<FeedbackDto> openFeedbacks =
+        List.of(
+            new FeedbackDto("Open Issue1", "Details of open issue 1", 1L, null, "Beschwerde", null),
+            new FeedbackDto("Open Issue2", "Details of open issue 2", 2L, null, "Anfrage", null));
+
+    when(feedbackService.findAllOpenFeedbacks()).thenReturn(openFeedbacks);
+
+    mockMvc
+        .perform(get("/feedback/all-open").contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.data[0].title").value("Open Issue1"))
+        .andExpect(jsonPath("$.data[0].content").value("Details of open issue 1"))
+        .andExpect(jsonPath("$.data[0].category").value("Beschwerde"))
+        .andExpect(jsonPath("$.data[1].title").value("Open Issue2"))
+        .andExpect(jsonPath("$.data[1].content").value("Details of open issue 2"))
+        .andExpect(jsonPath("$.data[1].category").value("Anfrage"));
+
+    verify(feedbackService, times(1)).findAllOpenFeedbacks();
+  }
+
+  @Test
+  void getOpenFeedbacks_ShouldReturnBadRequest_WhenExceptionIsThrown() throws Exception {
+    when(feedbackService.findAllOpenFeedbacks()).thenThrow(new RuntimeException("Test exception"));
+
+    mockMvc
+        .perform(get("/feedback/all-open").contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value("Error retrieving open feedbacks. - Test exception"))
+        .andExpect(jsonPath("$.data").isEmpty());
+
+    verify(feedbackService, times(1)).findAllOpenFeedbacks();
   }
 }

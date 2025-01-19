@@ -52,8 +52,14 @@ public class FeedbackController {
    * @return List<Feedback>
    */
   @GetMapping("/user/{citizenId}")
-  public List<FeedbackDto> getFeedbacksByUserId(@PathVariable Long citizenId) {
-    return feedbackService.findAllFeedbacksForCitizen(citizenId);
+  public ResponseEntity<ApiResponse> getFeedbacksByUserId(@PathVariable Long citizenId) {
+    try {
+      List<FeedbackDto> feedbacks = feedbackService.findAllFeedbacksForCitizen(citizenId);
+      return ResponseEntity.ok(new ApiResponse(null, feedbacks));
+    } catch (Exception e) {
+      return ResponseEntity.badRequest()
+          .body(new ApiResponse("Error retrieving feedbacks. - " + e.getMessage(), null));
+    }
   }
 
   @PatchMapping("/{feedbackId}")
@@ -81,7 +87,13 @@ public class FeedbackController {
   }
 
   @GetMapping("/all-open")
-  public List<FeedbackDto> getOpenFeedbacks() {
-    return feedbackService.findAllOpenFeedbacks();
+  public ResponseEntity<ApiResponse> getOpenFeedbacks() {
+    try {
+      List<FeedbackDto> openFeedbacks = feedbackService.findAllOpenFeedbacks();
+      return ResponseEntity.ok(new ApiResponse(null, openFeedbacks));
+    } catch (Exception e) {
+      return ResponseEntity.badRequest()
+          .body(new ApiResponse("Error retrieving open feedbacks. - " + e.getMessage(), null));
+    }
   }
 }
