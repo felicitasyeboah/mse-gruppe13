@@ -78,6 +78,100 @@ class FeedbackServiceTest {
   }
 
   @Test
+  void updateFeedback_withValidAssignUpdateType_shouldAssignEmployee() {
+    Long feedbackId = feedback.getId();
+    String comment = null;
+    Long userId = 1L;
+    String userRole = "EMPLOYEE";
+    String updateType = "assign";
+    when(feedbackRepository.findById(feedbackId)).thenReturn(Optional.of(feedback));
+    when(feedbackRepository.save(any(Feedback.class))).thenReturn(feedback);
+
+    Feedback updatedFeedback =
+        feedbackService.updateFeedback(feedbackId, comment, userId, userRole, updateType);
+
+    assertNotNull(updatedFeedback);
+    assertEquals(new EmployeeId(userId), updatedFeedback.getEmployeeId());
+  }
+
+  @Test
+  void updateFeedback_withValidCommentUpdateType_shouldAddComment() {
+    Long feedbackId = feedback.getId();
+    String comment = "New comment";
+    Long userId = 1L;
+    String userRole = "EMPLOYEE";
+    String updateType = "comment";
+    when(feedbackRepository.findById(feedbackId)).thenReturn(Optional.of(feedback));
+    when(feedbackRepository.save(any(Feedback.class))).thenReturn(feedback);
+
+    Feedback updatedFeedback =
+        feedbackService.updateFeedback(feedbackId, comment, userId, userRole, updateType);
+
+    assertNotNull(updatedFeedback);
+    assertEquals(comment, updatedFeedback.getComment());
+  }
+
+  @Test
+  void updateFeedback_withValidCloseUpdateType_shouldCloseFeedback() {
+    Long feedbackId = feedback.getId();
+    String comment = null;
+    Long userId = 1L;
+    String userRole = "EMPLOYEE";
+    String updateType = "close";
+    when(feedbackRepository.findById(feedbackId)).thenReturn(Optional.of(feedback));
+    when(feedbackRepository.save(any(Feedback.class))).thenReturn(feedback);
+
+    Feedback updatedFeedback =
+        feedbackService.updateFeedback(feedbackId, comment, userId, userRole, updateType);
+
+    assertNotNull(updatedFeedback);
+    assertEquals(FeedbackStatus.CLOSED, updatedFeedback.getStatus());
+  }
+
+  @Test
+  void updateFeedback_withInvalidUpdateType_shouldThrowException() {
+    Long feedbackId = feedback.getId();
+    String comment = null;
+    Long userId = 1L;
+    String userRole = "EMPLOYEE";
+    String updateType = "invalid";
+    when(feedbackRepository.findById(feedbackId)).thenReturn(Optional.of(feedback));
+
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> feedbackService.updateFeedback(feedbackId, comment, userId, userRole, updateType));
+  }
+
+  @Test
+  void updateFeedback_withUnauthorizedUser_shouldThrowException() {
+    Long feedbackId = feedback.getId();
+    String comment = null;
+    Long userId = 2L;
+    String userRole = "CITIZEN";
+    String updateType = "assign";
+    feedback.assignToEmployee(new EmployeeId(1L));
+    when(feedbackRepository.findById(feedbackId)).thenReturn(Optional.of(feedback));
+
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> feedbackService.updateFeedback(feedbackId, comment, userId, userRole, updateType));
+  }
+
+  @Test
+  void updateFeedback_withNonExistentFeedback_shouldThrowException() {
+    Long feedbackId = feedback.getId();
+    String comment = null;
+    Long userId = 1L;
+    String userRole = "EMPLOYEE";
+    String updateType = "assign";
+    when(feedbackRepository.findById(feedbackId)).thenReturn(Optional.empty());
+
+    assertThrows(
+        EntityNotFoundException.class,
+        () -> feedbackService.updateFeedback(feedbackId, comment, userId, userRole, updateType));
+  }
+
+  @Test
   void assignFeedbackToEmployee_ShouldReturnUpdatedFeedback() {
     // Arrange
     Long employeeId = 1L;
