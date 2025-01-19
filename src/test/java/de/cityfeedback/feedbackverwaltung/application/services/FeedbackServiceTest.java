@@ -271,12 +271,7 @@ class FeedbackServiceTest {
 
   @Test
   void getFeedbackById_ShouldReturnFeedback_WhenFeedbackExists() {
-    Long feedbackId = 1L;
-    Feedback feedback = new Feedback();
-    feedback.setId(feedbackId);
-    feedback.setTitle("Issue");
-    feedback.setContent("Details of the issue");
-    feedback.setCategory(FeedbackCategory.COMPLAINT);
+    Long feedbackId = feedback.getId();
 
     when(feedbackRepository.findById(feedbackId)).thenReturn(Optional.of(feedback));
 

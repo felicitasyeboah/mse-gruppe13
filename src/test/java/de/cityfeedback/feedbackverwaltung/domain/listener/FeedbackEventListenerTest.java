@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
-public class FeedbackEventListenerTest {
+class FeedbackEventListenerTest {
 
   @Autowired private ApplicationEventPublisher eventPublisher;
 
