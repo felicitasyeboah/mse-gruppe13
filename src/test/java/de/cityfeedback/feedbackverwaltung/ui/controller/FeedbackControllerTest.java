@@ -2,16 +2,22 @@ package de.cityfeedback.feedbackverwaltung.ui.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.cityfeedback.feedbackverwaltung.application.dto.ApiResponse;
 import de.cityfeedback.feedbackverwaltung.application.dto.FeedbackDto;
+import de.cityfeedback.feedbackverwaltung.application.dto.FeedbackUpdateRequest;
 import de.cityfeedback.feedbackverwaltung.application.services.FeedbackService;
 import de.cityfeedback.feedbackverwaltung.domain.model.Feedback;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.CitizenId;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackCategory;
+import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackStatus;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,9 +26,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @ExtendWith(MockitoExtension.class) // This is the key to initialize mocks properly
@@ -33,6 +39,8 @@ class FeedbackControllerTest {
   @InjectMocks private FeedbackController feedbackController;
 
   private MockMvc mockMvc;
+
+  private final ObjectMapper objectMapper = new ObjectMapper();
 
   @BeforeEach
   void setup() {
@@ -72,13 +80,11 @@ class FeedbackControllerTest {
                 .content(
                     "{ \"title\": \"Issue\", \"content\": \"Details of the issue\", \"citizenId\": 1, \"category\": \"Beschwerde\" }"))
         .andExpect(status().isCreated())
-        .andExpect(MockMvcResultMatchers.jsonPath("$.message").value(expectedMessage))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.data.id").value(feedback.getId()))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.data.title").value(feedback.getTitle()))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.data.content").value(feedback.getContent()))
-        .andExpect(
-            MockMvcResultMatchers.jsonPath("$.data.category")
-                .value(feedback.getCategory().getCategoryName()));
+        .andExpect(jsonPath("$.message").value(expectedMessage))
+        .andExpect(jsonPath("$.data.id").value(feedback.getId()))
+        .andExpect(jsonPath("$.data.title").value(feedback.getTitle()))
+        .andExpect(jsonPath("$.data.content").value(feedback.getContent()))
+        .andExpect(jsonPath("$.data.category").value(feedback.getCategory().getCategoryName()));
 
     // Act: Call the controller method directly
     ResponseEntity<ApiResponse> response = feedbackController.createFeedback(request);
@@ -95,5 +101,122 @@ class FeedbackControllerTest {
     assertEquals(expectedResponse.content(), ((FeedbackDto) actualApiResponse.getData()).content());
     assertEquals(
         expectedResponse.category(), ((FeedbackDto) actualApiResponse.getData()).category());
+  }
+
+  @Test
+  void updateFeedback_ShouldReturnSuccess_WhenFeedbackIsUpdated() throws Exception {
+    Long feedbackId = 1L;
+    FeedbackUpdateRequest request =
+        new FeedbackUpdateRequest("Updated comment", 101L, "EMPLOYEE", "comment");
+    Feedback updatedFeedback = new Feedback();
+    updatedFeedback.setId(feedbackId);
+    updatedFeedback.setComment("Updated comment");
+    updatedFeedback.setCategory(FeedbackCategory.COMPLAINT);
+    updatedFeedback.setCitizenId(new CitizenId(1L));
+    updatedFeedback.setStatus(FeedbackStatus.IN_PROGRESS);
+
+    when(feedbackService.updateFeedback(
+            feedbackId,
+            request.comment(),
+            request.userId(),
+            request.userRole(),
+            request.updateType()))
+        .thenReturn(updatedFeedback);
+
+    mockMvc
+        .perform(
+            patch("/feedback/" + feedbackId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.message").value("Feedback updated successfully"))
+        .andExpect(jsonPath("$.data.comment").value("Updated comment"))
+        .andExpect(jsonPath("$.data.status").value(FeedbackStatus.IN_PROGRESS.getStatusName()));
+
+    verify(feedbackService, times(1))
+        .updateFeedback(feedbackId, "Updated comment", 101L, "EMPLOYEE", "comment");
+  }
+
+  @Test
+  void updateFeedback_ShouldReturnBadRequest_WhenInvalidUpdateTypeIsProvided() throws Exception {
+    Long feedbackId = 1L;
+    FeedbackUpdateRequest request =
+        new FeedbackUpdateRequest("Updated comment", 101L, "EMPLOYEE", "invalid");
+
+    when(feedbackService.updateFeedback(
+            feedbackId,
+            request.comment(),
+            request.userId(),
+            request.userRole(),
+            request.updateType()))
+        .thenThrow(new IllegalArgumentException("Invalid update type"));
+
+    mockMvc
+        .perform(
+            patch("/feedback/" + feedbackId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value("Error updating feedback. - Invalid update type"));
+
+    verify(feedbackService, times(1))
+        .updateFeedback(feedbackId, "Updated comment", 101L, "EMPLOYEE", "invalid");
+  }
+
+  @Test
+  void updateFeedback_ShouldReturnBadRequest_WhenFeedbackNotFound() throws Exception {
+    Long feedbackId = 1L;
+    FeedbackUpdateRequest request =
+        new FeedbackUpdateRequest("Updated comment", 101L, "EMPLOYEE", "comment");
+
+    when(feedbackService.updateFeedback(
+            feedbackId,
+            request.comment(),
+            request.userId(),
+            request.userRole(),
+            request.updateType()))
+        .thenThrow(new EntityNotFoundException("Feedback not found"));
+
+    mockMvc
+        .perform(
+            patch("/feedback/" + feedbackId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value("Error updating feedback. - Feedback not found"));
+
+    verify(feedbackService, times(1))
+        .updateFeedback(feedbackId, "Updated comment", 101L, "EMPLOYEE", "comment");
+  }
+
+  @Test
+  void updateFeedback_ShouldReturnBadRequest_WhenUnauthorizedUserTriesToUpdate() throws Exception {
+    Long feedbackId = 1L;
+    FeedbackUpdateRequest request =
+        new FeedbackUpdateRequest("Updated comment", 102L, "EMPLOYEE", "comment");
+
+    when(feedbackService.updateFeedback(
+            feedbackId,
+            request.comment(),
+            request.userId(),
+            request.userRole(),
+            request.updateType()))
+        .thenThrow(
+            new IllegalArgumentException(
+                "Unauthorized to update this feedback. You are not the assigned employee or have not the role of an employee."));
+
+    mockMvc
+        .perform(
+            patch("/feedback/" + feedbackId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().isBadRequest())
+        .andExpect(
+            jsonPath("$.message")
+                .value(
+                    "Error updating feedback. - Unauthorized to update this feedback. You are not the assigned employee or have not the role of an employee."));
+
+    verify(feedbackService, times(1))
+        .updateFeedback(feedbackId, "Updated comment", 102L, "EMPLOYEE", "comment");
   }
 }
