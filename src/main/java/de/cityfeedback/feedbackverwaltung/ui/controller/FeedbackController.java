@@ -86,6 +86,18 @@ public class FeedbackController {
     }
   }
 
+  @GetMapping("/{feedbackId}")
+  public ResponseEntity<ApiResponse> getFeedbackById(@PathVariable Long feedbackId) {
+    try {
+      Feedback feedback = feedbackService.getFeedbackById(feedbackId);
+      FeedbackDto feedbackDto = FeedbackDto.fromFeedback(feedback);
+      return ResponseEntity.ok(new ApiResponse(null, feedbackDto));
+    } catch (Exception e) {
+      return ResponseEntity.badRequest()
+          .body(new ApiResponse("Error retrieving feedback. - " + e.getMessage(), null));
+    }
+  }
+
   @GetMapping("/all-open")
   public ResponseEntity<ApiResponse> getOpenFeedbacks() {
     try {

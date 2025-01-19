@@ -330,4 +330,42 @@ class FeedbackControllerTest {
 
     verify(feedbackService, times(1)).findAllOpenFeedbacks();
   }
+
+  @Test
+  void getFeedbackById_ShouldReturnFeedback_WhenFeedbackExists() throws Exception {
+    Long feedbackId = 1L;
+    Feedback feedback = new Feedback();
+    feedback.setId(feedbackId);
+    feedback.setTitle("Issue");
+    feedback.setContent("Details of the issue");
+    feedback.setCitizenId(new CitizenId(1L));
+    feedback.setCategory(FeedbackCategory.COMPLAINT);
+
+    when(feedbackService.getFeedbackById(feedbackId)).thenReturn(feedback);
+    FeedbackDto feedbackDto = FeedbackDto.fromFeedback(feedback);
+    mockMvc
+        .perform(get("/feedback/" + feedbackId).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.data.title").value(feedbackDto.title()))
+        .andExpect(jsonPath("$.data.content").value(feedbackDto.content()))
+        .andExpect(jsonPath("$.data.category").value(feedbackDto.category()));
+
+    verify(feedbackService, times(1)).getFeedbackById(feedbackId);
+  }
+
+  @Test
+  void getFeedbackById_ShouldReturnBadRequest_WhenExceptionIsThrown() throws Exception {
+    Long feedbackId = 1L;
+
+    when(feedbackService.getFeedbackById(feedbackId))
+        .thenThrow(new RuntimeException("Test exception"));
+
+    mockMvc
+        .perform(get("/feedback/" + feedbackId).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value("Error retrieving feedback. - Test exception"))
+        .andExpect(jsonPath("$.data").isEmpty());
+
+    verify(feedbackService, times(1)).getFeedbackById(feedbackId);
+  }
 }

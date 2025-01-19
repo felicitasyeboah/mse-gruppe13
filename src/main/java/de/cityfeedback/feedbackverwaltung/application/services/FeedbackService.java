@@ -2,6 +2,7 @@ package de.cityfeedback.feedbackverwaltung.application.services;
 
 import de.cityfeedback.feedbackverwaltung.application.dto.FeedbackDto;
 import de.cityfeedback.feedbackverwaltung.domain.events.FeedbackCreatedEvent;
+import de.cityfeedback.feedbackverwaltung.domain.events.FeedbackUpdatedEvent;
 import de.cityfeedback.feedbackverwaltung.domain.model.Feedback;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.*;
 import de.cityfeedback.feedbackverwaltung.infrastructure.repositories.FeedbackRepository;
@@ -106,5 +107,11 @@ public class FeedbackService {
     // find all feedbacks that are not in status closed
     List<Feedback> feedbacks = feedbackRepository.findAllByStatusNot(FeedbackStatus.CLOSED);
     return feedbacks.stream().map(FeedbackDto::fromFeedback).toList();
+  }
+
+  public Feedback getFeedbackById(Long feedbackId) {
+    return feedbackRepository
+        .findById(feedbackId)
+        .orElseThrow(() -> new EntityNotFoundException("Feedback not found"));
   }
 }
