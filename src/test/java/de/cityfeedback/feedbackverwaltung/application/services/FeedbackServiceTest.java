@@ -268,4 +268,33 @@ class FeedbackServiceTest {
     assertNotNull(openFeedbacks);
     assertTrue(openFeedbacks.isEmpty());
   }
+
+  @Test
+  void getFeedbackById_ShouldReturnFeedback_WhenFeedbackExists() {
+    Long feedbackId = 1L;
+    Feedback feedback = new Feedback();
+    feedback.setId(feedbackId);
+    feedback.setTitle("Issue");
+    feedback.setContent("Details of the issue");
+    feedback.setCategory(FeedbackCategory.COMPLAINT);
+
+    when(feedbackRepository.findById(feedbackId)).thenReturn(Optional.of(feedback));
+
+    Feedback result = feedbackService.getFeedbackById(feedbackId);
+
+    assertNotNull(result);
+    assertEquals(feedbackId, result.getId());
+    assertEquals("Issue", result.getTitle());
+    assertEquals("Details of the issue", result.getContent());
+    assertEquals(FeedbackCategory.COMPLAINT, result.getCategory());
+  }
+
+  @Test
+  void getFeedbackById_ShouldThrowEntityNotFoundException_WhenFeedbackDoesNotExist() {
+    Long feedbackId = 1L;
+
+    when(feedbackRepository.findById(feedbackId)).thenReturn(Optional.empty());
+
+    assertThrows(EntityNotFoundException.class, () -> feedbackService.getFeedbackById(feedbackId));
+  }
 }
