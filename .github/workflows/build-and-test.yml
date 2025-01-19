@@ -90,15 +90,15 @@ jobs:
 
       # Step 3: Navigate to the Angular project folder
       - name: Change Directory to Angular Project
-        working-directory: angular-project
+        working-directory: angular-frontend
         run: pwd # Optional: Debugging step to confirm the current directory
 
       # Step 4: Install dependencies for the Angular project
       - name: Install Dependencies
-        working-directory: angular-project
+        working-directory: angular-frontend
         run: npm install
 
       # Step 5: Run linting on the Angular project
       - name: Run Lint
-        working-directory: angular-project
+        working-directory: angular-frontend
         run: npm run lint
