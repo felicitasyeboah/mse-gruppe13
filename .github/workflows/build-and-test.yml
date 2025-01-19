@@ -1,46 +1,50 @@
-# Einfache CI Pipeline 
+name: CI Pipeline for CityFeedback Project with Spring Boot and Angular
 
-name: CI Pipeline
-
-# Wann soll die CI - Pipeline ausgeführt werden?
 on:
-  # Der Workflow wird bei jedem Push oder Pull Request ausgeführt (nur der main-Branch)
+  # Trigger the workflow on pushes to specific branches
   push:
-    branches: [ "main", "felicitas" ]
+    branches: [ "christine", "felicitas", "roxane", "katrin" ]
+  # Trigger the workflow on pull requests targeting the main branch
   pull_request:
     branches: [ "main" ]
-
-  # Workflow kann auch manuell in "Actions" aufgerufen werden
+  # Allow manual triggering of the workflow
   workflow_dispatch:
 
 jobs:
-  # Dieser workflow enthält die jobs "build" und "test"
-  build-and-test:
+  # Specify the environment for the workflow runner
+  backend-verify-test-analyse:
+    name: Backend - Verify, Test, and Analyze Java Code
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checke den Code aus dem Repository aus
+      # Step 1: Checkout the source code
+      # Retrieve the repository code to the runner
       - name: Checkout source code
         uses: actions/checkout@v4.2.2
 
-      # 2. Rufe die passende Version von JDK auf
+      # Step 2: Set up Java Development Kit (JDK)
+      # Install and configure Amazon Corretto JDK version 17 for building and testing
       - name: Set up JDK
         uses: actions/setup-java@v4.5.0
         with:
-          distribution: 'corretto'
-          java-version: '17'
-      # 3. Install Docker Compose
+          distribution: 'corretto'  # Use Amazon Corretto distribution
+          java-version: '17'       # Specify Java version 17
+
+      # Step 3: Install Docker Compose
+      # Download and install Docker Compose to manage containerized services
       - name: Install Docker Compose
         run: |
           sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
-          docker-compose --version
+          docker-compose --version  # Verify installation
 
-      # 4. Start Docker Compose
+      # Step 4: Start Docker Compose services
+      # Start services defined in the Docker Compose configuration file
       - name: Start Docker Compose
         run: docker-compose up -d
 
-      # 5. Wait for MySQL to be Ready
+      # Step 5: Wait for MySQL to become available
+      # Continuously check MySQL container readiness; retry up to 10 times
       - name: Wait for MySQL
         run: |
           for i in {1..10}; do
@@ -49,17 +53,81 @@ jobs:
           sleep 5
           done
 
-      # 6. Installiere die Projektabhängigkeiten
-      - name: Install dependencies and build project
-        run: mvn clean install
+      # Step 6: Validate code formatting using Google Style
+      # Ensure all Java code follows the specified formatting rules
+      - name: Validate Code Format
+        run: mvn fmt:check
 
-      # 7 Führe automatisierte Tests aus
-      - name: Run tests
-        run: mvn test
+      # Step 7: Build, test, and analyze the codebase
+      # Use Maven to clean, compile, test, and analyze code coverage
+      - name: Build, Validate, Test and Analyze
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=mse-gruppe12 -Pcoverage
 
-      # 8. Tear down MySQL
-      - name: Tear down MySQL
+      # Step 8: Tear down Docker services
+      # Stop and remove Docker containers and volumes to clean up resources
+      - name: Tear down Docker Services
         run: |
           docker-compose down -v
+  frontend-lint:
+    name: Frontend - Run Lint for Angular Project
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
 
 
+      # Step 2: Set up Node.js (required for Angular)
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18' # Adjust based on your Angular project's Node.js version
+
+      # Step 3: Navigate to the Angular project folder
+      - name: Change Directory to Angular Project
+        working-directory: angular-frontend
+        run: pwd # Optional: Debugging step to confirm the current directory
+
+      # Step 4: Install dependencies for the Angular project
+      - name: Install Dependencies
+        working-directory: angular-frontend
+        run: npm install
+
+      # Step 5: Run linting on the Angular project
+      - name: Run Lint
+        working-directory: angular-frontend
+        run: npm run lint:fix
+
+      # Step 6: Check for changes made by lint:fix
+      - name: Check for Changes
+        working-directory: angular-frontend
+        run: |
+          echo "Current directory: $(pwd)"
+          git status
+          git status --porcelain
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "changes=true" >> $GITHUB_ENV
+          else
+            echo "changes=false" >> $GITHUB_ENV
+          fi
+
+      # Step 7: Commit and push changes if any
+      - name: Commit and Push Changes
+        if: env.changes == 'true'
+        working-directory: angular-frontend
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "fix: auto-fix lint errors"
+          
+          # Checkout the PR branch explicitly before pushing to ensure we are on the correct branch
+          git checkout ${{ github.head_ref }}
+          
+          # Push changes to the pull request branch
+          git push origin ${{ github.head_ref }}

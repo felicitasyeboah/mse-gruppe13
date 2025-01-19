@@ -1,6 +1,10 @@
 package de.cityfeedback.feedbackverwaltung.domain.listener;
 
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import de.cityfeedback.feedbackverwaltung.domain.events.FeedbackCreatedEvent;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +13,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import java.time.LocalDateTime;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(SpringExtension.class)
 public class FeedbackCreatedEventListenerTest {

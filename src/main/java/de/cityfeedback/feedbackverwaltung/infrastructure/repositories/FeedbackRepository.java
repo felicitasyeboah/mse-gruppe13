@@ -1,9 +1,8 @@
 package de.cityfeedback.feedbackverwaltung.infrastructure.repositories;
 
 import de.cityfeedback.feedbackverwaltung.domain.model.Feedback;
-import java.util.List;
-
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackStatus;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
