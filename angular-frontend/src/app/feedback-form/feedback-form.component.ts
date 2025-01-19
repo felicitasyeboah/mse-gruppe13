@@ -22,7 +22,7 @@ export class FeedbackFormComponent {
   };
 
   responseMessage: string | null = null; // Holds the success or error message
-  isError: boolean = false; // Indicates if the message is an error
+  isError = false; // Indicates if the message is an error
 
   constructor(private apiService: ApiService) {}
 
