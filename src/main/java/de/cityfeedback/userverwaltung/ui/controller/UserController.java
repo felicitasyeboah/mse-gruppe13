@@ -39,7 +39,7 @@ public class UserController {
     }
   }
 
-  private void validateInput(String email, String password) {
+  void validateInput(String email, String password) {
     Validation.validateEmail(email);
     Validation.validatePassword(password);
     /*if (email == null || email.isEmpty() || password == null || password.isEmpty()) {
