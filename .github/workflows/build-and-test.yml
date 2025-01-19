@@ -60,7 +60,7 @@ jobs:
 
       # Step 7: Build, test, and analyze the codebase
       # Use Maven to clean, compile, test, and analyze code coverage
-      - name: Build, Test, and Analyze
+      - name: Build, Validate, Test and Analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=mse-gruppe12 -Pcoverage
@@ -70,3 +70,35 @@ jobs:
       - name: Tear down Docker Services
         run: |
           docker-compose down -v
+  frontend-lint:
+    name: Frontend - Run Lint for Angular Project
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+
+
+      # Step 2: Set up Node.js (required for Angular)
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18' # Adjust based on your Angular project's Node.js version
+
+      # Step 3: Navigate to the Angular project folder
+      - name: Change Directory to Angular Project
+        working-directory: angular-project
+        run: pwd # Optional: Debugging step to confirm the current directory
+
+      # Step 4: Install dependencies for the Angular project
+      - name: Install Dependencies
+        working-directory: angular-project
+        run: npm install
+
+      # Step 5: Run linting on the Angular project
+      - name: Run Lint
+        working-directory: angular-project
+        run: npm run lint
