@@ -1,11 +1,11 @@
 package de.cityfeedback.userverwaltung.domain;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
 import de.cityfeedback.userverwaltung.domain.model.User;
 import de.cityfeedback.userverwaltung.domain.valueobject.Role;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class UserTest {
   @Test
