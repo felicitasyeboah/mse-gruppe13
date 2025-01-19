@@ -3,7 +3,7 @@ name: CI Pipeline for CityFeedback Project with Spring Boot and Angular
 on:
   # Trigger the workflow on pushes to specific branches
   push:
-    branches: [ "christine", "felicitas", "roxane", "katrin" ]
+    branches: [ "christine", "felicitas", "roxane", "katrin", "main" ]
   # Trigger the workflow on pull requests targeting the main branch
   pull_request:
     branches: [ "main" ]
