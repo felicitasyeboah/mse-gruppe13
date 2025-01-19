@@ -246,4 +246,26 @@ class FeedbackServiceTest {
     assertEquals(1, foundFeedbacks.size());
     assertEquals(feedback.getId(), foundFeedbacks.get(0).id());
   }
+
+  @Test
+  void findAllOpenFeedbacks_shouldReturnListOfOpenFeedbacks() {
+    List<Feedback> feedbacks = List.of(feedback);
+    when(feedbackRepository.findAllByStatusNot(FeedbackStatus.CLOSED)).thenReturn(feedbacks);
+
+    List<FeedbackDto> openFeedbacks = feedbackService.findAllOpenFeedbacks();
+
+    assertNotNull(openFeedbacks);
+    assertEquals(1, openFeedbacks.size());
+    assertEquals(feedback.getId(), openFeedbacks.get(0).id());
+  }
+
+  @Test
+  void findAllOpenFeedbacks_noOpenFeedbacks_shouldReturnEmptyList() {
+    when(feedbackRepository.findAllByStatusNot(FeedbackStatus.CLOSED)).thenReturn(List.of());
+
+    List<FeedbackDto> openFeedbacks = feedbackService.findAllOpenFeedbacks();
+
+    assertNotNull(openFeedbacks);
+    assertTrue(openFeedbacks.isEmpty());
+  }
 }
