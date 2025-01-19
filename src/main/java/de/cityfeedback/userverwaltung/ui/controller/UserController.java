@@ -96,16 +96,4 @@ public class UserController {
           }
       }
   */
-
-  private boolean isInputInvalid(String email, String password) {
-    return email == null || email.isEmpty() || password == null || password.isEmpty();
-  }
-
-  private ApiResponse createErrorResponse(String message) {
-    return new ApiResponse(message, null);
-  }
-
-  private ApiResponse createSuccessResponse(String message, UserResponse userResponse) {
-    return new ApiResponse(message, userResponse);
-  }
 }
