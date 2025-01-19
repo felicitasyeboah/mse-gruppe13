@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: CI Pipeline for CityFeedback Project with Spring Boot and Angular
 
 on:
   # Trigger the workflow on pushes to specific branches
@@ -11,8 +11,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-test-analyze:
-    # Specify the environment for the workflow runner
+  # Specify the environment for the workflow runner
+  backend-verify-test-analyse:
+    name: Backend - Verify, Test, and Analyze Java Code
     runs-on: ubuntu-latest
 
     steps:
@@ -53,14 +54,16 @@ jobs:
           done
 
       # Step 6: Validate code formatting using Google Style
-      # Ensure all code follows the specified formatting rules
+      # Ensure all Java code follows the specified formatting rules
       - name: Validate Code Format
         run: mvn fmt:check
 
       # Step 7: Build, test, and analyze the codebase
       # Use Maven to clean, compile, test, and analyze code coverage
       - name: Build, Test, and Analyze
-        run: mvn clean verify
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=mse-gruppe12 -Pcoverage
 
       # Step 8: Tear down Docker services
       # Stop and remove Docker containers and volumes to clean up resources
