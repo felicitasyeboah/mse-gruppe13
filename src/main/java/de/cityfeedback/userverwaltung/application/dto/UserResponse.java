@@ -7,6 +7,6 @@ public record UserResponse(Long userId, String userName, String email, String pa
 
   public static UserResponse fromUser(User user) {
     return new UserResponse(
-        user.getId(), user.getUserName(), user.getPassword(), user.getEmail(), user.getRole());
+        user.getId(), user.getUserName(), user.getEmail(), user.getPassword(), user.getRole());
   }
 }
