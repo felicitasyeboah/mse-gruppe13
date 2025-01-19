@@ -4,9 +4,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import de.cityfeedback.feedbackverwaltung.domain.events.FeedbackCreatedEvent;
-import java.time.LocalDateTime;
-
 import de.cityfeedback.feedbackverwaltung.domain.events.FeedbackUpdatedEvent;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
