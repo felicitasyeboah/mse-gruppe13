@@ -111,14 +111,4 @@ public class FeedbackController {
           .body(new ApiResponse("Error retrieving open feedbacks. - " + e.getMessage(), null));
     }
   }
-
-  /*@GetMapping("/{id}")
-  public ResponseEntity<Feedback> getFeedbackById(@PathVariable Long id) {
-     Optional<Feedback> feedback = feedbackService.findById(id);
-    if (feedback.isPresent()) {
-      return ResponseEntity.ok(feedback.get());
-    } else {
-      return ResponseEntity.notFound().build();
-    }
-  }*/
 }
