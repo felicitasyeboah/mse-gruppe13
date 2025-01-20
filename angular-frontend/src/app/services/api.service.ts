@@ -21,6 +21,14 @@ export class ApiService {
     return this.http.get<any>(userFeedbackUrl);
   }
   /**
+   * Fetches feedbacks for a specific user.
+   * @returns An Observable of the feedbacks.
+   */
+  fetchOpenFeedbacks(): Observable<any> {
+    const userFeedbackUrl = `${this.feedbackEndpoint}/all-open`;
+    return this.http.get<any>(userFeedbackUrl);
+  }
+  /**
    * Creates a new feedback.
    * @param feedback - The feedback request object.
    * @returns An Observable of the API response.

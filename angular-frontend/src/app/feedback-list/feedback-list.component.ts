@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
   styleUrl: './feedback-list.component.css',
 })
 export class FeedbackListComponent implements OnInit {
-  data: any; // to store the fetched data
+  response: any; // to store the fetched data
   errorMessage = ''; // to store any error message
 
   constructor(private apiService: ApiService, private router: Router) {}
@@ -20,8 +20,8 @@ export class FeedbackListComponent implements OnInit {
     const userId = 1; // TODO: get the user id from the logged in user
     this.apiService.fetchUserFeedbacks(userId).subscribe(
       (response) => {
-        this.data = response; // Handle the successful response
-        console.log(this.data);
+        this.response = response; // Handle the successful response
+        console.log(this.response);
       },
       (error) => {
         this.errorMessage = error.message; // Handle the error

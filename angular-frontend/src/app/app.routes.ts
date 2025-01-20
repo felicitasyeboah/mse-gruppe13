@@ -11,7 +11,7 @@ export const routes: Routes = [
   { path: 'feedback-form', component: FeedbackFormComponent },
   { path: 'feedback-list', component: FeedbackListComponent },
   { path: 'feedback-example', component: FeedbackExampleComponent },
-  { path: 'open-feedback', component: OpenFeedbackComponent },
+  { path: 'feedback/all-open', component: OpenFeedbackComponent },
   { path: 'feedback/:id', component: FeedbackDetailComponent},
   { path: 'edit-feedback/:id', component: FeedbackEditComponent},
   { path: '**', redirectTo: '/feedback-list' },

@@ -1,8 +1,8 @@
 <section id="beschwerden-status">
-    <h1>Ihr Feedback</h1>
-  <div *ngIf="data">
-    <!-- <pre>{{ data | json }}</pre>   Display the fetched data -->
-    <table *ngIf="data && data.length > 0" class="feedback-table">
+    <h1>Ihr Feedback im Überblick</h1>
+  <div *ngIf="response">
+     <!--<pre>{{ data.data | json }}</pre>   Display the fetched data -->
+    <table *ngIf="response.data && response.data.length > 0" class="feedback-table">
       <thead>
       <tr>
         <th>ID</th>
@@ -13,7 +13,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let feedback of data" (click)="goToDetail(feedback.id)" class="clickable-row">
+      <tr *ngFor="let feedback of response.data" (click)="goToDetail(feedback.id)" class="clickable-row">
         <td>{{ feedback.id }}</td>
         <td>{{ feedback.title }}</td>
         <td>{{ feedback.category }}</td>

@@ -13,7 +13,7 @@ import {Router} from '@angular/router';
   styleUrl: './open-feedback.component.css'
 })
 export class OpenFeedbackComponent implements OnInit {
-  data: any; // to store the fetched data
+  response: any; // to store the fetched data
   errorMessage = ''; // to store any error message
 
   constructor(private apiService: ApiService, private router: Router) {}
@@ -22,10 +22,10 @@ export class OpenFeedbackComponent implements OnInit {
     // Call the service method to fetch data
     const userId = 1; // TODO: get the user id from the logged in user
     // TODO: If User Role = Admin, then ...
-    this.apiService.fetchUserFeedbacks(userId).subscribe(
+    this.apiService.fetchOpenFeedbacks().subscribe(
       (response) => {
-        this.data = response; // Handle the successful response
-        console.log(this.data);
+        this.response = response; // Handle the successful response
+        console.log(this.response);
       },
       (error) => {
         this.errorMessage = error.message; // Handle the error

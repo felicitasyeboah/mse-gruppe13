@@ -1,8 +1,8 @@
 <section id="offene-anliegen">
   <h1>Offenes Feedback</h1>
-  <div *ngIf="data">
+  <div *ngIf="response">
     <!-- <pre>{{ data | json }}</pre>   Display the fetched data -->
-    <table *ngIf="data && data.length > 0" class="feedback-table">
+    <table *ngIf="response.data && response.data.length > 0" class="feedback-table">
       <thead>
       <tr>
         <th>Bearbeiten</th>
@@ -14,7 +14,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let feedback of data"  class="clickable-row">
+      <tr *ngFor="let feedback of response.data" class="clickable-row">
         <td class="icon" (click)="goToEdit(feedback.id)"><figure><img src="/icon_edit.png" alt="icon bearbeiten"> </figure> </td>
         <td>{{ feedback.id }}</td>
         <td>{{ feedback.title }}</td>
