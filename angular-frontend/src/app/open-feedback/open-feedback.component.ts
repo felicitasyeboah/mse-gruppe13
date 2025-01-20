@@ -33,7 +33,7 @@ export class OpenFeedbackComponent implements OnInit {
     );
   }
   goToEdit(id: string): void {
-    this.router.navigate(['/edit-feedback', id]);
+    this.router.navigate(['/feedback', id]);
   }
 
 }

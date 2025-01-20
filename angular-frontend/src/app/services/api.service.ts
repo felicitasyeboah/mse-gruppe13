@@ -48,6 +48,17 @@ export class ApiService {
     const detailFeedbackUrl = `${this.feedbackEndpoint}/feedback/${feedbackId}`;
     return this.http.get<any>(detailFeedbackUrl);
   }
+/**
+ * Fetches a specific feedback from a specific user.
+ * @returns An Observable of the feedbacks.
+ * @param feedback
+ */
+  updateFeedbackById(feedback: UpdateRequest): Observable<any> {
+  const headers = new HttpHeaders({'Content-Type': 'application/json'});
+  return this.http.post<ApiResponse>(this.feedbackEndpoint, feedback, {
+    headers,
+    });
+  }
 }
 
 /**
@@ -58,6 +69,16 @@ export interface FeedbackRequest {
   content: string;
   citizenId: number;
   category: string;
+}
+
+/**
+ * Interface for UpdateRequest matching the server-side FeedbackRequest record.
+ */
+export interface UpdateRequest {
+  comment: string;
+  userId: number;
+  userRole: string;
+  updateType: string;
 }
 
 /**

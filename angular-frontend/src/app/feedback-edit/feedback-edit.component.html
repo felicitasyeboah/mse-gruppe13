@@ -1,1 +1,18 @@
-<p>feedback-edit works!</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Feedbackübersicht</title>
+</head>
+<body>
+<p> Test :) </p>
+<div *ngIf="response">
+  <pre>{{ response.data | json }}</pre>
+  <pre>{{ response.data | json }}</pre>
+  <h1>{{ response.data.title }}</h1>
+  <p>Kategorie: {{ response.data.category }}</p>
+  <p>Inhalt: {{ response.data.content }}</p>
+  <p>Status: {{ response.data.status }}</p>
+</div>
+</body>
+</html>

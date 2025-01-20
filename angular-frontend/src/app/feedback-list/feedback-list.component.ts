@@ -32,6 +32,6 @@ export class FeedbackListComponent implements OnInit {
 
 
   goToDetail(id: string): void {
-    this.router.navigate(['/feedback', id]);
+    this.router.navigate(['/feedback/detail', id]);
   }
 }

@@ -5,12 +5,13 @@
   <title>Feedbackübersicht</title>
 </head>
 <body>
-<p> Test :)</p>
-<div *ngIf="feedback">
-  <h1>{{ feedback.title }}</h1>
-  <p>Kategorie: {{ feedback.category }}</p>
-  <p>Inhalt: {{ feedback.content }}</p>
-  <p>Status: {{ feedback.status }}</p>
+<p> Test :) </p>
+<div *ngIf="response">
+  <pre>{{ response.data | json }}</pre>
+  <h1>{{ response.data.title }}</h1>
+  <p>Kategorie: {{ response.data.category }}</p>
+  <p>Inhalt: {{ response.data.content }}</p>
+  <p>Status: {{ response.data.status }}</p>
 </div>
 </body>
 </html>
