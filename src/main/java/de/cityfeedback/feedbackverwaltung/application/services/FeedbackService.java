@@ -2,15 +2,12 @@ package de.cityfeedback.feedbackverwaltung.application.services;
 
 import de.cityfeedback.feedbackverwaltung.application.dto.FeedbackDto;
 import de.cityfeedback.feedbackverwaltung.domain.events.FeedbackCreatedEvent;
+import de.cityfeedback.feedbackverwaltung.domain.events.FeedbackUpdatedEvent;
 import de.cityfeedback.feedbackverwaltung.domain.model.Feedback;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.*;
 import de.cityfeedback.feedbackverwaltung.infrastructure.repositories.FeedbackRepository;
 import jakarta.persistence.EntityNotFoundException;
-
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -103,6 +100,12 @@ public class FeedbackService {
       default:
         throw new IllegalArgumentException("Invalid update type");
     }
+    // Create the domain event
+    FeedbackUpdatedEvent event =
+        new FeedbackUpdatedEvent(
+            feedback.getId(), feedback.getUpdatedAt(), feedback.getStatus().getStatusName());
+    // Publish the event
+    eventPublisher.publishEvent(event);
     return feedbackRepository.save(feedback);
   }
 
@@ -110,5 +113,11 @@ public class FeedbackService {
     // find all feedbacks that are not in status closed
     List<Feedback> feedbacks = feedbackRepository.findAllByStatusNot(FeedbackStatus.CLOSED);
     return feedbacks.stream().map(FeedbackDto::fromFeedback).toList();
+  }
+
+  public Feedback getFeedbackById(Long feedbackId) {
+    return feedbackRepository
+        .findById(feedbackId)
+        .orElseThrow(() -> new EntityNotFoundException("Feedback not found"));
   }
 }
