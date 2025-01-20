@@ -14,5 +14,40 @@
   <p>Inhalt: {{ response.data.content }}</p>
   <p>Status: {{ response.data.status }}</p>
 </div>
+<form (ngSubmit)="updateFeedback()" #feedbackForm="ngForm">
+  <!-- Category Dropdown -->
+  <label for="category">Kategorie:</label>
+  <select id="category" name="category" [(ngModel)]="response.category">
+    <option value="" disabled selected>Bitte wählen</option>
+    <option value="Anfrage">Anfrage</option>
+    <option value="Beschwerde">Beschwerde</option>
+    <option value="Sonstiges">Sonstiges</option>
+  </select>
+
+  <!-- Title Input -->
+  <label for="title">Titel des Feedbacks:</label>
+  <input
+    type="text"
+    id="title"
+    name="title"
+    [(ngModel)]="response.title"
+    placeholder="Titel eingeben"
+  />
+
+  <!-- Feedback Content -->
+  <label for="content">Feedback:</label>
+  <textarea
+    id="content"
+    name="content"
+    [(ngModel)]="response.content"
+    rows="6"
+    placeholder="Beschwerde hier eingeben..."
+  ></textarea>
+
+  <!-- Submit Button -->
+  <button type="submit">Absenden</button>
+</form>
+<!-- Submit Button -->
+<button type="submit">Absenden</button>
 </body>
 </html>

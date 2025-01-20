@@ -53,7 +53,7 @@ export class ApiService {
  * @returns An Observable of the feedbacks.
  * @param feedback
  */
-  updateFeedbackById(feedback: UpdateRequest): Observable<any> {
+  updateFeedback(feedback: UpdateRequest): Observable<any> {
   const headers = new HttpHeaders({'Content-Type': 'application/json'});
   return this.http.post<ApiResponse>(this.feedbackEndpoint, feedback, {
     headers,
