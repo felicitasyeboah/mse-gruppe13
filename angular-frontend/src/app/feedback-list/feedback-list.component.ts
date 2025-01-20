@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../services/api.service';
 import { CommonModule } from '@angular/common';
 
@@ -8,9 +8,9 @@ import { CommonModule } from '@angular/common';
   templateUrl: './feedback-list.component.html',
   styleUrl: './feedback-list.component.css',
 })
-export class FeedbackListComponent {
+export class FeedbackListComponent implements OnInit {
   data: any; // to store the fetched data
-  errorMessage: string = ''; // to store any error message
+  errorMessage = ''; // to store any error message
 
   constructor(private apiService: ApiService) {}
 

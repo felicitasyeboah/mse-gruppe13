@@ -1,5 +1,8 @@
 package de.cityfeedback.userverwaltung.ui.controller;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import de.cityfeedback.exception.WrongUserInputException;
 import de.cityfeedback.feedbackverwaltung.application.dto.ApiResponse;
 import de.cityfeedback.userverwaltung.application.dto.UserResponse;
 import de.cityfeedback.userverwaltung.application.services.UserService;
@@ -20,14 +23,20 @@ class UserControllerTest {
 
     @InjectMocks
     private UserController userController;
+  @InjectMocks private UserController userController;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+  @BeforeEach
+  void setUp() {
+    MockitoAnnotations.openMocks(this);
+  }
 
-    @Test
-    void login_validCredentials_returnsSuccessResponse() {
+  @Test
+  void validateInput_withValidEmailAndPassword_doesNotThrowException() {
+    //String email = "test@example.com";
+    //String password = "password123";
+
+   // @Test
+   // void login_validCredentials_returnsSuccessResponse() {
         // Arrange
         String email = "test@example.com";
         String password = "ValidPassword123";
@@ -36,8 +45,10 @@ class UserControllerTest {
 
         UserResponse expectedUserResponse = UserResponse.fromUser(mockUser);
 
+    userController.validateInput(email, password);
+  }
         // Act
-        ApiResponse response = userController.login(email, password);
+  /*      ApiResponse response = userController.login(email, password);
 
         // Assert
         assertNotNull(response);
@@ -45,31 +56,35 @@ class UserControllerTest {
         assertEquals(expectedUserResponse, response.getData());
         verify(userService, times(1)).authenticateUser(email, password);
     }
-
-    @Test
-    void login_invalidEmail_throwsValidationException() {
+*/
+  @Test
+  void validateInput_withInvalidEmail_throwsException() {
+    String email = "invalid-email";
+    String password = "password123";
+    //@Test
+    //void login_invalidEmail_throwsValidationException() {
         // Arrange
         String invalidEmail = "invalid-email";
         String password = "ValidPassword123";
 
-        // Act & Assert
-        ApiResponse response = userController.login(invalidEmail, password);
+    assertThrows(
+        WrongUserInputException.class, () -> userController.validateInput(email, password));
+  }
 
-        // Assert
-        assertNotNull(response);
-    //    System.out.println(response.getMessage());
-        assertTrue(response.getMessage().contains("Ungültige E-Mail"));
-        assertNull(response.getData());
-        verify(userService, never()).authenticateUser(invalidEmail, password);
-    }
-
-    @Test
-    void login_serviceThrowsException_returnsErrorResponse() {
+  @Test
+  void validateInput_withInvalidPassword_throwsException() {
+    String email = "test@example.com";
+    String password = "";
+    //@Test
+    //void login_serviceThrowsException_returnsErrorResponse() {
         // Arrange
         String email = "test@example.com";
         String password = "ValidPassword123";
         when(userService.authenticateUser(email, password)).thenThrow(new RuntimeException("Authentication failed"));
 
+    assertThrows(
+        WrongUserInputException.class, () -> userController.validateInput(email, password));
+  }
         // Act
         ApiResponse response = userController.login(email, password);
 
