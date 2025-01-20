@@ -7,11 +7,9 @@ import de.cityfeedback.feedbackverwaltung.application.services.FeedbackService;
 import de.cityfeedback.feedbackverwaltung.domain.model.Feedback;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackCategory;
 import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 
 @RestController
 @RequestMapping("/feedback")
@@ -22,7 +20,6 @@ public class FeedbackController {
   public FeedbackController(FeedbackService feedbackService) {
     this.feedbackService = feedbackService;
   }
-
 
   @PostMapping
   public ResponseEntity<ApiResponse> createFeedback(@RequestBody FeedbackDto request) {
