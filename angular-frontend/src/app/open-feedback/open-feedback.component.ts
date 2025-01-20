@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {NgForOf, NgIf} from '@angular/common';
 import {ApiService} from '../services/api.service';
 import {Router} from '@angular/router';
@@ -12,9 +12,9 @@ import {Router} from '@angular/router';
   templateUrl: './open-feedback.component.html',
   styleUrl: './open-feedback.component.css'
 })
-export class OpenFeedbackComponent {
+export class OpenFeedbackComponent implements OnInit {
   data: any; // to store the fetched data
-  errorMessage: string = ''; // to store any error message
+  errorMessage = ''; // to store any error message
 
   constructor(private apiService: ApiService, private router: Router) {}
 
