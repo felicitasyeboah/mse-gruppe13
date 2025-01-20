@@ -44,7 +44,7 @@ export class ApiService {
    * @param feedbackId - The ID of the user whose feedbacks are being retrieved.
    * @returns An Observable of the feedbacks.
    */
-  getFeedbackById(feedbackId: string): Observable<any> {
+  getFeedbackById(feedbackId: string | null): Observable<any> {
     const detailFeedbackUrl = `${this.feedbackEndpoint}/feedback/${feedbackId}`;
     return this.http.get<any>(detailFeedbackUrl);
   }

@@ -25,6 +25,7 @@ export class FeedbackEditComponent implements OnInit {
   };
   responseMessage: string | null = null; // Holds the success or error message
   isError = false; // Indicates if the message is an error
+  itemId: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -49,14 +50,14 @@ export class FeedbackEditComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.route.paramMap.subscribe(paramMap => {
+      this.itemId = paramMap.get('id'); // Extrahiert den Wert von :id
+      if (this.itemId == null) {
+        return console.error('Der Wert für :id ist kein gültiger Wert.');
+      }
 
-    const id = this.route.snapshot.paramMap.get('id');
-    this.isError = false;
-
-    if (id) {
-      this.apiService.getFeedbackById(id).subscribe((data) => {
-        this.response = data;
-      });
-    }
+      this.itemId = null;
+    });
+    this.response = this.apiService.getFeedbackById(this.itemId);
   }
 }

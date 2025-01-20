@@ -8,31 +8,29 @@
 <p> Test :) </p>
 <div *ngIf="response">
   <pre>{{ response.data | json }}</pre>
-  <pre>{{ response.data | json }}</pre>
   <h1>{{ response.data.title }}</h1>
   <p>Kategorie: {{ response.data.category }}</p>
   <p>Inhalt: {{ response.data.content }}</p>
   <p>Status: {{ response.data.status }}</p>
 </div>
 <form (ngSubmit)="updateFeedback()" #feedbackForm="ngForm">
-  <!-- Category Dropdown -->
+  <!-- Category Dropdown
   <label for="category">Kategorie:</label>
   <select id="category" name="category" [(ngModel)]="response.category">
     <option value="" disabled selected>Bitte wählen</option>
     <option value="Anfrage">Anfrage</option>
     <option value="Beschwerde">Beschwerde</option>
     <option value="Sonstiges">Sonstiges</option>
-  </select>
+  </select>-->
 
-  <!-- Title Input -->
-  <label for="title">Titel des Feedbacks:</label>
-  <input
-    type="text"
-    id="title"
-    name="title"
-    [(ngModel)]="response.title"
-    placeholder="Titel eingeben"
-  />
+  <!-- Comment Input -->
+  <label for="comment">Antwort zum Feedback:</label>
+  <textarea
+    id="comment"
+    name="comment"
+    rows="6"
+    [(ngModel)]="feedback.comment"
+    placeholder="Kommentar eingeben"></textarea>
 
   <!-- Feedback Content -->
   <label for="content">Feedback:</label>
