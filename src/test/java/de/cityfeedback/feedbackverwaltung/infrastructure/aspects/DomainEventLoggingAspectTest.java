@@ -1,13 +1,13 @@
 package de.cityfeedback.feedbackverwaltung.infrastructure.aspects;
 
+import static org.mockito.Mockito.*;
+
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Aspect;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
-
-import static org.mockito.Mockito.*;
 
 @Aspect
 class DomainEventLoggingAspectTest {

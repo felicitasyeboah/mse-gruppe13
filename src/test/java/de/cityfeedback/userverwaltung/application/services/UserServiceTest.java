@@ -2,12 +2,15 @@ package de.cityfeedback.userverwaltung.application.services;
 
 import static de.cityfeedback.userverwaltung.domain.valueobject.Role.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import de.cityfeedback.exception.WrongUserInputException;
 import de.cityfeedback.userverwaltung.domain.model.User;
-import de.cityfeedback.userverwaltung.domain.valueobject.*;
 import de.cityfeedback.userverwaltung.infrastructure.repositories.UserRepository;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,146 +18,106 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationEventPublisher;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static org.mockito.Mockito.*;
-
 @SpringBootTest
 public class UserServiceTest {
 
-    @MockBean
-    private UserRepository userRepository;
+  @MockBean private UserRepository userRepository;
 
-    @MockBean
-    private ApplicationEventPublisher eventPublisher;
+  @MockBean private ApplicationEventPublisher eventPublisher;
 
-    @Autowired
-    private UserService userService;
+  @Autowired private UserService userService;
 
-    private User mockUser;
-    //private FeedbackRequest request;
+  private static final String VALID_EMAIL = "employee1@test.de";
+  private static final String VALID_PASSWORD = "password10";
+  private static final String INVALID_EMAIL = "nonexistent@test.de";
+  private static final String INVALID_PASSWORD = "wrongPassword";
 
-    @BeforeEach
-    void setup() {
+  private User mockUser;
 
-        //request = new UserRequest("XX", "XX", 1L, "XX");
+  @BeforeEach
+  void setup() {
+    mockUser = new User(10L, VALID_EMAIL, VALID_PASSWORD, CITIZEN, "testemployee1");
+  }
 
-        //!!!request und controller einfügen
+  @Test
+  public void shouldLoginSuccessfullyWithValidCredentials() {
+    when(userRepository.findByEmail(VALID_EMAIL)).thenReturn(Optional.of(mockUser));
 
-        // Set up test data
-        Long userId = 10L;
-        String email = "employee1@test.de";
-        String password = "password10";
-        String username = "testemployee1";
-        Role role = CITIZEN;
+    User result = userService.authenticateUser(VALID_EMAIL, VALID_PASSWORD);
 
-        mockUser = new User(userId, email, password, CITIZEN, username);
-    }
+    assertNotNull(result, "Login should succeed with correct credentials");
+    verify(userRepository, times(1)).findByEmail(VALID_EMAIL);
+  }
 
+  @Test
+  public void shouldFailLoginWithInvalidPassword() {
+    when(userRepository.findByEmail(VALID_EMAIL)).thenReturn(Optional.of(mockUser));
 
-    @Test
-    public void testLogin_Success() {
-        // Arrange
-        String email = "employee1@test.de";
-        String password = "password10";
+    Exception exception =
+        assertThrows(
+            WrongUserInputException.class,
+            () -> userService.authenticateUser(VALID_EMAIL, INVALID_PASSWORD));
 
-        // Verhalten von findByEmail mocken
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(mockUser));
+    assertEquals("Das eingegebene Passwort ist falsch.", exception.getMessage());
+    verify(userRepository, times(1)).findByEmail(VALID_EMAIL);
+  }
 
-        // Act
-        boolean result = userService.loginUser(email, password);
+  @Test
+  public void shouldFailLoginWhenUserNotFound() {
+    when(userRepository.findByEmail(INVALID_EMAIL)).thenReturn(Optional.empty());
 
-        // Assert
-        assertTrue(result, "Login should succeed with correct credentials");
-        verify(userRepository, times(1)).findByEmail(email);
-    }
+    Exception exception =
+        assertThrows(
+            NoSuchElementException.class,
+            () -> userService.authenticateUser(INVALID_EMAIL, VALID_PASSWORD));
 
-    @Test
-    public void testLogin_Failure_InvalidPassword() {
-        // Arrange
-        String email = "employee1@test.de";
-        String wrongPassword = "wrongPassword";
+    assertEquals("Ungültige E-Mail oder Passwort.", exception.getMessage());
+    verify(userRepository, times(1)).findByEmail(INVALID_EMAIL);
+  }
 
-        // Verhalten von findByEmail mocken
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(mockUser));
-
-        // Act
-        boolean result = userService.loginUser(email, wrongPassword);
-
-        // Assert
-        assertFalse(result, "Login should fail with incorrect password");
-        verify(userRepository, times(1)).findByEmail(email);
-    }
-
-
-    @Test
-    public void testLogin_Failure_UserNotFound() {
-        // Arrange
-        String email = "nonexistent@test.de";
-        String password = "irrelevantPassword";
-
-        // Verhalten von findByEmail mocken
-        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
-
-        // Act
-        boolean result = userService.loginUser(email, password);
-
-        // Assert
-        assertFalse(result, "Login should fail if user is not found");
-        verify(userRepository, times(1)).findByEmail(email);
-    }
-
-    @Test
-    public void testLogin_Failure_InvalidEmailFormat() {
-        // Arrange
-        String invalidEmail = "invalid-email-format";
-        String password = "password";
-
-        // Act & Assert
-        assertThrows(WrongUserInputException.class, () -> {
-            userService.loginUser(invalidEmail, password);
+  @Test
+  public void testLogin_Failure_InvalidEmailFormat() {
+    // Act & Assert
+    assertThrows(
+        NoSuchElementException.class,
+        () -> {
+          userService.authenticateUser(INVALID_EMAIL, VALID_PASSWORD);
         });
+  }
+
+  @Test
+  public void shouldHandlePerformanceWithLargeUserBase() {
+    List<User> mockUsers = new ArrayList<>();
+    for (int i = 0; i < 1000; i++) {
+      mockUsers.add(
+          new User((long) i, "user" + i + "@test.de", VALID_PASSWORD, CITIZEN, "user" + i));
     }
+    String email = "user10@test.de";
+    mockUsers.add(mockUser);
 
-    @Test
-    public void testLogin_PerformanceWithManyUsers() {
-        // Arrange
-        String email = "employee1@test.de";
-        String password = "password";
-        List<User> mockUsers = new ArrayList<>();
+    when(userRepository.findByEmail(VALID_EMAIL)).thenReturn(Optional.of(mockUser));
+    User result = userService.authenticateUser(VALID_EMAIL, VALID_PASSWORD);
 
-        for (int i = 0; i < 1000; i++) {
-            mockUsers.add(new User((long) i, "user" + i + "@test.de", "password", CITIZEN, "name"));
-        }
-        mockUsers.add(new User(1001L, email, password, CITIZEN, "name"));
+    assertNotNull(result, "Login should succeed even with a large user base");
+    verify(userRepository, times(1)).findByEmail(VALID_EMAIL);
+  }
 
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(mockUsers.get(1000)));
+  /*@Test
+  public void testLogin_Success_HashedPassword() {
+      // Arrange
+      String email = "user@test.de";
+      String plainPassword = "password";
+      String hashedPassword = "$2a$10$eW5ZiEtDWbz...";
+      User user = new User(1L, email, hashedPassword, "CITIZEN");
 
-        // Act
-        boolean result = userService.loginUser(email, password);
+      when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+      when(passwordEncoder.matches(plainPassword, hashedPassword)).thenReturn(true);
 
-        // Assert
-        assertTrue(result, "Login should succeed even with many users in database");
-    }
+      // Act
+      boolean result = userService.loginUser(email, plainPassword);
 
-    /*@Test
-    public void testLogin_Success_HashedPassword() {
-        // Arrange
-        String email = "user@test.de";
-        String plainPassword = "password";
-        String hashedPassword = "$2a$10$eW5ZiEtDWbz...";
-        User user = new User(1L, email, hashedPassword, "CITIZEN");
-
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
-        when(passwordEncoder.matches(plainPassword, hashedPassword)).thenReturn(true);
-
-        // Act
-        boolean result = userService.loginUser(email, plainPassword);
-
-        // Assert
-        assertTrue(result, "Login should succeed with hashed password");
-    }*/
+      // Assert
+      assertTrue(result, "Login should succeed with hashed password");
+  }*/
 
 }

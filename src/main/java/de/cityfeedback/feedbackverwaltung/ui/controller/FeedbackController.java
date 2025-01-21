@@ -1,13 +1,11 @@
 package de.cityfeedback.feedbackverwaltung.ui.controller;
 
 import de.cityfeedback.feedbackverwaltung.application.dto.ApiResponse;
-import de.cityfeedback.feedbackverwaltung.application.dto.FeedbackCreateRequest;
-import de.cityfeedback.feedbackverwaltung.application.dto.FeedbackResponse;
+import de.cityfeedback.feedbackverwaltung.application.dto.FeedbackDto;
 import de.cityfeedback.feedbackverwaltung.application.dto.FeedbackUpdateRequest;
 import de.cityfeedback.feedbackverwaltung.application.services.FeedbackService;
 import de.cityfeedback.feedbackverwaltung.domain.model.Feedback;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackCategory;
-import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackStatus;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +22,7 @@ public class FeedbackController {
   }
 
   @PostMapping
-  public ResponseEntity<ApiResponse> createFeedback(@RequestBody FeedbackCreateRequest request) {
+  public ResponseEntity<ApiResponse> createFeedback(@RequestBody FeedbackDto request) {
     try {
       String title = request.title();
       String content = request.content();
@@ -33,13 +31,13 @@ public class FeedbackController {
 
       Feedback createdFeedback =
           feedbackService.createFeedback(title, content, citizenId, category);
-      FeedbackResponse feedbackResponse = FeedbackResponse.fromFeedback(createdFeedback);
+      FeedbackDto feedbackDTO = FeedbackDto.fromFeedback(createdFeedback);
 
       // Create the response message
       String message = "Feedback created successfully with ID: " + createdFeedback.getId();
 
       // Return response to the user
-      ApiResponse response = new ApiResponse(message, feedbackResponse);
+      ApiResponse response = new ApiResponse(message, feedbackDTO);
       return new ResponseEntity<>(response, HttpStatus.CREATED);
     } catch (Exception e) {
       ApiResponse response = new ApiResponse("Error creating feedback. - " + e.getMessage(), null);
@@ -54,8 +52,14 @@ public class FeedbackController {
    * @return List<Feedback>
    */
   @GetMapping("/user/{citizenId}")
-  public List<Feedback> getFeedbacksByUserId(@PathVariable Long citizenId) {
-    return feedbackService.findAllFeedbacksForCitizen(citizenId);
+  public ResponseEntity<ApiResponse> getFeedbacksByUserId(@PathVariable Long citizenId) {
+    try {
+      List<FeedbackDto> feedbacks = feedbackService.findAllFeedbacksForCitizen(citizenId);
+      return ResponseEntity.ok(new ApiResponse(null, feedbacks));
+    } catch (Exception e) {
+      return ResponseEntity.badRequest()
+          .body(new ApiResponse("Error retrieving feedbacks. - " + e.getMessage(), null));
+    }
   }
 
   @PatchMapping("/{feedbackId}")
@@ -69,10 +73,10 @@ public class FeedbackController {
               request.userId(),
               request.userRole(),
               request.updateType());
-      FeedbackResponse feedbackResponse = FeedbackResponse.fromFeedback(updatedFeedback);
+      FeedbackDto feedbackDTO = FeedbackDto.fromFeedback(updatedFeedback);
 
       // Create the response with message
-      ApiResponse response = new ApiResponse("Feedback updated successfully", feedbackResponse);
+      ApiResponse response = new ApiResponse("Feedback updated successfully", feedbackDTO);
 
       return new ResponseEntity<>(response, HttpStatus.OK);
     } catch (Exception e) {
@@ -82,8 +86,26 @@ public class FeedbackController {
     }
   }
 
+  @GetMapping("/{feedbackId}")
+  public ResponseEntity<ApiResponse> getFeedbackById(@PathVariable Long feedbackId) {
+    try {
+      Feedback feedback = feedbackService.getFeedbackById(feedbackId);
+      FeedbackDto feedbackDto = FeedbackDto.fromFeedback(feedback);
+      return ResponseEntity.ok(new ApiResponse(null, feedbackDto));
+    } catch (Exception e) {
+      return ResponseEntity.badRequest()
+          .body(new ApiResponse("Error retrieving feedback. - " + e.getMessage(), null));
+    }
+  }
+
   @GetMapping("/all-open")
-  public List<Feedback> getOpenFeedbacks() {
-    return feedbackService.findAllOpenFeedbacks();
+  public ResponseEntity<ApiResponse> getOpenFeedbacks() {
+    try {
+      List<FeedbackDto> openFeedbacks = feedbackService.findAllOpenFeedbacks();
+      return ResponseEntity.ok(new ApiResponse(null, openFeedbacks));
+    } catch (Exception e) {
+      return ResponseEntity.badRequest()
+          .body(new ApiResponse("Error retrieving open feedbacks. - " + e.getMessage(), null));
+    }
   }
 }

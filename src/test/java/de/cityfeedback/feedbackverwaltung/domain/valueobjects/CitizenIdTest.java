@@ -1,8 +1,9 @@
 package de.cityfeedback.feedbackverwaltung.domain.valueobjects;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.CitizenId;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 
 class CitizenIdTest {
   @Test

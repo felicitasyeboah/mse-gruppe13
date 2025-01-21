@@ -1,14 +1,13 @@
 package de.cityfeedback.feedbackverwaltung.application.dto;
 
 import de.cityfeedback.feedbackverwaltung.domain.model.Feedback;
-
 import java.time.LocalDateTime;
 
-public record FeedbackResponse(
+public record FeedbackDto(
     Long id,
     String title,
     String content,
-    String categoryName,
+    String category,
     Long citizenId,
     Long employeeId,
     String comment,
@@ -16,8 +15,18 @@ public record FeedbackResponse(
     LocalDateTime createdAt,
     LocalDateTime updatedAt) {
 
-  public static FeedbackResponse fromFeedback(Feedback feedback) {
-    return new FeedbackResponse(
+  public FeedbackDto(
+      String title,
+      String content,
+      Long citizenId,
+      String comment,
+      String categoryName,
+      Long employeeId) {
+    this(null, title, content, categoryName, citizenId, employeeId, comment, null, null, null);
+  }
+
+  public static FeedbackDto fromFeedback(Feedback feedback) {
+    return new FeedbackDto(
         feedback.getId(),
         feedback.getTitle(),
         feedback.getContent(),
