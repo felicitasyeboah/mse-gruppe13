@@ -4,6 +4,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import de.cityfeedback.feedbackverwaltung.domain.events.FeedbackCreatedEvent;
+import de.cityfeedback.feedbackverwaltung.domain.events.FeedbackUpdatedEvent;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,17 +16,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
-public class FeedbackCreatedEventListenerTest {
+class FeedbackEventListenerTest {
 
   @Autowired private ApplicationEventPublisher eventPublisher;
 
-  @MockBean private FeedbackCreatedEventListener eventListener;
+  @MockBean private FeedbackEventListener eventListener;
 
   @Configuration
   static class TestConfig {
     @Bean
-    public FeedbackCreatedEventListener feedbackCreatedEventListener() {
-      return new FeedbackCreatedEventListener();
+    public FeedbackEventListener feedbackCreatedEventListener() {
+      return new FeedbackEventListener();
     }
   }
 
@@ -47,5 +48,17 @@ public class FeedbackCreatedEventListenerTest {
 
     // Assert: Verify that the event listener's method was called once with the event
     verify(eventListener, times(1)).handleFeedbackCreatedEvent(event);
+  }
+
+  @Test
+  void handleFeedbackUpdatedEvent_ShouldBeCalled_WhenEventIsPublished() {
+    // Arrange: Create a sample FeedbackUpdatedEvent
+    FeedbackUpdatedEvent event = new FeedbackUpdatedEvent(1L, LocalDateTime.now(), "IN_PROGRESS");
+
+    // Act: Publish the event
+    eventPublisher.publishEvent(event);
+
+    // Assert: Verify that the event listener's method was called once with the event
+    verify(eventListener, times(1)).handleFeedbackUpdatedEvent(event);
   }
 }
