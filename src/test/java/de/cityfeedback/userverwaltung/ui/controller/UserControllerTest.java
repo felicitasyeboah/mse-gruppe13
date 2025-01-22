@@ -114,12 +114,25 @@ class UserControllerTest {
     verify(userService, times(1)).findUserById(userId);
   }
 
-  // Act
-  /*     ApiResponse response = userController.login(email, password);
+  @Test
+  void testGetUserById_UserNotFound() {
+    // Arrange
+    Long userId = 1L;
 
-      // Assert
-      assertNotNull(response);
-      assertTrue(response.getMessage().contains("Fehler beim Login"));
-      assertNull(response.getData());
-  }*/
+    when(userService.findUserById(userId)).thenReturn(null);
+
+    // Act
+    ApiResponse response = userController.getUserById(userId);
+
+    // Assert
+    //assertEquals(404, response.getStatusCodeValue());
+    //ApiResponse apiResponse = response.getBody();
+    assertNotNull(response);
+    assertEquals("Benutzer nicht gefunden", response.getMessage());
+    assertNull(response.getData());
+
+    verify(userService, times(1)).findUserById(userId);
+  }
+
+
 }

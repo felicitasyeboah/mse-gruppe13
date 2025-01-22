@@ -38,6 +38,9 @@ public class UserController {
     try {
       // Benutzer anhand der ID abrufen
       User user = userService.findUserById(userId);
+      if (user == null) {
+        return new ApiResponse("Benutzer nicht gefunden", null);
+      }
       UserResponse userResponse = UserResponse.fromUser(user);
       return new ApiResponse("Benutzer gefunden.", userResponse);
     } catch (Exception e) {
