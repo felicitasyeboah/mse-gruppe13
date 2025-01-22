@@ -20,13 +20,7 @@ public class UserService {
   public UserService(UserRepository userRepository, ApplicationEventPublisher eventPublisher) {
     this.eventPublisher = eventPublisher;
     this.userRepository = userRepository;
-    // this.passwordEncoder = new BCryptPasswordEncoder();
   }
-
-  // Neue Methode: Passwort hashen
-  /*public String hashPassword(String rawPassword) {
-        return passwordEncoder.encode(rawPassword);
-  }*/
 
   public User authenticateUser(String email, String password) {
     User user = findUserByEmail(email);
@@ -49,12 +43,6 @@ public class UserService {
         .orElseThrow(() -> new NoSuchElementException("Benutzer nicht gefunden."));
   }
 
-  /*public User findUserByEmail(String email) {
-    return userRepository
-        .findByEmail(email)
-        .orElseThrow(() -> new NoSuchElementException("Ungültige E-Mail oder Passwort."));
-  }*/
-
   private void validatePassword(String inputPassword, String storedPassword) {
     if (!inputPassword.equals(storedPassword)) {
       throw new WrongUserInputException("Das eingegebene Passwort ist falsch.");
@@ -68,61 +56,3 @@ public class UserService {
     eventPublisher.publishEvent(event);
   }
 }
-
-/*private void updateUserLogin(User user) {
-    userRepository.save(user);
-}*/
-    /*private boolean isPasswordValid(String inputPassword, String storedPassword) {
-        return inputPassword.equals(storedPassword);
-    }*/
-
-    /*@Transactional
-        public boolean loginUser (String email, String password){
-                // Validate email
-                Validation.validateEmail(email);
-
-                Optional<User> optionalUser = userRepository.findByEmail(email);
-
-                // Benutzer nicht gefunden
-                if (optionalUser.isEmpty()) {
-                    return false;
-                }
-
-                // Benutzer extrahieren
-                User user = optionalUser.get();
-
-                UserLoggedInEvent event =
-                    new UserLoggedInEvent(
-                            user.getId(),
-                            user.getEmail(),
-                             user.getPassword(),
-                            user.getRole(), user.getUserName()
-                            );
-
-                // Passwort prüfen
-                boolean loginSuccessful = password.equals(user.getPassword());
-                userRepository.save(user);
-                if (loginSuccessful) {
-                    eventPublisher.publishEvent(event);
-                }
-                return loginSuccessful;
-
-            // Validate password
-                //!! anpassen wenn Passwort gehasht wird: return passwordEncoder.matches(password.plainText(), user.getPassword());
-
-            }
-
-    */
-    /*@Transactional
-    public boolean authenticateUser(String email, String password) {
-       User user = findUserByEmailAndPassword(email, password);
-
-        if (!isPasswordValid(password, user.getPassword())) {
-            return false;
-        }
-
-        System.out.println(user.toString());
-        publishLoginEvent(user);
-        updateUserLogin(user);
-        return true;
-    }*/

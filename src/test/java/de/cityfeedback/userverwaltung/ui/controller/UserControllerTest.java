@@ -28,7 +28,7 @@ class UserControllerTest {
   @Test
   void login_withValidEmailAndPassword_returnsSuccessResponse() {
     // Arrange
-    String email = "test@example.com";
+    String email = "email@test.de";
     String password = "password123";
     User mockUser = new User();
     UserResponse expectedUserResponse = UserResponse.fromUser(mockUser);
@@ -68,8 +68,8 @@ class UserControllerTest {
   @Test
   void login_withInvalidPassword_returnsErrorResponse() {
     // Arrange
-    String email = "test@example.com";
-    String invalidPassword = ""; // Beispiel für ein ungültiges Passwort
+    String email = "email@test.de";
+    String invalidPassword = "";
 
     // Act
     ApiResponse response = userController.login(email, invalidPassword);
@@ -88,9 +88,9 @@ class UserControllerTest {
     // Arrange
     Long userId = 1L;
     User mockUser = new User();
-    mockUser.setUserName("JohnDoe");
+    mockUser.setUserName("testname");
     mockUser.setRole(Role.valueOf("CITIZEN"));
-    mockUser.setEmail("johndoe@example.com");
+    mockUser.setEmail("email@test.de");
 
     when(userService.findUserById(userId)).thenReturn(mockUser);
 

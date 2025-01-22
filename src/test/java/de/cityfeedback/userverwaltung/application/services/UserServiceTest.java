@@ -90,7 +90,6 @@ public class UserServiceTest {
       mockUsers.add(
           new User((long) i, "user" + i + "@test.de", VALID_PASSWORD, CITIZEN, "user" + i));
     }
-    String email = "user10@test.de";
     mockUsers.add(mockUser);
 
     when(userRepository.findByEmail(VALID_EMAIL)).thenReturn(Optional.of(mockUser));
@@ -104,7 +103,7 @@ public class UserServiceTest {
   void testFindUserById_UserExists() {
     // Arrange
     long userId = 1L;
-    User mockUser = new User();
+    mockUser = new User();
     mockUser.setId(userId);
     mockUser.setUserName("testname");
 
