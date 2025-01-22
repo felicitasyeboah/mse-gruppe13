@@ -74,18 +74,17 @@ public class UserServiceTest {
     assertEquals("Kein Nutzer mit dieser E-Mail-Adresse.", exception.getMessage());
     verify(userRepository, times(1)).findByEmail(INVALID_EMAIL);
   }
-           // assertEquals("Kein Nutzer mit dieser E-Mail-Adresse.", exception.getMessage());
-           // verify(userRepository, times(1)).findByEmail(INVALID_EMAIL);
-       // }
+
+  // assertEquals("Kein Nutzer mit dieser E-Mail-Adresse.", exception.getMessage());
+  // verify(userRepository, times(1)).findByEmail(INVALID_EMAIL);
+  // }
 
   @Test
   public void testLogin_Failure_InvalidEmailFormat() {
     // Act & Assert
     assertThrows(
         NoSuchElementException.class,
-        () -> {
-          userService.authenticateUser(INVALID_EMAIL, VALID_PASSWORD);
-        });
+        () -> userService.authenticateUser(INVALID_EMAIL, VALID_PASSWORD));
   }
 
   @Test

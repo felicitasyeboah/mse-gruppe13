@@ -1,9 +1,8 @@
 package de.cityfeedback.userverwaltung.ui.controller;
 
-import static de.cityfeedback.userverwaltung.domain.valueobject.Role.CITIZEN;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-import de.cityfeedback.exception.WrongUserInputException;
 import de.cityfeedback.feedbackverwaltung.application.dto.ApiResponse;
 import de.cityfeedback.userverwaltung.application.dto.UserResponse;
 import de.cityfeedback.userverwaltung.application.services.UserService;
@@ -15,116 +14,112 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 class UserControllerTest {
 
-    @Mock
-    private UserService userService;
+  @Mock private UserService userService;
 
-    @InjectMocks
-    private UserController userController;
-
+  @InjectMocks private UserController userController;
 
   @BeforeEach
   void setUp() {
     MockitoAnnotations.openMocks(this);
   }
 
-    @Test
-    void login_withValidEmailAndPassword_returnsSuccessResponse() {
-        // Arrange
-        String email = "test@example.com";
-        String password = "password123";
-        User mockUser = new User();
-        UserResponse expectedUserResponse = UserResponse.fromUser(mockUser);
+  @Test
+  void login_withValidEmailAndPassword_returnsSuccessResponse() {
+    // Arrange
+    String email = "test@example.com";
+    String password = "password123";
+    User mockUser = new User();
+    UserResponse expectedUserResponse = UserResponse.fromUser(mockUser);
 
-        // Mocking the service call
-        when(userService.authenticateUser(email, password)).thenReturn(mockUser);
+    // Mocking the service call
+    when(userService.authenticateUser(email, password)).thenReturn(mockUser);
 
-        // Act
-        ApiResponse response = userController.login(email, password);
+    // Act
+    ApiResponse response = userController.login(email, password);
 
-        // Assert
-        assertNotNull(response, "The response should not be null");
-        assertEquals("Erfolgreich eingeloggt.", response.getMessage(), "The success message is incorrect");
-        assertEquals(expectedUserResponse, response.getData(), "The returned user data is incorrect");
-        verify(userService, times(1)).authenticateUser(email, password);
-    }
+    // Assert
+    assertNotNull(response, "The response should not be null");
+    assertEquals(
+        "Erfolgreich eingeloggt.", response.getMessage(), "The success message is incorrect");
+    assertEquals(expectedUserResponse, response.getData(), "The returned user data is incorrect");
+    verify(userService, times(1)).authenticateUser(email, password);
+  }
 
-    @Test
-    void login_withInvalidEmail_returnsErrorResponse() {
-        // Arrange
-        String invalidEmail = "invalid-email";
-        String password = "ValidPassword123";
+  @Test
+  void login_withInvalidEmail_returnsErrorResponse() {
+    // Arrange
+    String invalidEmail = "invalid-email";
+    String password = "ValidPassword123";
 
-        // Act
-        ApiResponse response = userController.login(invalidEmail, password);
+    // Act
+    ApiResponse response = userController.login(invalidEmail, password);
 
-        // Assert
-        assertNotNull(response, "The response should not be null");
-        assertEquals("Fehler beim Login: Ungültige E-Mail-Adresse.", response.getMessage(), "The error message is incorrect");
-        assertNull(response.getData(), "The data in the response should be null");
-    }
+    // Assert
+    assertNotNull(response, "The response should not be null");
+    assertEquals(
+        "Fehler beim Login: Ungültige E-Mail-Adresse.",
+        response.getMessage(),
+        "The error message is incorrect");
+    assertNull(response.getData(), "The data in the response should be null");
+  }
 
-    @Test
-    void login_withInvalidPassword_returnsErrorResponse() {
-        // Arrange
-        String email = "test@example.com";
-        String invalidPassword = ""; // Beispiel für ein ungültiges Passwort
+  @Test
+  void login_withInvalidPassword_returnsErrorResponse() {
+    // Arrange
+    String email = "test@example.com";
+    String invalidPassword = ""; // Beispiel für ein ungültiges Passwort
 
-        // Act
-        ApiResponse response = userController.login(email, invalidPassword);
+    // Act
+    ApiResponse response = userController.login(email, invalidPassword);
 
-        // Assert
-        assertNotNull(response, "The response should not be null");
-        assertEquals("Fehler beim Login: Bitte Passwort eingeben.", response.getMessage(), "The error message is incorrect");
-        assertNull(response.getData(), "The response data should be null");
-    }
+    // Assert
+    assertNotNull(response, "The response should not be null");
+    assertEquals(
+        "Fehler beim Login: Bitte Passwort eingeben.",
+        response.getMessage(),
+        "The error message is incorrect");
+    assertNull(response.getData(), "The response data should be null");
+  }
 
+  @Test
+  void testGetUserById_UserExists() {
+    // Arrange
+    Long userId = 1L;
+    User mockUser = new User();
+    mockUser.setUserName("JohnDoe");
+    mockUser.setRole(Role.valueOf("CITIZEN"));
+    mockUser.setEmail("johndoe@example.com");
 
-    @Test
-    void testGetUserById_UserExists() {
-        // Arrange
-        Long userId = 1L;
-        User mockUser = new User();
-        mockUser.setUserName("JohnDoe");
-        mockUser.setRole(Role.valueOf("CITIZEN"));
-        mockUser.setEmail("johndoe@example.com");
+    when(userService.findUserById(userId)).thenReturn(mockUser);
 
-        when(userService.findUserById(userId)).thenReturn(mockUser);
+    // Act
+    ApiResponse response = userController.getUserById(userId);
 
+    // Assert
+    // assertEquals(200, response.getStatusCodeValue());
+    // ApiResponse apiResponse = response.getBody();
 
-        // Act
-       ApiResponse response = userController.getUserById(userId);
+    // assertNotNull(response.getMessage());
+    assertEquals("Benutzer gefunden.", response.getMessage(), "The success message is incorrect");
 
-        // Assert
-        //assertEquals(200, response.getStatusCodeValue());
-        //ApiResponse apiResponse = response.getBody();
+    UserResponse userResponse = (UserResponse) response.getData();
+    assertNotNull(userResponse);
 
+    /*assertEquals("JohnDoe", userResponse.getUserName());
+    assertEquals("Admin", userResponse.getRole());
+    assertEquals("johndoe@example.com", userResponse.getEmail());*/
 
-        //assertNotNull(response.getMessage());
-        assertEquals("Benutzer gefunden.", response.getMessage(),"The success message is incorrect");
+    verify(userService, times(1)).findUserById(userId);
+  }
 
-        UserResponse userResponse = (UserResponse) response.getData();
-        assertNotNull(userResponse);
+  // Act
+  /*     ApiResponse response = userController.login(email, password);
 
-
-
-        /*assertEquals("JohnDoe", userResponse.getUserName());
-        assertEquals("Admin", userResponse.getRole());
-        assertEquals("johndoe@example.com", userResponse.getEmail());*/
-
-        verify(userService, times(1)).findUserById(userId);
-    }
-
-        // Act
-   /*     ApiResponse response = userController.login(email, password);
-
-        // Assert
-        assertNotNull(response);
-        assertTrue(response.getMessage().contains("Fehler beim Login"));
-        assertNull(response.getData());
-    }*/
+      // Assert
+      assertNotNull(response);
+      assertTrue(response.getMessage().contains("Fehler beim Login"));
+      assertNull(response.getData());
+  }*/
 }
