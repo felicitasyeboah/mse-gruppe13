@@ -7,6 +7,7 @@ import de.cityfeedback.userverwaltung.application.dto.UserResponse;
 import de.cityfeedback.userverwaltung.application.services.UserService;
 import de.cityfeedback.userverwaltung.domain.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.NoSuchElementException;
@@ -34,6 +35,18 @@ public class UserController {
 
         } catch (Exception e) {
             return new ApiResponse("Fehler beim Login: " + e.getMessage(), null);
+        }
+    }
+
+    @GetMapping("/{userId}")
+    public ApiResponse getUserById(@PathVariable Long userId) {
+        try {
+            // Benutzer anhand der ID abrufen
+            User user = userService.findUserById(userId);
+            UserResponse userResponse = UserResponse.fromUser(user);
+            return new ApiResponse("Benutzer gefunden.", userResponse);
+        } catch (Exception e) {
+            return new ApiResponse("Interner Serverfehler: " + e.getMessage(), null);
         }
     }
 

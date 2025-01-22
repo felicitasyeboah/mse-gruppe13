@@ -71,7 +71,7 @@ public class UserServiceTest {
             NoSuchElementException.class,
             () -> userService.authenticateUser(INVALID_EMAIL, VALID_PASSWORD));
 
-    assertEquals("Ungültige E-Mail oder Passwort.", exception.getMessage());
+    assertEquals("Kein Nutzer mit dieser E-Mail-Adresse.", exception.getMessage());
     verify(userRepository, times(1)).findByEmail(INVALID_EMAIL);
   }
            // assertEquals("Kein Nutzer mit dieser E-Mail-Adresse.", exception.getMessage());
