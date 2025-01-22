@@ -55,12 +55,6 @@ public class UserService {
         .orElseThrow(() -> new NoSuchElementException("Ungültige E-Mail oder Passwort."));
   }*/
 
-  /* private void validateHashedPassword(String inputPassword, String storedPassword) {
-      if (!passwordEncoder.matches(inputPassword, storedPassword)) {
-          throw new WrongUserInputException("Das eingegebene Passwort ist falsch.");
-      }
-  }*/
-
   private void validatePassword(String inputPassword, String storedPassword) {
     if (!inputPassword.equals(storedPassword)) {
       throw new WrongUserInputException("Das eingegebene Passwort ist falsch.");

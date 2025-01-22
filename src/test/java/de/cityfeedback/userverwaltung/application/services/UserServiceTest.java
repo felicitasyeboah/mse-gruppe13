@@ -75,10 +75,6 @@ public class UserServiceTest {
     verify(userRepository, times(1)).findByEmail(INVALID_EMAIL);
   }
 
-  // assertEquals("Kein Nutzer mit dieser E-Mail-Adresse.", exception.getMessage());
-  // verify(userRepository, times(1)).findByEmail(INVALID_EMAIL);
-  // }
-
   @Test
   public void testLogin_Failure_InvalidEmailFormat() {
     // Act & Assert
@@ -104,22 +100,39 @@ public class UserServiceTest {
     verify(userRepository, times(1)).findByEmail(VALID_EMAIL);
   }
 
-  /*@Test
-  public void testLogin_Success_HashedPassword() {
-      // Arrange
-      String email = "user@test.de";
-      String plainPassword = "password";
-      String hashedPassword = "$2a$10$eW5ZiEtDWbz...";
-      User user = new User(1L, email, hashedPassword, "CITIZEN");
+  @Test
+  void testFindUserById_UserExists() {
+    // Arrange
+    long userId = 1L;
+    User mockUser = new User();
+    mockUser.setId(userId);
+    mockUser.setUserName("testname");
 
-      when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
-      when(passwordEncoder.matches(plainPassword, hashedPassword)).thenReturn(true);
+    when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
 
-      // Act
-      boolean result = userService.loginUser(email, plainPassword);
+    // Act
+    User user = userService.findUserById(userId);
 
-      // Assert
-      assertTrue(result, "Login should succeed with hashed password");
-  }*/
+    // Assert
+    assertNotNull(user);
+    assertEquals(userId, user.getId());
+    assertEquals("testname", user.getUserName());
 
+    verify(userRepository, times(1)).findById(userId);
+  }
+
+  @Test
+  void testFindUserById_UserNotFound() {
+    // Arrange
+    long userId = 1L;
+
+    when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+    // Act & Assert
+    NoSuchElementException exception =
+        assertThrows(NoSuchElementException.class, () -> userService.findUserById(userId));
+
+    assertEquals("Benutzer nicht gefunden.", exception.getMessage());
+    verify(userRepository, times(1)).findById(userId);
+  }
 }
