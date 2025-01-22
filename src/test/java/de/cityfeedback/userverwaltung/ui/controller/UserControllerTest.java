@@ -125,14 +125,12 @@ class UserControllerTest {
     ApiResponse response = userController.getUserById(userId);
 
     // Assert
-    //assertEquals(404, response.getStatusCodeValue());
-    //ApiResponse apiResponse = response.getBody();
+    // assertEquals(404, response.getStatusCodeValue());
+    // ApiResponse apiResponse = response.getBody();
     assertNotNull(response);
     assertEquals("Benutzer nicht gefunden", response.getMessage());
     assertNull(response.getData());
 
     verify(userService, times(1)).findUserById(userId);
   }
-
-
 }
