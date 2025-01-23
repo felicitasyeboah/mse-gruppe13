@@ -1,4 +1,4 @@
-package de.cityfeedback.feedbackverwaltung.application.dto;
+package de.cityfeedback.shared.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
