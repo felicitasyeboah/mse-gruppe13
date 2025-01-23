@@ -1,6 +1,5 @@
 package de.cityfeedback.userverwaltung.ui.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -16,9 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
@@ -30,7 +27,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 @Import(GlobalExceptionHandler.class)
 class UserControllerTest {
 
-  @Autowired private MockMvc mockMvc;
+  private MockMvc mockMvc;
 
   @Mock private UserService userService;
 
@@ -38,7 +35,6 @@ class UserControllerTest {
 
   @BeforeEach
   void setUp() {
-    MockitoAnnotations.openMocks(this);
     mockMvc =
         MockMvcBuilders.standaloneSetup(userController)
             .setControllerAdvice(new GlobalExceptionHandler())
@@ -46,7 +42,7 @@ class UserControllerTest {
   }
 
   @Test
-  void login_withValidEmailAndPassword_returnsSuccessResponse() throws Exception {
+  void login_withValidCredentials_returnsSuccessResponse() throws Exception {
     String email = "email@test.de";
     String password = "password123";
     User mockUser = new User();
@@ -56,63 +52,37 @@ class UserControllerTest {
     mockUser.setPassword(password);
     mockUser.setRole(Role.CITIZEN);
 
-    // when(userService.authenticateUser(email, password)).thenReturn(mockUser);
+    when(userService.authenticateUser(email, password)).thenReturn(mockUser);
 
-    when(userService.authenticateUser(eq(email), eq(password))).thenReturn(mockUser);
-    System.out.println(mockUser.toString());
-
-    // Act & Assert
     mockMvc
         .perform(post("/user/login").param("email", email).param("password", password))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.message").value("Erfolgreich eingeloggt."))
         .andExpect(jsonPath("$.data.email").value(email))
         .andExpect(jsonPath("$.data.userName").value("testuser"));
-    /*.andDo(print()) // Druckt die Antwort auf die Konsole
-    .andExpect(status().isOk());*/
 
-    // Verifizieren, dass der Mock aufgerufen wurde
     verify(userService, times(1)).authenticateUser(email, password);
   }
 
   @Test
-  void login_withInvalidEmail_returnsErrorResponse() throws Exception {
-    String invalidEmail = "invalid-email"; // No domain or '@'
+  void login_withInvalidEmail_returnsBadRequest() throws Exception {
+    String invalidEmail = "invalid-email";
     String password = "ValidPassword123";
 
     mockMvc
         .perform(post("/user/login").param("email", invalidEmail).param("password", password))
-        .andExpect(status().isBadRequest()) // Expect a 400 response
+        .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.message").value("Ungültige E-Mail-Adresse."));
   }
 
-  /* @Test
-     void login_withInvalidEmail_returnsErrorResponse() {
-       // Arrange
-       String invalidEmail = "invalid-email";
-       String password = "ValidPassword123";
-
-       // Act
-       ResponseEntity<ApiResponse> response = userController.login(invalidEmail, password);
-
-       // Assert
-       assertNotNull(response, "The response should not be null");
-       assertEquals(
-           "Fehler beim Login: Ungültige E-Mail-Adresse.",
-           response.getBody(),
-           "The error message is incorrect");
-       assertNull(response.getBody(), "The data in the response should be null");
-     }
-  */
-
   @Test
-  void login_withInvalidPassword_returnsErrorResponse() throws Exception {
+  void login_withEmptyPassword_returnsBadRequest() throws Exception {
     String email = "email@test.de";
-    String invalidPassword = ""; // Leeres Passwort
+    String invalidPassword = "";
 
     mockMvc
         .perform(post("/user/login").param("email", email).param("password", invalidPassword))
-        .andExpect(status().isBadRequest()) // Erwartet einen 400-Statuscode
+        .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.message").value("Bitte Passwort eingeben."));
   }
 
@@ -133,97 +103,40 @@ class UserControllerTest {
   }
 
   @Test
-  void testGetUserById_UserExists() throws Exception {
+  void getUserById_withValidUserId_returnsUserResponse() throws Exception {
     Long userId = 1L;
     User mockUser = new User();
     mockUser.setId(userId);
-    mockUser.setUserName("testname");
-    mockUser.setRole(Role.CITIZEN);
+    mockUser.setUserName("testuser");
     mockUser.setEmail("email@test.de");
+    mockUser.setRole(Role.CITIZEN);
 
     when(userService.findUserById(userId)).thenReturn(mockUser);
 
     mockMvc
         .perform(get("/user/{userId}", userId))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.message").value("Benutzer gefunden."))
-        .andExpect(jsonPath("$.data.userName").value("testname"))
+        .andExpect(jsonPath("$.message").doesNotExist())
+        .andExpect(jsonPath("$.data.userName").value("testuser"))
         .andExpect(jsonPath("$.data.email").value("email@test.de"))
         .andExpect(jsonPath("$.data.role").value("CITIZEN"));
 
     verify(userService, times(1)).findUserById(userId);
   }
-}
-/*  @Test
-  void testGetUserById_UserNotFound() {
-    Long userId = 1L;
+
+  @Test
+  void getUserById_withNonExistentUserId_returnsNotFound() throws Exception {
+    Long userId = 999L;
 
     when(userService.findUserById(userId))
         .thenThrow(new NoSuchElementException("Benutzer nicht gefunden"));
 
-    ResponseEntity<ApiResponse> response = userController.getUserById(userId);
-
-    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-    ApiResponse apiResponse = response.getBody();
-    assertNotNull(apiResponse);
-    assertEquals("Benutzer nicht gefunden", apiResponse.getMessage());
-    assertNull(apiResponse.getData());
+    mockMvc
+        .perform(get("/user/{userId}", userId))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.message").value("Benutzer nicht gefunden"))
+        .andExpect(jsonPath("$.data").doesNotExist());
 
     verify(userService, times(1)).findUserById(userId);
   }
 }
-*/
-  /*@Test
-  void testGetUserById_UserExists() {
-    // Arrange
-    Long userId = 1L;
-    User mockUser = new User();
-    mockUser.setUserName("testname");
-    mockUser.setRole(Role.valueOf("CITIZEN"));
-    mockUser.setEmail("email@test.de");
-
-    when(userService.findUserById(userId)).thenReturn(mockUser);
-
-    // Act
-    ResponseEntity<ApiResponse> response = userController.getUserById(userId);
-
-    // Assert
-    // Überprüfen, ob der HTTP-Status korrekt ist
-    assertEquals(HttpStatus.OK, response.getStatusCode(), "Expected HTTP status 200 (OK)");
-
-    // Überprüfen, ob die API-Antwort nicht null ist
-    ApiResponse apiResponse = response.getBody();
-    assertNotNull(apiResponse, "The response body should not be null");
-    assertEquals(
-        "Benutzer gefunden.", apiResponse.getMessage(), "The success message is incorrect");
-
-    // Überprüfen, ob die Nutzerdaten korrekt sind
-    UserResponse userResponse = (UserResponse) apiResponse.getData();
-    assertNotNull(userResponse, "The user data should not be null");
-    // assertEquals(""); fromUser und "XXX"*/
-    /*assertEquals("testname", userResponse.getUserName(), "The username is incorrect");
-    assertEquals(Role.CITIZEN, userResponse.getRole(), "The role is incorrect");
-    assertEquals("email@test.de", userResponse.getEmail(), "The email is incorrect");*/
-
-// Verifizieren, dass der Service genau einmal aufgerufen wurde
-    /*verify(userService, times(1)).findUserById(userId);
-      }
-    */
-
-/*
-@Test
-void login_withInvalidPassword_returnsErrorResponse() throws Exception {
- /* // Arrange
-  String email = "email@test.de";
-  String invalidPassword = "";
-
-  // Act
-  ResponseEntity<ApiResponse> response = userController.login(email, invalidPassword);
-
-  // Assert
-  assertNotNull(response, "The response should not be null");
-  assertEquals(
-      "Fehler beim Login: Bitte Passwort eingeben.",
-      response.getBody(),
-      "The error message is incorrect");
-  assertNull(response.getBody(), "The response data should be null");*/

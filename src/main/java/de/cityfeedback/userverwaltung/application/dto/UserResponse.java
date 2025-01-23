@@ -6,7 +6,6 @@ import de.cityfeedback.userverwaltung.domain.valueobject.Role;
 public record UserResponse(Long userId, String userName, String email, Role role) {
 
   public static UserResponse fromUser(User user) {
-    System.out.println("UserResponse fromUser(): " + user);
     return new UserResponse(user.getId(), user.getUserName(), user.getEmail(), user.getRole());
   }
 }

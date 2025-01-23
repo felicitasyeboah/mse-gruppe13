@@ -23,13 +23,9 @@ public class UserController {
   @PostMapping("/login")
   public ResponseEntity<ApiResponse> login(
       @RequestParam String email, @RequestParam String password) {
-    System.out.println("Login request received: email=" + email + ", password=" + password);
     validateInput(email, password);
     User user = userService.authenticateUser(email, password);
-    System.out.println("User retrieved from service: " + user);
-
     UserResponse userResponse = UserResponse.fromUser(user);
-    System.out.println("UserResponse created: " + userResponse);
     return ResponseEntity.ok(new ApiResponse("Erfolgreich eingeloggt.", userResponse));
   }
 
@@ -39,7 +35,7 @@ public class UserController {
     User user = userService.findUserById(userId);
 
     UserResponse userResponse = UserResponse.fromUser(user);
-    return ResponseEntity.ok(new ApiResponse("Benutzer gefunden.", userResponse));
+    return ResponseEntity.ok(new ApiResponse(null, userResponse));
   }
 
   private void validateInput(String email, String password) {
