@@ -6,9 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import de.cityfeedback.feedbackverwaltung.application.dto.ApiResponse;
 import de.cityfeedback.shared.GlobalExceptionHandler;
-import de.cityfeedback.userverwaltung.application.dto.UserResponse;
 import de.cityfeedback.userverwaltung.application.services.UserService;
 import de.cityfeedback.userverwaltung.domain.model.User;
 import de.cityfeedback.userverwaltung.domain.valueobject.Role;
@@ -22,14 +20,11 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-@SpringBootTest
+// @SpringBootTest
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
 @Import(GlobalExceptionHandler.class)
@@ -111,24 +106,74 @@ class UserControllerTest {
   */
 
   @Test
-  void login_withInvalidPassword_returnsErrorResponse() {
-    // Arrange
+  void login_withInvalidPassword_returnsErrorResponse() throws Exception {
     String email = "email@test.de";
-    String invalidPassword = "";
+    String invalidPassword = ""; // Leeres Passwort
 
-    // Act
-    ResponseEntity<ApiResponse> response = userController.login(email, invalidPassword);
-
-    // Assert
-    assertNotNull(response, "The response should not be null");
-    assertEquals(
-        "Fehler beim Login: Bitte Passwort eingeben.",
-        response.getBody(),
-        "The error message is incorrect");
-    assertNull(response.getBody(), "The response data should be null");
+    mockMvc
+        .perform(post("/user/login").param("email", email).param("password", invalidPassword))
+        .andExpect(status().isBadRequest()) // Erwartet einen 400-Statuscode
+        .andExpect(jsonPath("$.message").value("Bitte Passwort eingeben."));
   }
 
   @Test
+  void testGetUserById_UserNotFound() throws Exception {
+    Long userId = 1L;
+
+    when(userService.findUserById(userId))
+        .thenThrow(new NoSuchElementException("Benutzer nicht gefunden"));
+
+    mockMvc
+        .perform(get("/user/{userId}", userId))
+        .andExpect(status().isNotFound()) // Erwartet einen 404-Statuscode
+        .andExpect(jsonPath("$.message").value("Benutzer nicht gefunden"))
+        .andExpect(jsonPath("$.data").doesNotExist());
+
+    verify(userService, times(1)).findUserById(userId);
+  }
+
+  @Test
+  void testGetUserById_UserExists() throws Exception {
+    Long userId = 1L;
+    User mockUser = new User();
+    mockUser.setId(userId);
+    mockUser.setUserName("testname");
+    mockUser.setRole(Role.CITIZEN);
+    mockUser.setEmail("email@test.de");
+
+    when(userService.findUserById(userId)).thenReturn(mockUser);
+
+    mockMvc
+        .perform(get("/user/{userId}", userId))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.message").value("Benutzer gefunden."))
+        .andExpect(jsonPath("$.data.userName").value("testname"))
+        .andExpect(jsonPath("$.data.email").value("email@test.de"))
+        .andExpect(jsonPath("$.data.role").value("CITIZEN"));
+
+    verify(userService, times(1)).findUserById(userId);
+  }
+}
+/*  @Test
+  void testGetUserById_UserNotFound() {
+    Long userId = 1L;
+
+    when(userService.findUserById(userId))
+        .thenThrow(new NoSuchElementException("Benutzer nicht gefunden"));
+
+    ResponseEntity<ApiResponse> response = userController.getUserById(userId);
+
+    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    ApiResponse apiResponse = response.getBody();
+    assertNotNull(apiResponse);
+    assertEquals("Benutzer nicht gefunden", apiResponse.getMessage());
+    assertNull(apiResponse.getData());
+
+    verify(userService, times(1)).findUserById(userId);
+  }
+}
+*/
+  /*@Test
   void testGetUserById_UserExists() {
     // Arrange
     Long userId = 1L;
@@ -155,30 +200,30 @@ class UserControllerTest {
     // Überprüfen, ob die Nutzerdaten korrekt sind
     UserResponse userResponse = (UserResponse) apiResponse.getData();
     assertNotNull(userResponse, "The user data should not be null");
-    // assertEquals(""); fromUser und "XXX"
+    // assertEquals(""); fromUser und "XXX"*/
     /*assertEquals("testname", userResponse.getUserName(), "The username is incorrect");
     assertEquals(Role.CITIZEN, userResponse.getRole(), "The role is incorrect");
     assertEquals("email@test.de", userResponse.getEmail(), "The email is incorrect");*/
 
-    // Verifizieren, dass der Service genau einmal aufgerufen wurde
-    verify(userService, times(1)).findUserById(userId);
-  }
+// Verifizieren, dass der Service genau einmal aufgerufen wurde
+    /*verify(userService, times(1)).findUserById(userId);
+      }
+    */
 
-  @Test
-  void testGetUserById_UserNotFound() {
-    Long userId = 1L;
+/*
+@Test
+void login_withInvalidPassword_returnsErrorResponse() throws Exception {
+ /* // Arrange
+  String email = "email@test.de";
+  String invalidPassword = "";
 
-    when(userService.findUserById(userId))
-        .thenThrow(new NoSuchElementException("Benutzer nicht gefunden"));
+  // Act
+  ResponseEntity<ApiResponse> response = userController.login(email, invalidPassword);
 
-    ResponseEntity<ApiResponse> response = userController.getUserById(userId);
-
-    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-    ApiResponse apiResponse = response.getBody();
-    assertNotNull(apiResponse);
-    assertEquals("Benutzer nicht gefunden", apiResponse.getMessage());
-    assertNull(apiResponse.getData());
-
-    verify(userService, times(1)).findUserById(userId);
-  }
-}
+  // Assert
+  assertNotNull(response, "The response should not be null");
+  assertEquals(
+      "Fehler beim Login: Bitte Passwort eingeben.",
+      response.getBody(),
+      "The error message is incorrect");
+  assertNull(response.getBody(), "The response data should be null");*/
