@@ -6,6 +6,7 @@ import de.cityfeedback.userverwaltung.application.dto.UserResponse;
 import de.cityfeedback.userverwaltung.application.services.UserService;
 import de.cityfeedback.userverwaltung.domain.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,32 +21,25 @@ public class UserController {
   }
 
   @PostMapping("/login")
-  public ApiResponse login(@RequestParam String email, @RequestParam String password) {
-    try {
-      validateInput(email, password);
-      User user = userService.authenticateUser(email, password);
+  public ResponseEntity<ApiResponse> login(
+      @RequestParam String email, @RequestParam String password) {
+    System.out.println("Login request received: email=" + email + ", password=" + password);
+    validateInput(email, password);
+    User user = userService.authenticateUser(email, password);
+    System.out.println("User retrieved from service: " + user);
 
-      UserResponse userResponse = UserResponse.fromUser(user);
-      return new ApiResponse("Erfolgreich eingeloggt.", userResponse);
-
-    } catch (Exception e) {
-      return new ApiResponse("Fehler beim Login: " + e.getMessage(), null);
-    }
+    UserResponse userResponse = UserResponse.fromUser(user);
+    System.out.println("UserResponse created: " + userResponse);
+    return ResponseEntity.ok(new ApiResponse("Erfolgreich eingeloggt.", userResponse));
   }
 
   @GetMapping("/{userId}")
-  public ApiResponse getUserById(@PathVariable Long userId) {
-    try {
-      // Benutzer anhand der ID abrufen
-      User user = userService.findUserById(userId);
-      if (user == null) {
-        return new ApiResponse("Benutzer nicht gefunden", null);
-      }
-      UserResponse userResponse = UserResponse.fromUser(user);
-      return new ApiResponse("Benutzer gefunden.", userResponse);
-    } catch (Exception e) {
-      return new ApiResponse("Interner Serverfehler: " + e.getMessage(), null);
-    }
+  public ResponseEntity<ApiResponse> getUserById(@PathVariable Long userId) {
+
+    User user = userService.findUserById(userId);
+
+    UserResponse userResponse = UserResponse.fromUser(user);
+    return ResponseEntity.ok(new ApiResponse("Benutzer gefunden.", userResponse));
   }
 
   private void validateInput(String email, String password) {

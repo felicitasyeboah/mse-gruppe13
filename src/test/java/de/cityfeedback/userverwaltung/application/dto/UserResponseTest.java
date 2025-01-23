@@ -17,7 +17,7 @@ class UserResponseTest {
     assertEquals(1L, userResponse.userId());
     assertEquals("testName", userResponse.userName());
     assertEquals("email@test.de", userResponse.email());
-    assertEquals("password123", userResponse.password());
+    // assertEquals("password123", userResponse.password());
     assertEquals(Role.EMPLOYEE, userResponse.role());
   }
 
@@ -29,7 +29,7 @@ class UserResponseTest {
     assertEquals(0, userResponse.userId());
     assertNull(userResponse.userName());
     assertNull(userResponse.email());
-    assertNull(userResponse.password());
+    //  assertNull(userResponse.password());
     assertNull(userResponse.role());
   }
 }

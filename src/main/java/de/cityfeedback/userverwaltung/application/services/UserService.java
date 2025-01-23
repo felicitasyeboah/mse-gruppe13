@@ -8,14 +8,10 @@ import java.util.NoSuchElementException;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-// import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 @Service
 public class UserService {
   private final UserRepository userRepository;
   public final ApplicationEventPublisher eventPublisher;
-
-  // private final BCryptPasswordEncoder passwordEncoder;
 
   public UserService(UserRepository userRepository, ApplicationEventPublisher eventPublisher) {
     this.eventPublisher = eventPublisher;
@@ -23,6 +19,7 @@ public class UserService {
   }
 
   public User authenticateUser(String email, String password) {
+    System.out.println("Authenticating user with email: " + email + ", password: " + password);
     User user = findUserByEmail(email);
 
     validatePassword(password, user.getPassword());
