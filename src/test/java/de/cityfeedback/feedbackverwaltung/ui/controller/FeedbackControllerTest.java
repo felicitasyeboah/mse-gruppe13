@@ -7,7 +7,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.cityfeedback.feedbackverwaltung.application.dto.ApiResponse;
 import de.cityfeedback.feedbackverwaltung.application.dto.FeedbackDto;
 import de.cityfeedback.feedbackverwaltung.application.dto.FeedbackUpdateRequest;
 import de.cityfeedback.feedbackverwaltung.application.services.FeedbackService;
@@ -15,6 +14,7 @@ import de.cityfeedback.feedbackverwaltung.domain.model.Feedback;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.CitizenId;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackCategory;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackStatus;
+import de.cityfeedback.shared.dto.ApiResponse;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;

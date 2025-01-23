@@ -1,7 +1,7 @@
 package de.cityfeedback.shared;
 
 import de.cityfeedback.exception.WrongUserInputException;
-import de.cityfeedback.feedbackverwaltung.application.dto.ApiResponse;
+import de.cityfeedback.shared.dto.ApiResponse;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.NoSuchElementException;
 import org.springframework.http.HttpStatus;

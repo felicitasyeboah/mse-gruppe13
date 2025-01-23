@@ -1,6 +1,6 @@
 package de.cityfeedback.userverwaltung.ui.controller;
 
-import de.cityfeedback.feedbackverwaltung.application.dto.ApiResponse;
+import de.cityfeedback.shared.dto.ApiResponse;
 import de.cityfeedback.shared.validator.Validation;
 import de.cityfeedback.userverwaltung.application.dto.UserResponse;
 import de.cityfeedback.userverwaltung.application.services.UserService;
