@@ -34,16 +34,16 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
   }
 
-  /*@ExceptionHandler(WrongUserInputException.class)
-  public ResponseEntity<ApiResponse> handleWrongUserInputException(WrongUserInputException ex) {
-    ApiResponse response = new ApiResponse("Ungültige Eingabe: " + ex.getMessage(), null);
-    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-  }*/
-
   @ExceptionHandler(WrongUserInputException.class)
+  public ResponseEntity<ApiResponse> handleWrongUserInputException(WrongUserInputException ex) {
+    ApiResponse response = new ApiResponse(ex.getMessage(), null);
+    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+  }
+
+  /*@ExceptionHandler(WrongUserInputException.class)
   public ResponseEntity<ApiResponse> handleWrongUserInput(WrongUserInputException ex) {
     return ResponseEntity.badRequest().body(new ApiResponse(ex.getMessage(), null));
-  }
+  }*/
 
   @ExceptionHandler(EntityNotFoundException.class)
   public ResponseEntity<ApiResponse> handleEntityNotFoundException(EntityNotFoundException ex) {
