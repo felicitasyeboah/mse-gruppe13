@@ -19,9 +19,9 @@ export class FeedbackEditComponent implements OnInit {
   response: any;
   feedback: UpdateRequest = {
     comment: '',
-    userId: 1,
-    userRole: '',
-    updateType: '',
+    userId: 5,
+    userRole: 'EMPLOYEE',
+    updateType: 'comment',
   };
   responseMessage: string | null = null; // Holds the success or error message
   isError = false; // Indicates if the message is an error
@@ -33,14 +33,14 @@ export class FeedbackEditComponent implements OnInit {
   ) {}
 
   updateFeedback(): void {
-    this.apiService.updateFeedback(this.feedback).subscribe({
+    this.apiService.updateFeedback(this.itemId, this.feedback).subscribe({
       next: (response: ApiResponse) => {
-        console.log('Feedback created successfully:', response);
+        console.log('Feedback updated successfully:', response);
         this.responseMessage = response.message; // Set success message
         this.isError = false;
       },
       error: (error) => {
-        console.error('Error creating feedback:', error);
+        console.error('Error updating feedback:', error);
         this.responseMessage =
           error?.error?.message || 'An unexpected error occurred.'; // Set error message
         console.log(error?.error?.message);
@@ -56,7 +56,6 @@ export class FeedbackEditComponent implements OnInit {
         return console.error('Der Wert für :id ist kein gültiger Wert.');
       }
 
-      this.itemId = null;
     });
     this.response = this.apiService.getFeedbackById(this.itemId);
   }

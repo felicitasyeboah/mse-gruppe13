@@ -49,11 +49,12 @@ export class ApiService {
     return this.http.get<any>(detailFeedbackUrl);
   }
 /**
- * Fetches a specific feedback from a specific user.
+ * Updates a specific feedback from a specific user.
  * @returns An Observable of the feedbacks.
+ * @param id
  * @param feedback
  */
-  updateFeedback(feedback: UpdateRequest): Observable<any> {
+updateFeedback(id: string | null, feedback: UpdateRequest): Observable<any> {
   const headers = new HttpHeaders({'Content-Type': 'application/json'});
   return this.http.post<ApiResponse>(this.feedbackEndpoint, feedback, {
     headers,
