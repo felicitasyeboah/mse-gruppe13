@@ -1,11 +1,11 @@
 package de.cityfeedback.feedbackverwaltung.ui.controller;
 
-import de.cityfeedback.feedbackverwaltung.application.dto.ApiResponse;
 import de.cityfeedback.feedbackverwaltung.application.dto.FeedbackDto;
 import de.cityfeedback.feedbackverwaltung.application.dto.FeedbackUpdateRequest;
 import de.cityfeedback.feedbackverwaltung.application.services.FeedbackService;
 import de.cityfeedback.feedbackverwaltung.domain.model.Feedback;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackCategory;
+import de.cityfeedback.shared.dto.ApiResponse;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

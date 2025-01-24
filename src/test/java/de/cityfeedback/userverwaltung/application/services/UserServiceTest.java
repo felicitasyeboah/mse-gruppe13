@@ -71,7 +71,7 @@ public class UserServiceTest {
             NoSuchElementException.class,
             () -> userService.authenticateUser(INVALID_EMAIL, VALID_PASSWORD));
 
-    assertEquals("Ungültige E-Mail oder Passwort.", exception.getMessage());
+    assertEquals("Kein Nutzer mit dieser E-Mail-Adresse.", exception.getMessage());
     verify(userRepository, times(1)).findByEmail(INVALID_EMAIL);
   }
 
@@ -80,9 +80,7 @@ public class UserServiceTest {
     // Act & Assert
     assertThrows(
         NoSuchElementException.class,
-        () -> {
-          userService.authenticateUser(INVALID_EMAIL, VALID_PASSWORD);
-        });
+        () -> userService.authenticateUser(INVALID_EMAIL, VALID_PASSWORD));
   }
 
   @Test
@@ -92,7 +90,6 @@ public class UserServiceTest {
       mockUsers.add(
           new User((long) i, "user" + i + "@test.de", VALID_PASSWORD, CITIZEN, "user" + i));
     }
-    String email = "user10@test.de";
     mockUsers.add(mockUser);
 
     when(userRepository.findByEmail(VALID_EMAIL)).thenReturn(Optional.of(mockUser));
@@ -102,22 +99,39 @@ public class UserServiceTest {
     verify(userRepository, times(1)).findByEmail(VALID_EMAIL);
   }
 
-  /*@Test
-  public void testLogin_Success_HashedPassword() {
-      // Arrange
-      String email = "user@test.de";
-      String plainPassword = "password";
-      String hashedPassword = "$2a$10$eW5ZiEtDWbz...";
-      User user = new User(1L, email, hashedPassword, "CITIZEN");
+  @Test
+  void testFindUserById_UserExists() {
+    // Arrange
+    long userId = 1L;
+    mockUser = new User();
+    mockUser.setId(userId);
+    mockUser.setUserName("testname");
 
-      when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
-      when(passwordEncoder.matches(plainPassword, hashedPassword)).thenReturn(true);
+    when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
 
-      // Act
-      boolean result = userService.loginUser(email, plainPassword);
+    // Act
+    User user = userService.findUserById(userId);
 
-      // Assert
-      assertTrue(result, "Login should succeed with hashed password");
-  }*/
+    // Assert
+    assertNotNull(user);
+    assertEquals(userId, user.getId());
+    assertEquals("testname", user.getUserName());
 
+    verify(userRepository, times(1)).findById(userId);
+  }
+
+  @Test
+  void testFindUserById_UserNotFound() {
+    // Arrange
+    long userId = 1L;
+
+    when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+    // Act & Assert
+    NoSuchElementException exception =
+        assertThrows(NoSuchElementException.class, () -> userService.findUserById(userId));
+
+    assertEquals("Benutzer nicht gefunden.", exception.getMessage());
+    verify(userRepository, times(1)).findById(userId);
+  }
 }

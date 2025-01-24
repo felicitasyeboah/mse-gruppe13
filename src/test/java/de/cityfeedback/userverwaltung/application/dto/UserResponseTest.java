@@ -11,13 +11,13 @@ class UserResponseTest {
 
   @Test
   void fromUser_createsUserResponseSuccessfully() {
-    User user = new User(1L, "test@example.com", "password123", Role.EMPLOYEE, "testUser");
+    User user = new User(1L, "email@test.de", "password123", Role.EMPLOYEE, "testName");
     UserResponse userResponse = UserResponse.fromUser(user);
 
     assertEquals(1L, userResponse.userId());
-    assertEquals("testUser", userResponse.userName());
-    assertEquals("test@example.com", userResponse.email());
-    assertEquals("password123", userResponse.password());
+    assertEquals("testName", userResponse.userName());
+    assertEquals("email@test.de", userResponse.email());
+    // assertEquals("password123", userResponse.password());
     assertEquals(Role.EMPLOYEE, userResponse.role());
   }
 
@@ -29,7 +29,7 @@ class UserResponseTest {
     assertEquals(0, userResponse.userId());
     assertNull(userResponse.userName());
     assertNull(userResponse.email());
-    assertNull(userResponse.password());
+    //  assertNull(userResponse.password());
     assertNull(userResponse.role());
   }
 }

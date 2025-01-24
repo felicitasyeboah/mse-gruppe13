@@ -20,6 +20,5 @@ public class UserLoggedInEvent {
 
   public UserLoggedInEvent(long id, String email, String Password, Role role, String Name) {
     this.loggedInAt = Instant.now();
-    System.out.println("Erfolgreich eingeloggt");
   }
 }
