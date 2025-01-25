@@ -53,7 +53,7 @@ export class FeedbackEditComponent implements OnInit {
     this.route.paramMap.subscribe(paramMap => {
       this.stringId = paramMap.get('id'); // Extrahiert den Wert von :id
       const {stringId: stringId1} = this;
-      // @ts-ignore
+      // @ts-expect-error
       this.itemId = +stringId1;
       if (this.itemId == null) {
         return console.error('Der Wert für :id ist kein gültiger Wert.');
