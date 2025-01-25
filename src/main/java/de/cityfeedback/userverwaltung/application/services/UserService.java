@@ -42,7 +42,6 @@ public class UserService {
       throw new WrongUserInputException("E-Mail-Adresse wird bereits verwendet.");
     }
 
-
     User newUser = new User();
     newUser.setUserName(userName);
     newUser.setEmail(email);

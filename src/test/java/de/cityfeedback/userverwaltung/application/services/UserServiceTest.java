@@ -137,7 +137,7 @@ public class UserServiceTest {
     verify(userRepository, times(1)).findById(userId);
   }
 
-   @Test
+  @Test
   public void testRegisterUser_whenEmailIsAlreadyUsed_shouldThrowException() {
     // Arrange: Mock the behavior of the userRepository
     String email = "alreadyUsedEmail@example.com";
@@ -179,7 +179,6 @@ public class UserServiceTest {
     assertEquals(Role.CITIZEN, savedUser.getRole());
   }
 
-
   @Test
   public void testRegisterUser_whenPasswordIsInvalid_shouldThrowException() {
     // Arrange: Define an invalid password
@@ -189,10 +188,10 @@ public class UserServiceTest {
     String invalidPassword = "short"; // A password that does not meet the requirements
 
     // Act & Assert: Verify the method throws an exception due to invalid password
-    assertThrows(WrongUserInputException.class, () -> {
-      userService.registerUser("username", email, invalidPassword, Role.CITIZEN);
-    });
+    assertThrows(
+        WrongUserInputException.class,
+        () -> {
+          userService.registerUser("username", email, invalidPassword, Role.CITIZEN);
+        });
   }
-
-
 }
