@@ -1,8 +1,10 @@
 package de.cityfeedback.userverwaltung.application.services;
 
 import de.cityfeedback.exception.WrongUserInputException;
-import de.cityfeedback.userverwaltung.domain.events.UserLoggedInEvent;
+import de.cityfeedback.shared.validator.Validation;
+import de.cityfeedback.userverwaltung.domain.events.UserRegisteredEvent;
 import de.cityfeedback.userverwaltung.domain.model.User;
+import de.cityfeedback.userverwaltung.domain.valueobject.Role;
 import de.cityfeedback.userverwaltung.infrastructure.repositories.UserRepository;
 import java.util.NoSuchElementException;
 import org.springframework.context.ApplicationEventPublisher;
@@ -24,8 +26,38 @@ public class UserService {
 
     validatePassword(password, user.getPassword());
 
-    publishLoginEvent(user);
+    UserRegisteredEvent event =
+        new UserRegisteredEvent(user.getId(), user.getUserName(), user.getEmail(), user.getRole());
+
+    eventPublisher.publishEvent(event);
     return user;
+  }
+
+  public User registerUser(String userName, String email, String password, Role role) {
+    Validation.validatePassword(password);
+    Validation.validateUsername(userName);
+    Validation.validateEmail(email);
+
+    if (userRepository.findByEmail(email).isPresent()) {
+      throw new WrongUserInputException("E-Mail-Adresse wird bereits verwendet.");
+    }
+
+
+    User newUser = new User();
+    newUser.setUserName(userName);
+    newUser.setEmail(email);
+    newUser.setPassword(password); // Hier ggf. Passwort-Hashing hinzufügen
+    newUser.setRole(role);
+
+    // Create the domain event
+    UserRegisteredEvent event =
+        new UserRegisteredEvent(
+            newUser.getId(), newUser.getUserName(), newUser.getEmail(), newUser.getRole());
+
+    // Publish the event
+    eventPublisher.publishEvent(event);
+
+    return userRepository.save(newUser);
   }
 
   public User findUserByEmail(String email) {
@@ -46,10 +78,17 @@ public class UserService {
     }
   }
 
-  private void publishLoginEvent(User user) {
+  /*private void publishLoginEvent(User user) {
     UserLoggedInEvent event =
         new UserLoggedInEvent(
-            user.getId(), user.getEmail(), user.getPassword(), user.getRole(), user.getUserName());
+            user.getId(), user.getUserName(), user.getEmail(), user.getRole());
     eventPublisher.publishEvent(event);
   }
+
+  private void publishRegisterEvent(User user) {
+    UserRegisteredEvent event =
+            new UserRegisteredEvent(
+                    user.getId(), user.getUserName(), user.getEmail(), user.getRole());
+    eventPublisher.publishEvent(event);
+  }*/
 }
