@@ -4,12 +4,14 @@ import de.cityfeedback.exception.WrongUserInputException;
 import de.cityfeedback.userverwaltung.domain.events.UserLoggedInEvent;
 import de.cityfeedback.userverwaltung.domain.model.User;
 import de.cityfeedback.userverwaltung.infrastructure.repositories.UserRepository;
-import java.util.NoSuchElementException;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
+
 @Service
 public class UserService {
+
   private final UserRepository userRepository;
   public final ApplicationEventPublisher eventPublisher;
 
@@ -20,11 +22,16 @@ public class UserService {
 
   public User authenticateUser(String email, String password) {
     System.out.println("Authenticating user with email: " + email + ", password: " + password);
+
+    // Find the user by email (no userId needed for login)
     User user = findUserByEmail(email);
 
+    // Validate the password
     validatePassword(password, user.getPassword());
 
+    // Publish the login event
     publishLoginEvent(user);
+
     return user;
   }
 
@@ -47,9 +54,8 @@ public class UserService {
   }
 
   private void publishLoginEvent(User user) {
-    UserLoggedInEvent event =
-        new UserLoggedInEvent(
-            user.getId(), user.getEmail(), user.getPassword(), user.getRole(), user.getUserName());
+    UserLoggedInEvent event = new UserLoggedInEvent(
+        user.getId(), user.getEmail(), user.getPassword(), user.getRole(), user.getUserName());
     eventPublisher.publishEvent(event);
   }
 }

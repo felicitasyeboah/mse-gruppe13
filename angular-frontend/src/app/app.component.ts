@@ -1,38 +1,24 @@
 import { Component } from '@angular/core';
-import { ApiService } from './services/api.service'; // ApiService importieren
-import { FeedbackExampleComponent } from './feedback-example/feedback-example/feedback-example.component';
-import { NavbarComponent } from './navbar/navbar.component';
-import { LoginComponent } from './login/login.component';
-import { FeedbackListComponent } from './feedback-list/feedback-list.component';
-import { FeedbackFormComponent } from './feedback-form/feedback-form.component';
-import { ImpressumComponent } from './impressum/impressum.component';
+import { AuthService } from './services/auth.service';
 import { RouterModule, RouterOutlet } from '@angular/router';
+import { NavbarComponent } from './navbar/navbar.component';
+import { ImpressumComponent } from './impressum/impressum.component';
+import { CommonModule } from '@angular/common'; // Import des CommonModule
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  standalone: true, // Stellt sicher, dass es sich um eine Standalone-Komponente handelt
-  imports: [ FeedbackListComponent, ImpressumComponent, NavbarComponent, FeedbackFormComponent, RouterModule,RouterOutlet], // Importiere die notwendigen Module und Komponenten
+  standalone: true,
+  imports: [CommonModule, NavbarComponent, ImpressumComponent, RouterModule, RouterOutlet]  // Remove the duplicate CommonModule
 })
 export class AppComponent {
-  title = 'angular-frontend'; // Titel der Anwendung
+  title = 'angular-frontend';
+  isLoggedIn = false;
 
-  constructor(private apiService: ApiService) {
-    // Testen, ob ApiService korrekt injiziert wird
-    console.log('ApiService:', this.apiService);
-  }
+  constructor(private authService: AuthService) {}
 
   ngOnInit() {
-    // Optional: Du kannst hier API-Aufrufe oder andere Logik hinzufügen
-    this.apiService.fetchUserFeedbacks(1).subscribe(
-      (data: any) => {  // 'data' ist der Rückgabewert des API-Aufrufs
-        console.log('Feedbacks:', data); // Wenn erfolgreich
-      },
-      (error: any) => {  // Fehlerbehandlung
-        console.error('Error:', error);
-      }
-    );
-  
+    this.isLoggedIn = this.authService.getUserStatus();  // Verwende getUserStatus() hier
   }
 }

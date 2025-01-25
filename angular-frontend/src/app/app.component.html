@@ -1,18 +1,10 @@
-<!-- Navigation -->
-<app-navbar></app-navbar>
-<br>
-<br>
-<!-- Router Outlet -->
-<router-outlet></router-outlet>
+<!-- Navigation: Wird nur angezeigt, wenn der Benutzer eingeloggt ist -->
+<app-navbar *ngIf="isLoggedIn"></app-navbar>
 <br>
 <br>
 
-<!-- Beschwerdeformular -->
-<app-feedback-form></app-feedback-form>
-<br>
-<br>
-<!-- Beschwerden anzeigen -->
-<app-feedback-list></app-feedback-list>
+<!-- Router Outlet: Hier werden die Seiteninhalte geladen -->
+<router-outlet></router-outlet>
 <br>
 <br>
 
