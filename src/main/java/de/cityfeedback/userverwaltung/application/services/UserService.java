@@ -34,6 +34,7 @@ public class UserService {
   }
 
   public User registerUser(String userName, String email, String password, Role role) {
+    System.out.println(userName);
     Validation.validatePassword(password);
     Validation.validateUsername(userName);
     Validation.validateEmail(email);

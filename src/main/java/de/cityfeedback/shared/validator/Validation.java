@@ -35,7 +35,10 @@ public class Validation {
 
   // Validierung des Passworts
   public static void validatePassword(String password) {
-    if (password == null || !Pattern.matches(PASSWORD_REGEX, password)) {
+    if (password == null) {
+      throw new WrongUserInputException("Bitte Passwort eingeben.");
+    }
+    if (!Pattern.matches(PASSWORD_REGEX, password)) {
       throw new WrongUserInputException(
           "Das Passwort muss folgende Anforderungen erfüllen: Mindestens 8 Zeichen und maximal 20 Zeichen lang, mindestens ein Großbuchstabe, mindestens ein Kleinbuchstabe, mindestens eine Zahl, mindestens ein Sonderzeichen (z.B. !@#$%^&*()).");
     }
