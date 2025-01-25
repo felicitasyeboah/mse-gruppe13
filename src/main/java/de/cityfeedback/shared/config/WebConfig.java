@@ -1,4 +1,4 @@
-package de.cityfeedback.shared;
+package de.cityfeedback.shared.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

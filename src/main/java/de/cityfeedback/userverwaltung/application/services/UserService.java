@@ -17,11 +17,13 @@ public class UserService {
   public final ApplicationEventPublisher eventPublisher;
   private final BCryptPasswordEncoder passwordEncoder;
 
-  public UserService(UserRepository userRepository, ApplicationEventPublisher eventPublisher) {
+  public UserService(
+      UserRepository userRepository,
+      ApplicationEventPublisher eventPublisher,
+      BCryptPasswordEncoder passwordEncoder) {
     this.eventPublisher = eventPublisher;
     this.userRepository = userRepository;
-    // Initialisiere den PasswordEncoder
-    this.passwordEncoder = new BCryptPasswordEncoder();
+    this.passwordEncoder = passwordEncoder;
   }
 
   public User authenticateUser(String email, String password) {
