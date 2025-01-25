@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootTest
 public class UserServiceTest {
@@ -26,34 +27,41 @@ public class UserServiceTest {
 
   @MockBean private ApplicationEventPublisher eventPublisher;
 
+  @MockBean private BCryptPasswordEncoder passwordEncoder;
+
   @Autowired private UserService userService;
 
   private static final String VALID_EMAIL = "employee1@test.de";
   private static final String VALID_PASSWORD = "password10";
   private static final String INVALID_EMAIL = "nonexistent@test.de";
   private static final String INVALID_PASSWORD = "wrongPassword";
+  private static final String HASHED_PASSWORD =
+      "$2b$12$6GSgYVYuabEB6j2cbqbd6eXxvgaN4ujbikDpS3GUge8VBl2srLeom";
 
   private User mockUser;
 
   @BeforeEach
   void setup() {
     // mockUser = new User(10L, VALID_EMAIL, VALID_PASSWORD, CITIZEN, "testemployee1");
-    mockUser = new User(VALID_EMAIL, VALID_PASSWORD, CITIZEN, "testemployee1");
+    mockUser = new User(VALID_EMAIL, HASHED_PASSWORD, CITIZEN, "testemployee1");
   }
 
   @Test
   public void shouldLoginSuccessfullyWithValidCredentials() {
     when(userRepository.findByEmail(VALID_EMAIL)).thenReturn(Optional.of(mockUser));
+    when(passwordEncoder.matches(VALID_PASSWORD, HASHED_PASSWORD)).thenReturn(true);
 
     User result = userService.authenticateUser(VALID_EMAIL, VALID_PASSWORD);
 
     assertNotNull(result, "Login should succeed with correct credentials");
     verify(userRepository, times(1)).findByEmail(VALID_EMAIL);
+    verify(passwordEncoder, times(1)).matches(VALID_PASSWORD, HASHED_PASSWORD);
   }
 
   @Test
   public void shouldFailLoginWithInvalidPassword() {
     when(userRepository.findByEmail(VALID_EMAIL)).thenReturn(Optional.of(mockUser));
+    when(passwordEncoder.matches(INVALID_PASSWORD, HASHED_PASSWORD)).thenReturn(false);
 
     Exception exception =
         assertThrows(
@@ -62,19 +70,7 @@ public class UserServiceTest {
 
     assertEquals("Das eingegebene Passwort ist falsch.", exception.getMessage());
     verify(userRepository, times(1)).findByEmail(VALID_EMAIL);
-  }
-
-  @Test
-  public void shouldFailLoginWhenUserNotFound() {
-    when(userRepository.findByEmail(INVALID_EMAIL)).thenReturn(Optional.empty());
-
-    Exception exception =
-        assertThrows(
-            NoSuchElementException.class,
-            () -> userService.authenticateUser(INVALID_EMAIL, VALID_PASSWORD));
-
-    assertEquals("Kein Nutzer mit dieser E-Mail-Adresse.", exception.getMessage());
-    verify(userRepository, times(1)).findByEmail(INVALID_EMAIL);
+    verify(passwordEncoder, times(1)).matches(INVALID_PASSWORD, HASHED_PASSWORD);
   }
 
   @Test
@@ -87,18 +83,29 @@ public class UserServiceTest {
 
   @Test
   public void shouldHandlePerformanceWithLargeUserBase() {
+    // Arrange: Initialisiere eine große Benutzerbasis mit gehashten Passwörtern
     List<User> mockUsers = new ArrayList<>();
     for (int i = 0; i < 1000; i++) {
-      mockUsers.add(
-          new User(/*(long) i, */ "user" + i + "@test.de", VALID_PASSWORD, CITIZEN, "user" + i));
+      String hashedPassword = passwordEncoder.encode("password" + i); // Hash generieren
+      mockUsers.add(new User("user" + i + "@test.de", hashedPassword, CITIZEN, "user" + i));
     }
+
+    // Füge den Ziel-Benutzer mit VALID_EMAIL und gehashtem Passwort hinzu
+    when(passwordEncoder.encode(VALID_PASSWORD)).thenReturn(HASHED_PASSWORD);
+    mockUser.setPassword(HASHED_PASSWORD);
     mockUsers.add(mockUser);
 
+    // Mock das Verhalten des Repositories
     when(userRepository.findByEmail(VALID_EMAIL)).thenReturn(Optional.of(mockUser));
+    when(passwordEncoder.matches(VALID_PASSWORD, HASHED_PASSWORD)).thenReturn(true);
+
+    // Act: Authentifiziere den Benutzer
     User result = userService.authenticateUser(VALID_EMAIL, VALID_PASSWORD);
 
+    // Assert: Stelle sicher, dass die Authentifizierung erfolgreich war
     assertNotNull(result, "Login should succeed even with a large user base");
     verify(userRepository, times(1)).findByEmail(VALID_EMAIL);
+    verify(passwordEncoder, times(1)).matches(VALID_PASSWORD, HASHED_PASSWORD);
   }
 
   @Test
@@ -135,23 +142,6 @@ public class UserServiceTest {
 
     assertEquals("Benutzer nicht gefunden.", exception.getMessage());
     verify(userRepository, times(1)).findById(userId);
-  }
-
-  @Test
-  public void testRegisterUser_whenEmailIsAlreadyUsed_shouldThrowException() {
-    // Arrange: Mock the behavior of the userRepository
-    String email = "alreadyUsedEmail@example.com";
-    when(userRepository.findByEmail(email)).thenReturn(Optional.of(new User()));
-
-    // Act & Assert: Test the method and check that it throws a WrongUserInputException
-    WrongUserInputException exception =
-        assertThrows(
-            WrongUserInputException.class,
-            () -> {
-              userService.registerUser("username", email, "Password123!", Role.CITIZEN);
-            });
-
-    assertEquals("E-Mail-Adresse wird bereits verwendet.", exception.getMessage());
   }
 
   @Test

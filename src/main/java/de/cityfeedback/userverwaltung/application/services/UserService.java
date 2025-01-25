@@ -8,16 +8,22 @@ import de.cityfeedback.userverwaltung.domain.valueobject.Role;
 import de.cityfeedback.userverwaltung.infrastructure.repositories.UserRepository;
 import java.util.NoSuchElementException;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
   private final UserRepository userRepository;
   public final ApplicationEventPublisher eventPublisher;
+  private final BCryptPasswordEncoder passwordEncoder;
 
-  public UserService(UserRepository userRepository, ApplicationEventPublisher eventPublisher) {
+  public UserService(
+      UserRepository userRepository,
+      ApplicationEventPublisher eventPublisher) {
     this.eventPublisher = eventPublisher;
     this.userRepository = userRepository;
+    // Initialisiere den PasswordEncoder
+    this.passwordEncoder = new BCryptPasswordEncoder();
   }
 
   public User authenticateUser(String email, String password) {
@@ -43,10 +49,12 @@ public class UserService {
       throw new WrongUserInputException("E-Mail-Adresse wird bereits verwendet.");
     }
 
+    String hashedPassword = passwordEncoder.encode(password);
+
     User newUser = new User();
     newUser.setUserName(userName);
     newUser.setEmail(email);
-    newUser.setPassword(password); // Hier ggf. Passwort-Hashing hinzufügen
+    newUser.setPassword(hashedPassword); // Hier ggf. Passwort-Hashing hinzufügen
     newUser.setRole(role);
 
     // Create the domain event
@@ -73,7 +81,7 @@ public class UserService {
   }
 
   private void validatePassword(String inputPassword, String storedPassword) {
-    if (!inputPassword.equals(storedPassword)) {
+    if (!passwordEncoder.matches(inputPassword, storedPassword)) {
       throw new WrongUserInputException("Das eingegebene Passwort ist falsch.");
     }
   }
