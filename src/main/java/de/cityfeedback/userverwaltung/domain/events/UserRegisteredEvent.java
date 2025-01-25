@@ -9,16 +9,16 @@ import lombok.Setter;
 @Setter
 @Getter
 @AllArgsConstructor
-public class UserLoggedInEvent {
+public class UserRegisteredEvent {
 
   Long userId;
+  String username;
   String email;
-  String userName;
   // String password;
   Role role;
-  private final Instant registeredAt;
+  private final Instant loggedInAt;
 
-  public UserLoggedInEvent(long id, String userName, String email, Role role) {
-    this.registeredAt = Instant.now();
+  public UserRegisteredEvent(long id, String username, String email, Role role) {
+    this.loggedInAt = Instant.now();
   }
 }
