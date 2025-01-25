@@ -1,6 +1,6 @@
 create table USER
 (
-    USER_ID  INT not null PRIMARY KEY,
+    USER_ID  INT not null AUTO_INCREMENT PRIMARY KEY,
     NAME     VARCHAR(256) not null,
     EMAIL    VARCHAR(256) not null,
     PASSWORD VARCHAR(256) not null,

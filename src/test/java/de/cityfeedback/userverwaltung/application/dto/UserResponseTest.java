@@ -11,10 +11,11 @@ class UserResponseTest {
 
   @Test
   void fromUser_createsUserResponseSuccessfully() {
-    User user = new User(1L, "email@test.de", "password123", Role.EMPLOYEE, "testName");
+    // User user = new User(1L, "email@test.de", "password123", Role.EMPLOYEE, "testName");
+    User user = new User("email@test.de", "password123", Role.EMPLOYEE, "testName");
     UserResponse userResponse = UserResponse.fromUser(user);
 
-    assertEquals(1L, userResponse.userId());
+    //assertEquals(1L, userResponse.userId());
     assertEquals("testName", userResponse.userName());
     assertEquals("email@test.de", userResponse.email());
     // assertEquals("password123", userResponse.password());

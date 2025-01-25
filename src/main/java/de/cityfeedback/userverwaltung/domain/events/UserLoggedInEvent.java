@@ -13,12 +13,12 @@ public class UserLoggedInEvent {
 
   Long userId;
   String email;
-  String username;
-  String password;
+  String userName;
+  // String password;
   Role role;
-  private final Instant loggedInAt;
+  private final Instant registeredAt;
 
-  public UserLoggedInEvent(long id, String email, String Password, Role role, String Name) {
-    this.loggedInAt = Instant.now();
+  public UserLoggedInEvent(long id, String userName, String email, Role role) {
+    this.registeredAt = Instant.now();
   }
 }

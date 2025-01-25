@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 
 import de.cityfeedback.exception.WrongUserInputException;
 import de.cityfeedback.userverwaltung.domain.model.User;
+import de.cityfeedback.userverwaltung.domain.valueobject.Role;
 import de.cityfeedback.userverwaltung.infrastructure.repositories.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +37,8 @@ public class UserServiceTest {
 
   @BeforeEach
   void setup() {
-    mockUser = new User(10L, VALID_EMAIL, VALID_PASSWORD, CITIZEN, "testemployee1");
+    // mockUser = new User(10L, VALID_EMAIL, VALID_PASSWORD, CITIZEN, "testemployee1");
+    mockUser = new User(VALID_EMAIL, VALID_PASSWORD, CITIZEN, "testemployee1");
   }
 
   @Test
@@ -88,7 +90,7 @@ public class UserServiceTest {
     List<User> mockUsers = new ArrayList<>();
     for (int i = 0; i < 1000; i++) {
       mockUsers.add(
-          new User((long) i, "user" + i + "@test.de", VALID_PASSWORD, CITIZEN, "user" + i));
+          new User(/*(long) i, */ "user" + i + "@test.de", VALID_PASSWORD, CITIZEN, "user" + i));
     }
     mockUsers.add(mockUser);
 
@@ -134,4 +136,63 @@ public class UserServiceTest {
     assertEquals("Benutzer nicht gefunden.", exception.getMessage());
     verify(userRepository, times(1)).findById(userId);
   }
+
+   @Test
+  public void testRegisterUser_whenEmailIsAlreadyUsed_shouldThrowException() {
+    // Arrange: Mock the behavior of the userRepository
+    String email = "alreadyUsedEmail@example.com";
+    when(userRepository.findByEmail(email)).thenReturn(Optional.of(new User()));
+
+    // Act & Assert: Test the method and check that it throws a WrongUserInputException
+    WrongUserInputException exception =
+        assertThrows(
+            WrongUserInputException.class,
+            () -> {
+              userService.registerUser("username", email, "Password123!", Role.CITIZEN);
+            });
+
+    assertEquals("E-Mail-Adresse wird bereits verwendet.", exception.getMessage());
+  }
+
+  @Test
+  public void testRegisterUser_whenEmailIsNotUsed_shouldCreateAndSaveUser() {
+    // Arrange: Prepare data and mock repository methods
+    String email = "newEmail@example.com";
+    when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+    User newUser = new User();
+    newUser.setUserName("username");
+    newUser.setEmail(email);
+    newUser.setPassword("Password123!");
+    newUser.setRole(Role.CITIZEN);
+
+    when(userRepository.save(any(User.class))).thenReturn(newUser);
+
+    // Act: Call the registerUser method
+    User savedUser = userService.registerUser("username", email, "Password123!", Role.CITIZEN);
+
+    // Assert: Verify the repository methods were called, and the user was created
+    verify(userRepository).findByEmail(email);
+    verify(userRepository).save(any(User.class));
+    assertEquals("username", savedUser.getUserName());
+    assertEquals(email, savedUser.getEmail());
+    assertEquals(Role.CITIZEN, savedUser.getRole());
+  }
+
+
+  @Test
+  public void testRegisterUser_whenPasswordIsInvalid_shouldThrowException() {
+    // Arrange: Define an invalid password
+    String email = "validEmail@example.com";
+    when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+    String invalidPassword = "short"; // A password that does not meet the requirements
+
+    // Act & Assert: Verify the method throws an exception due to invalid password
+    assertThrows(WrongUserInputException.class, () -> {
+      userService.registerUser("username", email, invalidPassword, Role.CITIZEN);
+    });
+  }
+
+
 }

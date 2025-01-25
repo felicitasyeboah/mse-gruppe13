@@ -44,7 +44,7 @@ class UserControllerTest {
   @Test
   void login_withValidCredentials_returnsSuccessResponse() throws Exception {
     String email = "email@test.de";
-    String password = "password123";
+    String password = "Password/123";
     User mockUser = new User();
     mockUser.setId(1L);
     mockUser.setUserName("testuser");
@@ -83,7 +83,7 @@ class UserControllerTest {
     mockMvc
         .perform(post("/user/login").param("email", email).param("password", invalidPassword))
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.message").value("Bitte Passwort eingeben."));
+        .andExpect(jsonPath("$.message").value("Das Passwort muss folgende Anforderungen erfüllen: Mindestens 8 Zeichen und maximal 20 Zeichen lang, mindestens ein Großbuchstabe, mindestens ein Kleinbuchstabe, mindestens eine Zahl, mindestens ein Sonderzeichen (z.B. !@#$%^&*())."));
   }
 
   @Test
