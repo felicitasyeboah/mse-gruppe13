@@ -11,7 +11,7 @@ public class WebConfig implements WebMvcConfigurer {
     registry
         .addMapping("/**") // Allow all paths
         .allowedOrigins("http://localhost:4200") // Angular app URL
-        .allowedMethods("GET", "POST", "PUT", "DELETE")
+        .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
         .allowedHeaders("*")
         .allowCredentials(true);
   }

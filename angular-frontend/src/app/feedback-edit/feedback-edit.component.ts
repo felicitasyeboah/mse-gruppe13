@@ -1,14 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {JsonPipe, NgIf} from '@angular/common';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {ApiResponse, ApiService, UpdateRequest} from '../services/api.service';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-feedback-edit',
   imports: [
-    JsonPipe,
-    NgIf,
     FormsModule,
     ReactiveFormsModule
   ],
@@ -25,11 +22,13 @@ export class FeedbackEditComponent implements OnInit {
   };
   responseMessage: string | null = null; // Holds the success or error message
   isError = false; // Indicates if the message is an error
-  itemId: string | null = null;
+  stringId: string | null = null;
+  itemId: number | null = null;
 
   constructor(
     private route: ActivatedRoute,
-    private apiService: ApiService
+    private apiService: ApiService,
+    private router: Router
   ) {}
 
   updateFeedback(): void {
@@ -38,6 +37,7 @@ export class FeedbackEditComponent implements OnInit {
         console.log('Feedback updated successfully:', response);
         this.responseMessage = response.message; // Set success message
         this.isError = false;
+        this.router.navigate(['/all-open']);
       },
       error: (error) => {
         console.error('Error updating feedback:', error);
@@ -51,12 +51,15 @@ export class FeedbackEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(paramMap => {
-      this.itemId = paramMap.get('id'); // Extrahiert den Wert von :id
+      this.stringId = paramMap.get('id'); // Extrahiert den Wert von :id
+      const {stringId: stringId1} = this;
+      // @ts-ignore
+      this.itemId = +stringId1;
       if (this.itemId == null) {
         return console.error('Der Wert für :id ist kein gültiger Wert.');
       }
 
     });
-    this.response = this.apiService.getFeedbackById(this.itemId);
+    this.response = this.apiService.getFeedbackById(this.stringId);
   }
 }

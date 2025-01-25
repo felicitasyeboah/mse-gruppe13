@@ -6,13 +6,13 @@
 </head>
 <body>
 <p> Test :) </p>
-<div *ngIf="response">
+<!--<div *ngIf="response">
   <pre>{{ response.data | json }}</pre>
   <h1>{{ response.data.title }}</h1>
   <p>Kategorie: {{ response.data.category }}</p>
   <p>Inhalt: {{ response.data.content }}</p>
   <p>Status: {{ response.data.status }}</p>
-</div>
+</div>-->
 <form (ngSubmit)="updateFeedback()" #feedbackForm="ngForm">
   <!-- Comment Input -->
   <label for="comment">Antwort zum Feedback:</label>
