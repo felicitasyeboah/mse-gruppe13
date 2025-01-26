@@ -1,10 +1,10 @@
 package de.cityfeedback.feedbackverwaltung.application.services;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.cityfeedback.feedbackverwaltung.application.dto.UserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class UserCacheServiceTest {
 
