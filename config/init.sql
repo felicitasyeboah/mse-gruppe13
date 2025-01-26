@@ -6,7 +6,6 @@ create table USER
     PASSWORD VARCHAR(256) not null,
     ROLE ENUM('EMPLOYEE', 'CITIZEN')
 );
-
 create table FEEDBACK
 (
     FEEDBACK_ID INT not null AUTO_INCREMENT primary key,
