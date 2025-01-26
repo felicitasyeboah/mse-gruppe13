@@ -2,9 +2,9 @@ package de.cityfeedback.feedbackverwaltung.application.services;
 
 import de.cityfeedback.feedbackverwaltung.application.dto.FeedbackDto;
 import de.cityfeedback.feedbackverwaltung.application.dto.UserDto;
+import de.cityfeedback.feedbackverwaltung.domain.events.FeedbackCreatedEvent;
 import de.cityfeedback.feedbackverwaltung.domain.model.Feedback;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.*;
-import de.cityfeedback.feedbackverwaltung.events.FeedbackCreatedEvent;
 import de.cityfeedback.feedbackverwaltung.infrastructure.repositories.FeedbackRepository;
 import de.cityfeedback.shared.events.FeedbackUpdatedEvent;
 import jakarta.persistence.EntityNotFoundException;
@@ -138,8 +138,8 @@ public class FeedbackService {
     return FeedbackDto.of(feedback, citizen, employee);
   }
 
+  // find all feedbacks that are not in status closed
   public List<FeedbackDto> findAllOpenFeedbacks() {
-    // find all feedbacks that are not in status closed
     return feedbackRepository.findAllByStatusNot(FeedbackStatus.CLOSED).stream()
         .map(
             feedback -> {

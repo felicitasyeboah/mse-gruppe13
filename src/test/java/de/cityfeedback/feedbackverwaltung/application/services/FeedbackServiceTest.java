@@ -6,12 +6,12 @@ import static org.mockito.Mockito.*;
 
 import de.cityfeedback.feedbackverwaltung.application.dto.FeedbackDto;
 import de.cityfeedback.feedbackverwaltung.application.dto.UserDto;
+import de.cityfeedback.feedbackverwaltung.domain.events.FeedbackCreatedEvent;
 import de.cityfeedback.feedbackverwaltung.domain.model.Feedback;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.CitizenId;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.EmployeeId;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackCategory;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackStatus;
-import de.cityfeedback.feedbackverwaltung.events.FeedbackCreatedEvent;
 import de.cityfeedback.feedbackverwaltung.infrastructure.repositories.FeedbackRepository;
 import de.cityfeedback.shared.events.FeedbackUpdatedEvent;
 import java.util.List;

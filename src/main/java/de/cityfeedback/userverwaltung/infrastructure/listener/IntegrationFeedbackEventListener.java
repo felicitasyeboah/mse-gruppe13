@@ -1,4 +1,4 @@
-package de.cityfeedback.userverwaltung.domain.listener;
+package de.cityfeedback.userverwaltung.infrastructure.listener;
 
 import de.cityfeedback.shared.events.FeedbackUpdatedEvent;
 import de.cityfeedback.userverwaltung.application.services.EmailService;
@@ -10,12 +10,12 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 @Component("userFeedbackEventListener")
-public class FeedbackEventListener {
+public class IntegrationFeedbackEventListener {
   private final UserService userService;
   private final EmailService emailService;
-  Logger logger = LoggerFactory.getLogger(FeedbackEventListener.class);
+  public Logger logger = LoggerFactory.getLogger(IntegrationFeedbackEventListener.class);
 
-  public FeedbackEventListener(UserService userService, EmailService emailService) {
+  public IntegrationFeedbackEventListener(UserService userService, EmailService emailService) {
     this.userService = userService;
     this.emailService = emailService;
   }

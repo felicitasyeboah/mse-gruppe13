@@ -1,4 +1,4 @@
-package de.cityfeedback.feedbackverwaltung.events;
+package de.cityfeedback.feedbackverwaltung.domain.events;
 
 import de.cityfeedback.shared.events.DomainEvent;
 import java.time.LocalDateTime;

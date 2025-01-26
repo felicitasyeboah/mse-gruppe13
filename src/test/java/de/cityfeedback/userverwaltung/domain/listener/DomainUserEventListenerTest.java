@@ -6,6 +6,7 @@ import de.cityfeedback.shared.events.FeedbackUpdatedEvent;
 import de.cityfeedback.userverwaltung.application.services.EmailService;
 import de.cityfeedback.userverwaltung.application.services.UserService;
 import de.cityfeedback.userverwaltung.domain.model.User;
+import de.cityfeedback.userverwaltung.infrastructure.listener.IntegrationFeedbackEventListener;
 import jakarta.mail.MessagingException;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,13 +18,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 
 @ExtendWith(MockitoExtension.class)
-class FeedbackEventListenerTest {
+class DomainUserEventListenerTest {
 
   @Mock private UserService userService;
   @Mock private EmailService emailService;
   @Mock private Logger logger;
 
-  @InjectMocks private FeedbackEventListener feedbackEventListener;
+  @InjectMocks private IntegrationFeedbackEventListener integrationFeedbackEventListener;
 
   private FeedbackUpdatedEvent feedbackUpdatedEvent;
   private User user;
@@ -39,14 +40,14 @@ class FeedbackEventListenerTest {
     user.setEmail("john.doe@example.com");
 
     // Inject the mocked logger into the FeedbackEventListener
-    feedbackEventListener.logger = logger;
+    integrationFeedbackEventListener.logger = logger;
   }
 
   @Test
   void handleFeedbackUpdatedEvent_ShouldSendEmail() throws MessagingException {
     when(userService.findUserById(101L)).thenReturn(user);
 
-    feedbackEventListener.handleFeedbackUpdatedEvent(feedbackUpdatedEvent);
+    integrationFeedbackEventListener.handleFeedbackUpdatedEvent(feedbackUpdatedEvent);
 
     verify(emailService, times(1))
         .sendFeedbackUpdatedEmail(
@@ -62,7 +63,7 @@ class FeedbackEventListenerTest {
         .when(emailService)
         .sendFeedbackUpdatedEmail(anyString(), anyString(), anyString());
 
-    feedbackEventListener.handleFeedbackUpdatedEvent(feedbackUpdatedEvent);
+    integrationFeedbackEventListener.handleFeedbackUpdatedEvent(feedbackUpdatedEvent);
 
     verify(logger, times(1)).error(contains("Error sending email: Email service unavailable"));
   }
@@ -71,7 +72,7 @@ class FeedbackEventListenerTest {
   void handleFeedbackUpdatedEvent_ShouldNotSendEmailWhenUserNotFound() throws MessagingException {
     when(userService.findUserById(101L)).thenReturn(null);
 
-    feedbackEventListener.handleFeedbackUpdatedEvent(feedbackUpdatedEvent);
+    integrationFeedbackEventListener.handleFeedbackUpdatedEvent(feedbackUpdatedEvent);
 
     verify(emailService, never()).sendFeedbackUpdatedEmail(anyString(), anyString(), anyString());
   }

@@ -2,7 +2,6 @@ package de.cityfeedback.feedbackverwaltung.domain.events;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.cityfeedback.feedbackverwaltung.events.FeedbackCreatedEvent;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 

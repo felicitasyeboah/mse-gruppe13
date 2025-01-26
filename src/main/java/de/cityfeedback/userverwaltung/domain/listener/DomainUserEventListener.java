@@ -5,7 +5,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserEventListener {
+public class DomainUserEventListener {
 
   @EventListener
   public void handleUserLoggedInEvent(UserLoggedInEvent event) {
