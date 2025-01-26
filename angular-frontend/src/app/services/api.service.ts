@@ -81,6 +81,18 @@ export class ApiService {
       { params },
     );
   }
+  register(
+    username: string,
+    email: string,
+    password: string,
+  ): Observable<ApiResponse> {
+    const params = new HttpParams()
+      .set('userName', username) // Sende die Parameter in der URL statt im Body
+      .set('email', email)
+      .set('password', password);
+    const url = `${this.userEndpoint}/register`;
+    return this.http.post<ApiResponse>(url, {}, { params });
+  }
 }
 
 /**

@@ -6,14 +6,11 @@ import { AuthGuard } from './shared/auth.guard';
 import { FeedbackFormComponent } from './feedback-form/feedback-form.component';
 import { FeedbackEditComponent } from './feedback-edit/feedback-edit.component';
 import { FeedbackDetailComponent } from './feedback-detail/feedback-detail.component';
+import { RegisterComponent } from './register/register.component';
 
 export const routes: Routes = [
-  // { path: '', component: LoginComponent },
-  // { path: 'feedback-list', component: FeedbackListComponent },
-  // { path: 'feedback/all-open', component: OpenFeedbackComponent },
-  // { path: '**', redirectTo: '' },
-
   { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
   {
     path: 'feedback-form',
     component: FeedbackFormComponent,
