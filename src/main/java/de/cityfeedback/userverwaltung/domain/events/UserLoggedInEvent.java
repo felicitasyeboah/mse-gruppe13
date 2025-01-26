@@ -3,9 +3,11 @@ package de.cityfeedback.userverwaltung.domain.events;
 import de.cityfeedback.shared.events.DomainEvent;
 import de.cityfeedback.userverwaltung.domain.valueobject.Role;
 import java.time.Instant;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+@AllArgsConstructor
 @Setter
 @Getter
 public class UserLoggedInEvent extends DomainEvent {
