@@ -21,7 +21,6 @@ export class OpenFeedbackComponent implements OnInit {
 
   ngOnInit(): void {
     // Call the service method to fetch data
-    // TODO: If User Role = Admin, then ...
     this.apiService.fetchOpenFeedbacks().subscribe(
       (response) => {
         this.response = response; // Handle the successful response
