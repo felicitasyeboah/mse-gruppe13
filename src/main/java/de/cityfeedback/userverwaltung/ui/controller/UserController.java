@@ -1,5 +1,6 @@
 package de.cityfeedback.userverwaltung.ui.controller;
 
+import de.cityfeedback.exception.WrongUserInputException;
 import de.cityfeedback.shared.dto.ApiResponse;
 import de.cityfeedback.shared.validator.Validation;
 import de.cityfeedback.userverwaltung.application.dto.UserResponse;
@@ -41,37 +42,6 @@ public class UserController {
     return ResponseEntity.ok(new ApiResponse(null, userResponse));
   }
 
-  /*@PostMapping("/register")
-  public ResponseEntity<?> register(
-      @RequestParam String userName, @RequestParam String email, @RequestParam String password)
-        // @RequestParam Role role)
-      {
-   /* try {
-      User newUser = userService.registerUser(userName, email, password, Role.CITIZEN);
-      return ResponseEntity.status(HttpStatus.CREATED)
-          .body(Map.of("message", "Registrierung erfolgreich.", "data", newUser));
-    } catch (WrongUserInputException ex) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", ex.getMessage()));
-    }*/
-  /*
-    try {
-    User newUser = userService.registerUser(userName, email, password, Role.CITIZEN);
-
-    // Mapping zum DTO
-    UserResponseDto responseDto = new UserResponseDto(
-            newUser.getId(),
-            newUser.getUserName(),
-            newUser.getEmail(),
-            newUser.getRole()
-    );
-
-    return ResponseEntity.status(HttpStatus.CREATED)
-            .body(Map.of("message", "Registrierung erfolgreich.", "data", responseDto));
-  } catch (WrongUserInputException ex) {
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", ex.getMessage()));
-  }
-  }*/
-
   @PostMapping("/register")
   public ResponseEntity<ApiResponse> register(
       @RequestParam String userName, @RequestParam String email, @RequestParam String password) {
@@ -93,7 +63,10 @@ public class UserController {
 
   private void validateLoginInput(String email, String password) {
     Validation.validateEmail(email);
-    Validation.validatePassword(password);
+    if (password == null || password.equals("")) {
+      throw new WrongUserInputException("Bitte Passwort eingeben.");
+    }
+    //Validation.validatePassword(password);
   }
 
   private void validateRegisterInput(String userName, String email, String password) {
