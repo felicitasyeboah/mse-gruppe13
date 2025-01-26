@@ -6,13 +6,13 @@
 </head>
 <body>
 <section id="feedbackedit">
-  <h1>{{ response.data[feedbackId].title }}</h1>
+<!--  <h1>{{ response.data[feedbackId].title }}</h1>
 <div *ngIf="response.data[feedbackId]">
   <h1>{{ response.data[feedbackId].title }}</h1>
   <p>Kategorie: {{ response.data[feedbackId].category }}</p>
   <p>Inhalt: {{ response.data[feedbackId].content }}</p>
   <p>Status: {{ response.data[feedbackId].status }}</p>
-</div>
+</div>-->
 <form (ngSubmit)="updateFeedback()" #feedbackForm="ngForm">
   <!-- Comment Input -->
   <label for="comment">Antwort zum Feedback:</label>
