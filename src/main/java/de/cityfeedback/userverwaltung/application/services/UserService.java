@@ -28,7 +28,7 @@ public class UserService {
   }
 
   public User authenticateUser(String email, String password) {
-    System.out.println("Authenticating user with email: " + email + ", password: " + password);
+    System.out.println("Authenticating user with email: " + email /*+ ", password: " + password*/);
     User user = findUserByEmail(email);
 
     validatePassword(password, user.getPassword());

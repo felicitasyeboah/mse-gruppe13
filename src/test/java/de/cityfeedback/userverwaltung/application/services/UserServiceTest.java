@@ -42,7 +42,6 @@ public class UserServiceTest {
 
   @BeforeEach
   void setup() {
-    // mockUser = new User(10L, VALID_EMAIL, VALID_PASSWORD, CITIZEN, "testemployee1");
     mockUser = new User(VALID_EMAIL, HASHED_PASSWORD, CITIZEN, "testemployee1");
   }
 
@@ -56,6 +55,19 @@ public class UserServiceTest {
     assertNotNull(result, "Login should succeed with correct credentials");
     verify(userRepository, times(1)).findByEmail(VALID_EMAIL);
     verify(passwordEncoder, times(1)).matches(VALID_PASSWORD, HASHED_PASSWORD);
+  }
+
+  @Test
+  public void shouldFailLoginWhenUserNotFound() {
+    when(userRepository.findByEmail(INVALID_EMAIL)).thenReturn(Optional.empty());
+
+    Exception exception =
+        assertThrows(
+            NoSuchElementException.class,
+            () -> userService.authenticateUser(INVALID_EMAIL, VALID_PASSWORD));
+
+    assertEquals("Kein Nutzer mit dieser E-Mail-Adresse.", exception.getMessage());
+    verify(userRepository, times(1)).findByEmail(INVALID_EMAIL);
   }
 
   @Test
