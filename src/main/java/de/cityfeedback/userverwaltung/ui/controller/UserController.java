@@ -66,7 +66,7 @@ public class UserController {
     if (password == null || password.equals("")) {
       throw new WrongUserInputException("Bitte Passwort eingeben.");
     }
-    //Validation.validatePassword(password);
+    // Validation.validatePassword(password);
   }
 
   private void validateRegisterInput(String userName, String email, String password) {
