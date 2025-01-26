@@ -5,13 +5,14 @@ import static org.mockito.Mockito.*;
 
 import de.cityfeedback.feedbackverwaltung.application.dto.UserDto;
 import de.cityfeedback.feedbackverwaltung.application.services.UserCacheService;
-import de.cityfeedback.feedbackverwaltung.application.services.UserServiceClient;
 import de.cityfeedback.feedbackverwaltung.events.FeedbackCreatedEvent;
 import de.cityfeedback.shared.events.FeedbackUpdatedEvent;
+import de.cityfeedback.shared.events.UserRegisteredEvent;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -20,12 +21,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class FeedbackEventListenerTest {
 
   @Mock private UserCacheService userCacheService;
-  @Mock private UserServiceClient userServiceClient;
 
   @InjectMocks private FeedbackEventListener feedbackEventListener;
 
   private FeedbackCreatedEvent feedbackCreatedEvent;
   private FeedbackUpdatedEvent feedbackUpdatedEvent;
+  private UserRegisteredEvent userRegisteredEvent;
 
   @BeforeEach
   void setUp() {
@@ -40,38 +41,49 @@ class FeedbackEventListenerTest {
             LocalDateTime.now());
 
     feedbackUpdatedEvent =
-        new FeedbackUpdatedEvent(1L, 101L, 202L, "test titel", LocalDateTime.now(), "IN_PROGRESS");
+        new FeedbackUpdatedEvent(1L, 101L, 202L, "test title", LocalDateTime.now(), "IN_PROGRESS");
+
+    userRegisteredEvent =
+        new UserRegisteredEvent(
+            1L, "John Doe", "john.doe@example.com", "CITIZEN", LocalDateTime.now());
   }
 
   @Test
   void handleFeedbackCreatedEvent_ShouldReturnExpectedMessage() {
-    UserDto userDto = new UserDto(101L, "John Doe", "john.doe@example.com", "CITIZEN");
-    when(userCacheService.getUserFromCache(101L)).thenReturn(null);
-    when(userServiceClient.fetchUserById(101L)).thenReturn(userDto);
-
     String result = feedbackEventListener.handleFeedbackCreatedEvent(feedbackCreatedEvent);
-
     assertEquals("A new feedback has been created: 1 - Pothole on Main Street", result);
-    verify(userCacheService, times(1)).getUserFromCache(101L);
-    verify(userServiceClient, times(1)).fetchUserById(101L);
-    verify(userCacheService, times(1)).cacheUser(userDto);
   }
 
   @Test
   void handleFeedbackUpdatedEvent_ShouldReturnExpectedMessage() {
-    UserDto citizenDto = new UserDto(101L, "John Doe", "john.doe@example.com", "CITIZEN");
-    UserDto employeeDto = new UserDto(202L, "Jane Smith", "jane.smith@example.com", "EMPLOYEE");
-    when(userServiceClient.fetchUserById(101L)).thenReturn(citizenDto);
-    when(userServiceClient.fetchUserById(202L)).thenReturn(employeeDto);
-
     String result = feedbackEventListener.handleFeedbackUpdatedEvent(feedbackUpdatedEvent);
-
     assertEquals(
         "Feedback with id: 1 has been updated at: "
             + feedbackUpdatedEvent.getUpdatedAt()
             + " to status: IN_PROGRESS",
         result);
-    verify(userServiceClient, times(1)).fetchUserById(101L);
-    verify(userServiceClient, times(1)).fetchUserById(202L);
+  }
+
+  @Test
+  void handleUserRegisteredEvent_ShouldCacheUserAndReturnExpectedMessage() {
+    ArgumentCaptor<UserDto> userCaptor = ArgumentCaptor.forClass(UserDto.class);
+
+    String result = feedbackEventListener.handleUserRegisteredEvent(userRegisteredEvent);
+
+    verify(userCacheService, times(1)).cacheUser(userCaptor.capture());
+    UserDto capturedUser = userCaptor.getValue();
+
+    assertEquals(1L, capturedUser.getUserId());
+    assertEquals("John Doe", capturedUser.getUserName());
+    assertEquals("john.doe@example.com", capturedUser.getEmail());
+    assertEquals("CITIZEN", capturedUser.getRole());
+
+    assertEquals(
+        "Benutzerdaten wurden aktualisiert regi: EventId "
+            + userRegisteredEvent.getEventId()
+            + " - Event occured on:"
+            + userRegisteredEvent.getEventOccurredOn()
+            + " - userName: John Doe - userEmail: john.doe@example.com - userRole: CITIZEN - userId:1",
+        result);
   }
 }

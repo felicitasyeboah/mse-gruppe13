@@ -1,6 +1,6 @@
 package de.cityfeedback.shared.events;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,13 +14,13 @@ public class UserRegisteredEvent extends DomainEvent {
   String username;
   String email;
   String role;
-  private final Instant registeredAt;
+  private final LocalDateTime registeredAt;
 
   public UserRegisteredEvent(long id, String username, String email, String role) {
     this.userId = id;
     this.username = username;
     this.email = email;
     this.role = role;
-    this.registeredAt = Instant.now();
+    this.registeredAt = LocalDateTime.now();
   }
 }
