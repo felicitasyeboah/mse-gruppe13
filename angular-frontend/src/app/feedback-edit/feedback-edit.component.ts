@@ -3,14 +3,13 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {ApiResponse, ApiService, UpdateRequest} from '../services/api.service';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {AuthService} from '../services/auth.service';
-import {JsonPipe, NgIf} from '@angular/common';
+import {NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-feedback-edit',
   imports: [
     FormsModule,
     ReactiveFormsModule,
-    JsonPipe,
     NgIf
   ],
   templateUrl: './feedback-edit.component.html',
@@ -27,7 +26,7 @@ export class FeedbackEditComponent implements OnInit {
   responseMessage: string | null = null; // Holds the success or error message
   isError = false; // Indicates if the message is an error
   stringId: string | null = null;
-  itemId: number | null = null;
+  feedbackId: number | null = null;
   employee: any | null = null;
   employeeId: number | null = null;
 
@@ -38,6 +37,29 @@ export class FeedbackEditComponent implements OnInit {
     private router: Router
   ) {}
 
+  ngOnInit(): void {
+    /*this.route.paramMap.subscribe(paramMap => {
+      this.stringId = paramMap.get('id'); // Extrahiert den Wert von :id
+      const {stringId: stringId1} = this;
+      // @ts-expect-error Da ID übernommen werden soll
+      this.itemId = 0 + stringId1;
+      if (this.itemId == null) {
+        return console.error('Der Wert für :id ist kein gültiger Wert.');
+      }
+
+    });*/
+    this.route.paramMap.subscribe(params => {
+      this.stringId = params.get('id'); // Extrahiert den Wert von :id
+      const id = params.get('id');
+      if (id) {
+        this.feedbackId = +id; // String zu Zahl konvertieren
+        console.log('Feedback ID:', this.feedbackId);
+      }
+    });
+    console.log('Feedback ID:', this.feedbackId);
+    this.response = this.apiService.getFeedbackById(this.stringId);
+  }
+
   updateFeedback(): void {
 
     this.employee = this.authService.getUser();
@@ -45,9 +67,8 @@ export class FeedbackEditComponent implements OnInit {
     if (this.employeeId != null) {
       this.feedback.userId = this.employeeId;
     }
-
     this.feedback.userRole = <string>this.authService.getUserRole()?.toUpperCase();
-    this.apiService.updateFeedback(this.itemId, this.feedback).subscribe({
+    this.apiService.updateFeedback(this.feedbackId, this.feedback).subscribe({
       next: (response: ApiResponse) => {
         console.log('Feedback updated successfully:', response);
         this.responseMessage = response.message; // Set success message
@@ -62,19 +83,5 @@ export class FeedbackEditComponent implements OnInit {
         this.isError = true;
       },
     });
-  }
-
-  ngOnInit(): void {
-    this.route.paramMap.subscribe(paramMap => {
-      this.stringId = paramMap.get('id'); // Extrahiert den Wert von :id
-      const {stringId: stringId1} = this;
-      // @ts-expect-error Da ID übernommen werden soll
-      this.itemId = +stringId1;
-      if (this.itemId == null) {
-        return console.error('Der Wert für :id ist kein gültiger Wert.');
-      }
-
-    });
-    this.response = this.apiService.getFeedbackById(this.stringId);
   }
 }
