@@ -9,30 +9,74 @@ public record FeedbackDto(
     String content,
     String category,
     Long citizenId,
+    String citizenName,
+    String citizenEmail,
     Long employeeId,
+    String employeeName,
+    String employeeEmail,
     String comment,
     String status,
     LocalDateTime createdAt,
     LocalDateTime updatedAt) {
 
+  public FeedbackDto(String title, String content, Long citizenId, String categoryName) {
+    this(
+        null,
+        title,
+        content,
+        categoryName,
+        citizenId,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null);
+  }
+
   public FeedbackDto(
       String title,
       String content,
       Long citizenId,
+      String citizenName,
+      String citizenEmail,
       String comment,
       String categoryName,
-      Long employeeId) {
-    this(null, title, content, categoryName, citizenId, employeeId, comment, null, null, null);
+      Long employeeId,
+      String employeeName,
+      String employeeEmail) {
+    this(
+        null,
+        title,
+        content,
+        categoryName,
+        citizenId,
+        citizenName,
+        citizenEmail,
+        employeeId,
+        employeeName,
+        employeeEmail,
+        comment,
+        null,
+        null,
+        null);
   }
 
-  public static FeedbackDto fromFeedback(Feedback feedback) {
+  public static FeedbackDto of(Feedback feedback, UserDto citizen, UserDto employee) {
     return new FeedbackDto(
         feedback.getId(),
         feedback.getTitle(),
         feedback.getContent(),
         feedback.getCategory().getCategoryName(),
         feedback.getCitizenId().citizenId(),
+        citizen != null ? citizen.getUserName() : null,
+        citizen != null ? citizen.getEmail() : null,
         feedback.getEmployeeId() != null ? feedback.getEmployeeId().employeeId() : null,
+        feedback.getEmployeeId() != null ? employee.getUserName() : null,
+        feedback.getEmployeeId() != null ? employee.getEmail() : null,
         feedback.getComment(),
         feedback.getStatus().getStatusName(),
         feedback.getCreatedAt(),

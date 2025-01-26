@@ -43,7 +43,7 @@ class FeedbackRepositoryTest {
   @Test
   void shouldUpdateFeedbackTimestamp() {
     Feedback feedback = new Feedback();
-    feedback.setId(1L);
+    // feedback.setId(1L);
     when(feedbackRepository.updateFeedback(feedback)).thenReturn(feedback);
 
     Feedback result = feedbackRepository.updateFeedback(feedback);
@@ -54,7 +54,7 @@ class FeedbackRepositoryTest {
   @Test
   void shouldThrowExceptionWhenUpdatingNonExistentFeedback() {
     Feedback feedback = new Feedback();
-    feedback.setId(999L);
+    // feedback.setId(999L);
     when(feedbackRepository.updateFeedback(feedback))
         .thenThrow(new IllegalArgumentException("Feedback not found"));
 

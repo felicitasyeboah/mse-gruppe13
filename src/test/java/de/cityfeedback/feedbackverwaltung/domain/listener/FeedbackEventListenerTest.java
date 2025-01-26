@@ -1,39 +1,35 @@
 package de.cityfeedback.feedbackverwaltung.domain.listener;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
-import de.cityfeedback.feedbackverwaltung.domain.events.FeedbackCreatedEvent;
-import de.cityfeedback.feedbackverwaltung.domain.events.FeedbackUpdatedEvent;
+import de.cityfeedback.feedbackverwaltung.application.dto.UserDto;
+import de.cityfeedback.feedbackverwaltung.application.services.UserCacheService;
+import de.cityfeedback.feedbackverwaltung.application.services.UserServiceClient;
+import de.cityfeedback.feedbackverwaltung.events.FeedbackCreatedEvent;
+import de.cityfeedback.shared.events.FeedbackUpdatedEvent;
 import java.time.LocalDateTime;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 class FeedbackEventListenerTest {
 
-  @Autowired private ApplicationEventPublisher eventPublisher;
+  @Mock private UserCacheService userCacheService;
+  @Mock private UserServiceClient userServiceClient;
 
-  @MockBean private FeedbackEventListener eventListener;
+  @InjectMocks private FeedbackEventListener feedbackEventListener;
 
-  @Configuration
-  static class TestConfig {
-    @Bean
-    public FeedbackEventListener feedbackCreatedEventListener() {
-      return new FeedbackEventListener();
-    }
-  }
+  private FeedbackCreatedEvent feedbackCreatedEvent;
+  private FeedbackUpdatedEvent feedbackUpdatedEvent;
 
-  @Test
-  void testHandleFeedbackCreatedEvent() {
-    // Arrange: Create a sample FeedbackCreatedEvent
-    FeedbackCreatedEvent event =
+  @BeforeEach
+  void setUp() {
+    feedbackCreatedEvent =
         new FeedbackCreatedEvent(
             1L,
             "Infrastructure",
@@ -43,22 +39,39 @@ class FeedbackEventListenerTest {
             "Pending",
             LocalDateTime.now());
 
-    // Act: Publish the event
-    eventPublisher.publishEvent(event);
-
-    // Assert: Verify that the event listener's method was called once with the event
-    verify(eventListener, times(1)).handleFeedbackCreatedEvent(event);
+    feedbackUpdatedEvent =
+        new FeedbackUpdatedEvent(1L, 101L, 202L, "test titel", LocalDateTime.now(), "IN_PROGRESS");
   }
 
   @Test
-  void handleFeedbackUpdatedEvent_ShouldBeCalled_WhenEventIsPublished() {
-    // Arrange: Create a sample FeedbackUpdatedEvent
-    FeedbackUpdatedEvent event = new FeedbackUpdatedEvent(1L, LocalDateTime.now(), "IN_PROGRESS");
+  void handleFeedbackCreatedEvent_ShouldReturnExpectedMessage() {
+    UserDto userDto = new UserDto(101L, "John Doe", "john.doe@example.com", "CITIZEN");
+    when(userCacheService.getUserFromCache(101L)).thenReturn(null);
+    when(userServiceClient.fetchUserById(101L)).thenReturn(userDto);
 
-    // Act: Publish the event
-    eventPublisher.publishEvent(event);
+    String result = feedbackEventListener.handleFeedbackCreatedEvent(feedbackCreatedEvent);
 
-    // Assert: Verify that the event listener's method was called once with the event
-    verify(eventListener, times(1)).handleFeedbackUpdatedEvent(event);
+    assertEquals("A new feedback has been created: 1 - Pothole on Main Street", result);
+    verify(userCacheService, times(1)).getUserFromCache(101L);
+    verify(userServiceClient, times(1)).fetchUserById(101L);
+    verify(userCacheService, times(1)).cacheUser(userDto);
+  }
+
+  @Test
+  void handleFeedbackUpdatedEvent_ShouldReturnExpectedMessage() {
+    UserDto citizenDto = new UserDto(101L, "John Doe", "john.doe@example.com", "CITIZEN");
+    UserDto employeeDto = new UserDto(202L, "Jane Smith", "jane.smith@example.com", "EMPLOYEE");
+    when(userServiceClient.fetchUserById(101L)).thenReturn(citizenDto);
+    when(userServiceClient.fetchUserById(202L)).thenReturn(employeeDto);
+
+    String result = feedbackEventListener.handleFeedbackUpdatedEvent(feedbackUpdatedEvent);
+
+    assertEquals(
+        "Feedback with id: 1 has been updated at: "
+            + feedbackUpdatedEvent.getUpdatedAt()
+            + " to status: IN_PROGRESS",
+        result);
+    verify(userServiceClient, times(1)).fetchUserById(101L);
+    verify(userServiceClient, times(1)).fetchUserById(202L);
   }
 }

@@ -9,9 +9,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import lombok.Getter;
-import lombok.Setter;
 
-@Setter
 @Getter
 @Entity
 @Table(name = "FEEDBACK")
@@ -57,8 +55,6 @@ public class Feedback {
   @Column(name = "UPDATED_AT")
   private LocalDateTime updatedAt;
 
-  // Getters and Setters
-
   // Constructor for creation
   public Feedback(String title, String content, FeedbackCategory category, CitizenId citizenId) {
     this.title = title;
@@ -94,7 +90,7 @@ public class Feedback {
     return Objects.hash(title, content, category, citizenId, employeeId, comment, status);
   }
 
-  // Business methods
+  // Domain logic
   public void assignToEmployee(EmployeeId employeeId) {
     this.employeeId = employeeId;
     this.status = FeedbackStatus.IN_PROGRESS;

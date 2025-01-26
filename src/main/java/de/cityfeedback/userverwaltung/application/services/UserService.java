@@ -1,8 +1,8 @@
 package de.cityfeedback.userverwaltung.application.services;
 
 import de.cityfeedback.exception.WrongUserInputException;
+import de.cityfeedback.shared.events.UserRegisteredEvent;
 import de.cityfeedback.shared.validator.Validation;
-import de.cityfeedback.userverwaltung.domain.events.UserRegisteredEvent;
 import de.cityfeedback.userverwaltung.domain.model.User;
 import de.cityfeedback.userverwaltung.domain.valueobject.Role;
 import de.cityfeedback.userverwaltung.infrastructure.repositories.UserRepository;
@@ -34,7 +34,8 @@ public class UserService {
     validatePassword(password, user.getPassword());
 
     UserRegisteredEvent event =
-        new UserRegisteredEvent(user.getId(), user.getUserName(), user.getEmail(), user.getRole());
+        new UserRegisteredEvent(
+            user.getId(), user.getUserName(), user.getEmail(), user.getRole().name());
 
     eventPublisher.publishEvent(event);
     return user;
@@ -61,7 +62,7 @@ public class UserService {
     // Create the domain event
     UserRegisteredEvent event =
         new UserRegisteredEvent(
-            newUser.getId(), newUser.getUserName(), newUser.getEmail(), newUser.getRole());
+            newUser.getId(), newUser.getUserName(), newUser.getEmail(), newUser.getRole().name());
 
     // Publish the event
     eventPublisher.publishEvent(event);
