@@ -1,22 +1,23 @@
 import { Component, OnInit } from '@angular/core';
-import {NgForOf, NgIf} from '@angular/common';
-import {ApiService} from '../services/api.service';
-import {Router} from '@angular/router';
+import { NgForOf, NgIf } from '@angular/common';
+import { ApiService } from '../services/api.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-open-feedback',
-  imports: [
-    NgForOf,
-    NgIf
-  ],
+  imports: [NgForOf, NgIf],
   templateUrl: './open-feedback.component.html',
-  styleUrl: './open-feedback.component.css'
+  styleUrl: './open-feedback.component.css',
+  standalone: true,
 })
 export class OpenFeedbackComponent implements OnInit {
   response: any; // to store the fetched data
   errorMessage = ''; // to store any error message
 
-  constructor(private apiService: ApiService, private router: Router) {}
+  constructor(
+    private apiService: ApiService,
+    private router: Router,
+  ) {}
 
   ngOnInit(): void {
     // Call the service method to fetch data
@@ -35,5 +36,4 @@ export class OpenFeedbackComponent implements OnInit {
   goToEdit(id: string): void {
     this.router.navigate(['/feedback', id]);
   }
-
 }

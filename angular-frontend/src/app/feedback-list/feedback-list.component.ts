@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-feedback-list',
   imports: [CommonModule],
+  standalone: true,
   templateUrl: './feedback-list.component.html',
   styleUrl: './feedback-list.component.css',
 })
@@ -13,7 +14,10 @@ export class FeedbackListComponent implements OnInit {
   response: any; // to store the fetched data
   errorMessage = ''; // to store any error message
 
-  constructor(private apiService: ApiService, private router: Router) {}
+  constructor(
+    private apiService: ApiService,
+    private router: Router,
+  ) {}
 
   ngOnInit(): void {
     // Call the service method to fetch data
@@ -21,7 +25,7 @@ export class FeedbackListComponent implements OnInit {
     this.apiService.fetchUserFeedbacks(userId).subscribe(
       (response) => {
         this.response = response; // Handle the successful response
-        console.log(this.response);
+        console.log('response', this.response);
       },
       (error) => {
         this.errorMessage = error.message; // Handle the error
@@ -29,7 +33,6 @@ export class FeedbackListComponent implements OnInit {
       },
     );
   }
-
 
   goToDetail(id: string): void {
     this.router.navigate(['/feedback/detail', id]);

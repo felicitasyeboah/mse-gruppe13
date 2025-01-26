@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 export class ApiService {
   private readonly baseUrl = 'http://localhost:8081'; // Base API URL
   private readonly feedbackEndpoint = `${this.baseUrl}/feedback`; // Feedback endpoint URL
+  private readonly userEndpoint = `${this.baseUrl}/user`; // Login endpoint URL
 
   constructor(private http: HttpClient) {}
 
@@ -48,18 +49,37 @@ export class ApiService {
     const detailFeedbackUrl = `${this.feedbackEndpoint}/${feedbackId}`;
     return this.http.get<any>(detailFeedbackUrl);
   }
-/**
- * Updates a specific feedback from a specific user.
- * @returns An Observable of the feedbacks.
- * @param feedbackId
- * @param feedback
- */
-updateFeedback(feedbackId: number | null, feedback: UpdateRequest): Observable<any> {
-  const headers = new HttpHeaders({'Content-Type': 'application/json'});
-  const updateFeedbackUrl = `${this.feedbackEndpoint}/${feedbackId}`;
-  return this.http.patch<ApiResponse>(updateFeedbackUrl, feedback, {
-    headers,
+  /**
+   * Updates a specific feedback from a specific user.
+   * @returns An Observable of the feedbacks.
+   * @param feedbackId
+   * @param feedback
+   */
+  updateFeedback(
+    feedbackId: number | null,
+    feedback: UpdateRequest,
+  ): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const updateFeedbackUrl = `${this.feedbackEndpoint}/${feedbackId}`;
+    return this.http.patch<ApiResponse>(updateFeedbackUrl, feedback, {
+      headers,
     });
+  }
+  /**
+   * Logs in a user.
+   * @param email - The email of the user.
+   * @param password - The password of the user.
+   * @returns An Observable of the API response.
+   */
+  login(email: string, password: string): Observable<ApiResponse> {
+    const params = new HttpParams() // Sende die Parameter in der URL statt im Body
+      .set('email', email)
+      .set('password', password);
+    return this.http.post<ApiResponse>(
+      `${this.userEndpoint}/login`,
+      {},
+      { params },
+    );
   }
 }
 

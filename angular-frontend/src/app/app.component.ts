@@ -10,15 +10,20 @@ import { CommonModule } from '@angular/common'; // Import des CommonModule
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
   standalone: true,
-  imports: [CommonModule, NavbarComponent, ImpressumComponent, RouterModule, RouterOutlet]  // Remove the duplicate CommonModule
+  imports: [
+    CommonModule,
+    NavbarComponent,
+    ImpressumComponent,
+    RouterModule,
+    RouterOutlet,
+  ], // Remove the duplicate CommonModule
 })
 export class AppComponent implements OnInit {
   title = 'angular-frontend';
-  isLoggedIn = false;
 
   constructor(private authService: AuthService) {}
 
   ngOnInit() {
-    this.isLoggedIn = this.authService.getUserStatus();  // Verwende getUserStatus() hier
+    this.authService.clearStorage();
   }
 }

@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-feedback-form',
   imports: [FormsModule, CommonModule],
+  standalone: true,
   templateUrl: './feedback-form.component.html',
   styleUrl: './feedback-form.component.css',
 })
