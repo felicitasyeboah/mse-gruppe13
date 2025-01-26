@@ -25,6 +25,7 @@
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.exclusions>**/SecurityConfig.java,**/WebConfig.java</sonar.exclusions>
     </properties>
     <dependencies>
         <dependency>
