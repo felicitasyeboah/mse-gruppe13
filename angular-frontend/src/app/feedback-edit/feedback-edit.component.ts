@@ -67,7 +67,7 @@ export class FeedbackEditComponent implements OnInit {
     if (this.employeeId != null) {
       this.feedback.userId = this.employeeId;
     }
-    this.feedback.userRole = <string>this.authService.getUserRole()?.toUpperCase();
+    this.feedback.userRole = this.authService.getUserRole()?.toUpperCase() as string;
     this.apiService.updateFeedback(this.feedbackId, this.feedback).subscribe({
       next: (response: ApiResponse) => {
         console.log('Feedback updated successfully:', response);
