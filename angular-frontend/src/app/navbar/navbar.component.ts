@@ -27,27 +27,21 @@ export class NavbarComponent {
     this.authService.logout();
     this.router.navigate(['/login']);
   }
+  hasAccess(route: string): boolean {
+    const userRole = this.getUserRole();
+    if (!userRole) {
+      return false;
+    }
 
+    const roleAccessMap = {
+      employee: ['/feedback/all-open', '/feedback/detail', '/feedback/edit'],
+      citizen: ['/feedback-form', '/feedback-list'],
+    };
+
+    //@ts-expect-error TS7053
+    return roleAccessMap[userRole]?.includes(route) ?? false;
+  }
   navigateTo(route: string) {
-    //const userRole = this.getUserRole();
-
-    // if (userRole === 'citizen' && route === '/feedback-example') {
-    //   this.toastr.error(
-    //     'You do not have permission to access this page.',
-    //     'Access Denied',
-    //   );
-    //   return;
-    // } else if (
-    //   userRole === 'employee' &&
-    //   (route === '/feedback-form' || route === '/feedback-list')
-    // ) {
-    //   this.toastr.error(
-    //     'You do not have permission to access this page.',
-    //     'Access Denied',
-    //   );
-    //   return;
-    // }
-
     this.router.navigate([route]);
   }
 }

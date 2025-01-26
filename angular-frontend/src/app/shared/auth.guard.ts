@@ -40,7 +40,6 @@ export class AuthGuard implements CanActivate {
       console.error(this.accessDeniedMessage, 'Access Denied');
       alert(this.accessDeniedMessage);
       //this.toastr.error(this.accessDeniedMessage, 'Access Denied');
-      this.router.navigate(['/']);
       return false;
     }
 
@@ -53,7 +52,7 @@ export class AuthGuard implements CanActivate {
    * @param url - The URL the user is trying to access.
    * @returns true if access is denied, false otherwise.
    */
-  private isAccessDenied(userRole: string, url: string): boolean {
+  public isAccessDenied(userRole: string, url: string): boolean {
     const roleAccessMap = {
       citizen: ['/feedback/all-open', '/feedback/detail', '/feedback/edit'],
       employee: ['/feedback-form', '/feedback-list'],
