@@ -1,15 +1,14 @@
 package de.cityfeedback.feedbackverwaltung.application.dto;
 
 import de.cityfeedback.userverwaltung.domain.model.User;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class UserDto {
   private Long userId;
   private String userName;
