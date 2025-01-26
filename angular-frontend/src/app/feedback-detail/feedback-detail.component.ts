@@ -1,15 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import {ApiService, FeedbackRequest} from '../services/api.service';
-import {JsonPipe, NgIf} from '@angular/common';
+import { ApiService, FeedbackRequest } from '../services/api.service';
+import { JsonPipe, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-feedback-detail',
-  imports: [
-    NgIf,
-    JsonPipe
-  ],
+  imports: [NgIf, JsonPipe],
   templateUrl: './feedback-detail.component.html',
+  standalone: true,
 })
 export class FeedbackDetailComponent implements OnInit {
   response: any;
@@ -22,7 +20,7 @@ export class FeedbackDetailComponent implements OnInit {
   responseMessage: string | null = null; // Holds the success or error message
   constructor(
     private route: ActivatedRoute,
-    private apiService: ApiService
+    private apiService: ApiService,
   ) {}
 
   ngOnInit(): void {

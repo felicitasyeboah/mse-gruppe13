@@ -2,9 +2,10 @@
     <img src="https://cdn-icons-png.flaticon.com/512/3131/3131333.png" alt="Logo" class="responsive-logo" style="filter: brightness(0) invert(1);">
     <div class="logo">Feedbackportal</div>
     <div class="menu">
-      <a routerLink="/feedback-form">Feedback schreiben</a>
-      <a routerLink="/feedback-list">Feedback anzeigen</a>
-      <a routerLink="/feedback/all-open">Offene Anfragen</a>
-      <a href="#login">Ausloggen</a>
+      <a *ngIf="!isLoggedIn()" routerLink="/login">Login</a>
+      <a *ngIf="isLoggedIn() && hasAccess('/feedback-form')" (click)="navigateTo('/feedback-form')">Feedback schreiben</a>
+      <a *ngIf="isLoggedIn() && hasAccess('/feedback-list')" (click)="navigateTo('/feedback-list')">Feedback anzeigen</a>
+      <a *ngIf="isLoggedIn() && hasAccess('/feedback/all-open')" (click)="navigateTo('/feedback/all-open')">Offene Anfragen</a>
+      <a *ngIf="isLoggedIn()" (click)="logout()">Ausloggen</a>
     </div>
 </div>

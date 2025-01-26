@@ -24,9 +24,8 @@ create table FEEDBACK
 
 -- TABLE USER
 INSERT INTO `devdb`.USER (USER.USER_ID, NAME, EMAIL, PASSWORD, ROLE) VALUES (1,'testcitizen1', 'citizen1@test.de', '$2a$12$znjk1AGFeBDLNQm1PEVdUOCb/jg6gXSZQZZLdM6bE1GszxzMrdnSC', 'citizen');
-INSERT INTO `devdb`.USER (USER.USER_ID, NAME, EMAIL, PASSWORD, ROLE) VALUES (99,'felicitas', 'felictias.yeboah@stud.th-luebeck.de', '$2a$12$FUgnBqub8Yp.POnTJLyUCegx71PxXbOFm5wxPtg/DK6aATzXtX5kO', 'citizen');
 INSERT INTO `devdb`.USER (USER.USER_ID, NAME, EMAIL, PASSWORD, ROLE) VALUES (10,'testemployee1', 'employee1@test.de', '$2a$12$cWSE4neZ1LajB3A0y4GQueenim1swXytVI1HFLaNf.Rz2t006Npn2', 'employee');
-
+INSERT INTO `devdb`.USER (NAME, EMAIL, PASSWORD, ROLE) VALUES ('felicitas', 'felictias.yeboah@stud.th-luebeck.de', '$2a$12$FUgnBqub8Yp.POnTJLyUCegx71PxXbOFm5wxPtg/DK6aATzXtX5kO', 'citizen');
 
 INSERT INTO `devdb`.FEEDBACK(CATEGORY, TITLE, CONTENT, CITIZEN_ID, EMPLOYEE_ID, COMMENT, STATUS, CREATED_AT, UPDATED_AT)
 VALUES (

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { ApiResponse } from '../models/api-response.model'; // Dein Model importieren
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ApiService } from '../services/api.service';
 
 @Component({
   selector: 'app-login',
@@ -15,29 +16,59 @@ import { CommonModule } from '@angular/common';
 export class LoginComponent {
   email = '';
   password = '';
-  errorMessage = '';
+  msg = '';
 
   constructor(
+    private apiService: ApiService,
+    //private toastrService: ToastrService,
     private authService: AuthService,
     private router: Router,
   ) {}
 
   onLogin(): void {
-    if (!this.email || !this.password) {
-      this.errorMessage = 'Bitte alle Felder ausfüllen.';
-      return;
-    }
-
-    this.authService.login(this.email, this.password).subscribe({
+    this.apiService.login(this.email, this.password).subscribe({
       next: (response: ApiResponse) => {
-        if (response.message === 'Erfolgreich eingeloggt.') {
-          this.authService.handleLoginResponse(response); // Weiterleitung basierend auf der Rolle
-        }
+        // Weiterleitung basierend auf der Rolle
+        this.handleLoginSuccess(response);
       },
-      error: () => {
-        this.errorMessage =
-          'Login fehlgeschlagen. Bitte überprüfe deine Anmeldedaten.';
+      error: (error) => {
+        this.handleLoginError(error);
       },
     });
+  }
+
+  private handleLoginSuccess(response: ApiResponse) {
+    this.msg = response.message;
+    //this.toastrService.success(response.message, 'Success');
+    const user = response.data;
+
+    // Store user information in localStorage
+    this.authService.setUser(user);
+
+    // Determine next steps based on user role
+    if (user.role.toLowerCase() === 'citizen') {
+      this.handleCitizenRole(user);
+    } else if (user.role.toLowerCase() === 'employee') {
+      this.router.navigate(['/feedback/all-open']);
+    }
+  }
+  private handleLoginError(error: any) {
+    this.msg = error.error?.message || 'An unknown error occurred';
+    //const errorMessage = error.error?.message || 'An unknown error occurred';
+    // this.toastrService.error(errorMessage, 'Error');
+  }
+  private handleCitizenRole(user: any) {
+    this.apiService.fetchUserFeedbacks(user.userId).subscribe(
+      (feedbackResponse: ApiResponse) => {
+        const hasFeedbacks =
+          feedbackResponse.data && feedbackResponse.data.length > 0;
+        const nextRoute = hasFeedbacks ? '/feedback-list' : '/feedback-form';
+        this.router.navigate([nextRoute]);
+      },
+      (error: any) => {
+        this.msg = 'Error ' + error.error?.message;
+        //this.toastrService.error(error.error?.message, 'Error');
+      },
+    );
   }
 }
