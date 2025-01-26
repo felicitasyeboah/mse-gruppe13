@@ -13,11 +13,14 @@ import { CommonModule } from '@angular/common';
   imports: [FormsModule, CommonModule],
 })
 export class LoginComponent {
-  email: string = '';
-  password: string = '';
-  errorMessage: string = '';
+  email = '';
+  password = '';
+  errorMessage = '';
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+  ) {}
 
   onLogin(): void {
     if (!this.email || !this.password) {
@@ -31,9 +34,10 @@ export class LoginComponent {
           this.authService.handleLoginResponse(response); // Weiterleitung basierend auf der Rolle
         }
       },
-      error: (err) => {
-        this.errorMessage = 'Login fehlgeschlagen. Bitte überprüfe deine Anmeldedaten.';
-      }
+      error: () => {
+        this.errorMessage =
+          'Login fehlgeschlagen. Bitte überprüfe deine Anmeldedaten.';
+      },
     });
   }
 }

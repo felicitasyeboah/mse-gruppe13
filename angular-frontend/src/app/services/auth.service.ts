@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../models/api-response.model';
 import { Router } from '@angular/router';
-import { tap } from 'rxjs/operators';  // Importiere tap
+import { tap } from 'rxjs/operators'; // Importiere tap
 
 @Injectable({
   providedIn: 'root',
@@ -11,17 +11,18 @@ import { tap } from 'rxjs/operators';  // Importiere tap
 export class AuthService {
   private readonly loginUrl = 'http://localhost:8081/user/login'; // Login-URL des Backends
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+  ) {}
 
   login(email: string, password: string): Observable<ApiResponse> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const params = { email, password }; // Sende die Parameter in der URL statt im Body
-    return this.http.post<ApiResponse>(this.loginUrl, null, { headers, params })
-      .pipe(
-        tap((response: ApiResponse) => this.handleLoginResponse(response))
-      );
+    return this.http
+      .post<ApiResponse>(this.loginUrl, null, { headers, params })
+      .pipe(tap((response: ApiResponse) => this.handleLoginResponse(response)));
   }
-  
 
   handleLoginResponse(response: ApiResponse): void {
     const user = response.data;
@@ -41,7 +42,7 @@ export class AuthService {
   logout(): void {
     // Entfernt den Benutzer aus dem localStorage
     localStorage.removeItem('user');
-    
+
     // Leitet zur Login-Seite weiter
     this.router.navigate(['']);
   }
