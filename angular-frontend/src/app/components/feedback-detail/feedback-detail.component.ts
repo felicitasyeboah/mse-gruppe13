@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ApiService, FeedbackRequest } from '../services/api.service';
+import { ApiService, FeedbackRequest } from '../../services/api.service';
 import { JsonPipe, NgIf } from '@angular/common';
 
 @Component({

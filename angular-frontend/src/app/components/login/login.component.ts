@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
-import { ApiResponse } from '../models/api-response.model'; // Dein Model importieren
+import { ApiResponse } from '../../models/api-response.model'; // Dein Model importieren
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ApiService } from '../services/api.service';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-login',

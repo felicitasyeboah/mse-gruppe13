@@ -2,11 +2,11 @@ package de.cityfeedback.feedbackverwaltung.domain.model;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.cityfeedback.exception.WrongUserInputException;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.CitizenId;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.EmployeeId;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackCategory;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackStatus;
+import de.cityfeedback.shared.exception.WrongUserInputException;
 import org.junit.jupiter.api.Test;
 
 class FeedbackTest {

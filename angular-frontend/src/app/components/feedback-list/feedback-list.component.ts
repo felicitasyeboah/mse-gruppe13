@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { NgForOf, NgIf } from '@angular/common';
-import { ApiService } from '../services/api.service';
+import { ApiService } from '../../services/api.service';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-open-feedback',
-  imports: [NgForOf, NgIf],
-  templateUrl: './open-feedback.component.html',
-  styleUrl: './open-feedback.component.css',
+  selector: 'app-feedback-list',
+  imports: [CommonModule],
   standalone: true,
+  templateUrl: './feedback-list.component.html',
+  styleUrl: './feedback-list.component.css',
 })
-export class OpenFeedbackComponent implements OnInit {
+export class FeedbackListComponent implements OnInit {
   response: any; // to store the fetched data
   errorMessage = ''; // to store any error message
 
@@ -21,11 +21,11 @@ export class OpenFeedbackComponent implements OnInit {
 
   ngOnInit(): void {
     // Call the service method to fetch data
-    // TODO: If User Role = Admin, then ...
-    this.apiService.fetchOpenFeedbacks().subscribe(
+    const userId = 1; // TODO: get the user id from the logged in user
+    this.apiService.fetchUserFeedbacks(userId).subscribe(
       (response) => {
         this.response = response; // Handle the successful response
-        console.log(this.response);
+        console.log('response', this.response);
       },
       (error) => {
         this.errorMessage = error.message; // Handle the error
@@ -33,7 +33,8 @@ export class OpenFeedbackComponent implements OnInit {
       },
     );
   }
-  goToEdit(id: string): void {
-    this.router.navigate(['/feedback', id]);
+
+  goToDetail(id: string): void {
+    this.router.navigate(['/feedback/detail', id]);
   }
 }

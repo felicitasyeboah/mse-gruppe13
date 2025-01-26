@@ -1,9 +1,8 @@
-package de.cityfeedback.shared;
+package de.cityfeedback.shared.exception;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import de.cityfeedback.exception.WrongUserInputException;
 import de.cityfeedback.shared.dto.ApiResponse;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.NoSuchElementException;

@@ -11,7 +11,7 @@ import de.cityfeedback.feedbackverwaltung.application.dto.FeedbackUpdateRequest;
 import de.cityfeedback.feedbackverwaltung.application.services.FeedbackService;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackCategory;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackStatus;
-import de.cityfeedback.shared.GlobalExceptionHandler;
+import de.cityfeedback.shared.exception.GlobalExceptionHandler;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;

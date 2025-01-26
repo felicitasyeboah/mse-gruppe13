@@ -3,7 +3,7 @@ import {
   ApiResponse,
   ApiService,
   FeedbackRequest,
-} from '../services/api.service';
+} from '../../services/api.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 

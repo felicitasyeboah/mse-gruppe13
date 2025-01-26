@@ -1,16 +1,17 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {ApiResponse, ApiService, UpdateRequest} from '../services/api.service';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import {
+  ApiResponse,
+  ApiService,
+  UpdateRequest,
+} from '../../services/api.service';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-feedback-edit',
-  imports: [
-    FormsModule,
-    ReactiveFormsModule
-  ],
+  imports: [FormsModule, ReactiveFormsModule],
   templateUrl: './feedback-edit.component.html',
-  styleUrl: './feedback-edit.component.css'
+  styleUrl: './feedback-edit.component.css',
 })
 export class FeedbackEditComponent implements OnInit {
   response: any;
@@ -28,7 +29,7 @@ export class FeedbackEditComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private apiService: ApiService,
-    private router: Router
+    private router: Router,
   ) {}
 
   updateFeedback(): void {
@@ -50,15 +51,14 @@ export class FeedbackEditComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(paramMap => {
+    this.route.paramMap.subscribe((paramMap) => {
       this.stringId = paramMap.get('id'); // Extrahiert den Wert von :id
-      const {stringId: stringId1} = this;
+      const { stringId: stringId1 } = this;
       // @ts-expect-error Da ID übernommen werden soll
       this.itemId = +stringId1;
       if (this.itemId == null) {
         return console.error('Der Wert für :id ist kein gültiger Wert.');
       }
-
     });
     this.response = this.apiService.getFeedbackById(this.stringId);
   }

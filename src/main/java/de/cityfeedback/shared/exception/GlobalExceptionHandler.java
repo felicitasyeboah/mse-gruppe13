@@ -1,6 +1,5 @@
-package de.cityfeedback.shared;
+package de.cityfeedback.shared.exception;
 
-import de.cityfeedback.exception.WrongUserInputException;
 import de.cityfeedback.shared.dto.ApiResponse;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.NoSuchElementException;
