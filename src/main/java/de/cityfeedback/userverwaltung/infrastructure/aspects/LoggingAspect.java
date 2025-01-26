@@ -4,22 +4,27 @@ import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
 public class LoggingAspect {
 
-  @Pointcut("execution(* de.cityfeedback.userverwaltung.application.services.UserService.*(..))")
-  public void userServiceMethods() {}
+  private static final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
 
-  @Before("userServiceMethods()")
-  public void logMethodStart() {
-    System.out.println("Userlogin is starting...");
+  @Pointcut(
+      "execution(* de.cityfeedback.userverwaltung.application.services.UserService.authenticateUser(..))")
+  public void userLoginMethod() {}
+
+  @Before("userLoginMethod()")
+  public void logLoginStart() {
+    logger.info("User login process is starting...");
   }
 
-  @After("userServiceMethods()")
-  public void logMethodEnd() {
-    System.out.println("Userlogin has finished executing.");
+  @After("userLoginMethod()")
+  public void logLoginEnd() {
+    logger.info("User login process has finished executing.");
   }
 }

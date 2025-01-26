@@ -7,18 +7,21 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+@AllArgsConstructor
 @Setter
 @Getter
-@AllArgsConstructor
 public class UserLoggedInEvent extends DomainEvent {
-
-  Long userId;
-  String email;
-  String userName;
-  Role role;
+  private Long userId;
+  private String email;
+  private String userName;
+  private Role role;
   private final Instant registeredAt;
 
-  public UserLoggedInEvent(long id, String userName, String email, Role role) {
+  public UserLoggedInEvent(long userId, String userName, String email, Role role) {
+    this.userId = userId;
+    this.userName = userName;
+    this.email = email;
+    this.role = role;
     this.registeredAt = Instant.now();
   }
 }
