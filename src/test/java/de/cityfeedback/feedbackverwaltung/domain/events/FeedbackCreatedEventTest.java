@@ -2,30 +2,26 @@ package de.cityfeedback.feedbackverwaltung.domain.events;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import de.cityfeedback.feedbackverwaltung.events.FeedbackCreatedEvent;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
 class FeedbackCreatedEventTest {
 
   @Test
-  void testFeedbackCreatedEventInitialization() {
+  void feedbackCreatedEventInitialization() {
     Long feedbackId = 1L;
-    String category = "Beschwerde";
-    String title = "Schlagloch auf der Hauptstraße";
-    String content =
-        "In der Hauptstraße gibt es ein großes Schlagloch, das dringend behoben werden muss.";
+    String category = "Complaint";
+    String title = "Pothole on Main Street";
+    String content = "There is a large pothole on Main Street that needs urgent attention.";
     Long citizenId = 101L;
-    String status = "OFFEN";
+    String status = "OPEN";
     LocalDateTime createdAt = LocalDateTime.now();
 
-    // Create an instance of FeedbackCreatedEvent
     FeedbackCreatedEvent event =
         new FeedbackCreatedEvent(
             feedbackId, category, title, content, citizenId, status, createdAt);
 
-    // Assert that all fields are initialized correctly
     assertEquals(feedbackId, event.getFeedbackId());
     assertEquals(category, event.getCategory());
     assertEquals(title, event.getTitle());
@@ -36,27 +32,20 @@ class FeedbackCreatedEventTest {
   }
 
   @Test
-  void testFeedbackCreatedEventSettersAndGetters() {
-    FeedbackCreatedEvent event = new FeedbackCreatedEvent(null, null, null, null, null, null, null);
+  void feedbackCreatedEventSettersAndGetters() {
 
     Long feedbackId = 2L;
-    String category = "Anfrage";
-    String title = "Antrag auf Baumpflanzung";
-    String content = "Antrag auf Baumpflanzung im Gemeindepark.";
+    String category = "Request";
+    String title = "Tree Planting Request";
+    String content = "Request to plant trees in the community park.";
     Long citizenId = 202L;
-    String status = "OFFEN";
+    String status = "OPEN";
     LocalDateTime createdAt = LocalDateTime.now();
 
-    // Set values
-    event.setFeedbackId(feedbackId);
-    event.setCategory(category);
-    event.setTitle(title);
-    event.setContent(content);
-    event.setCitizenId(citizenId);
-    event.setStatus(status);
-    event.setCreatedAt(createdAt);
+    FeedbackCreatedEvent event =
+        new FeedbackCreatedEvent(
+            feedbackId, category, title, content, citizenId, status, createdAt);
 
-    // Assert that getters return the correct values
     assertEquals(feedbackId, event.getFeedbackId());
     assertEquals(category, event.getCategory());
     assertEquals(title, event.getTitle());
@@ -67,13 +56,13 @@ class FeedbackCreatedEventTest {
   }
 
   @Test
-  void testFeedbackCreatedEventToString() {
+  void feedbackCreatedEventToString() {
     Long feedbackId = 3L;
-    String category = "Sonstiges";
-    String title = "Klinik Öffnungszeiten";
-    String content = "Bitte verlängern Sie die Öffnungszeiten der Klinik an den Wochenenden.";
+    String category = "Other";
+    String title = "Clinic Hours";
+    String content = "Please extend the clinic hours on weekends.";
     Long citizenId = 303L;
-    String status = "OFFEN";
+    String status = "OPEN";
     LocalDateTime createdAt = LocalDateTime.now();
 
     FeedbackCreatedEvent event =
@@ -81,7 +70,7 @@ class FeedbackCreatedEventTest {
             feedbackId, category, title, content, citizenId, status, createdAt);
 
     String expectedString =
-        "FeedbackCreatedEvent(feedbackId=3, category=Sonstiges, title=Klinik Öffnungszeiten, content=Bitte verlängern Sie die Öffnungszeiten der Klinik an den Wochenenden., citizenId=303, status=OFFEN, createdAt="
+        "FeedbackCreatedEvent(feedbackId=3, category=Other, title=Clinic Hours, content=Please extend the clinic hours on weekends., citizenId=303, status=OPEN, createdAt="
             + createdAt
             + ")";
 

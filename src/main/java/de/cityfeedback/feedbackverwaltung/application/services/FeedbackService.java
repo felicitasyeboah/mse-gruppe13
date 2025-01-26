@@ -1,11 +1,12 @@
 package de.cityfeedback.feedbackverwaltung.application.services;
 
 import de.cityfeedback.feedbackverwaltung.application.dto.FeedbackDto;
-import de.cityfeedback.feedbackverwaltung.domain.events.FeedbackCreatedEvent;
-import de.cityfeedback.feedbackverwaltung.domain.events.FeedbackUpdatedEvent;
+import de.cityfeedback.feedbackverwaltung.application.dto.UserDto;
 import de.cityfeedback.feedbackverwaltung.domain.model.Feedback;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.*;
+import de.cityfeedback.feedbackverwaltung.events.FeedbackCreatedEvent;
 import de.cityfeedback.feedbackverwaltung.infrastructure.repositories.FeedbackRepository;
+import de.cityfeedback.shared.events.FeedbackUpdatedEvent;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import org.springframework.context.ApplicationEventPublisher;
@@ -16,15 +17,19 @@ import org.springframework.transaction.annotation.Transactional;
 public class FeedbackService {
   private final FeedbackRepository feedbackRepository;
   public final ApplicationEventPublisher eventPublisher;
+  private final UserServiceClient userServiceClient;
 
   public FeedbackService(
-      FeedbackRepository feedbackRepository, ApplicationEventPublisher eventPublisher) {
+      FeedbackRepository feedbackRepository,
+      ApplicationEventPublisher eventPublisher,
+      UserServiceClient userServiceClient) {
     this.feedbackRepository = feedbackRepository;
     this.eventPublisher = eventPublisher;
+    this.userServiceClient = userServiceClient;
   }
 
   @Transactional
-  public Feedback createFeedback(
+  public FeedbackDto createFeedback(
       String title, String content, Long citizenId, FeedbackCategory category) {
 
     Feedback feedback = new Feedback(title, content, category, new CitizenId(citizenId));
@@ -44,7 +49,9 @@ public class FeedbackService {
     // Publish the event
     eventPublisher.publishEvent(event);
 
-    return feedback;
+    UserDto citizen = userServiceClient.fetchUserById(citizenId);
+
+    return FeedbackDto.of(feedback, citizen, null);
   }
 
   public Feedback assignFeedbackToEmployee(Long feedbackId, Long employeeId) {
@@ -66,12 +73,22 @@ public class FeedbackService {
   }
 
   public List<FeedbackDto> findAllFeedbacksForCitizen(Long citizenId) {
-    List<Feedback> feedbacks = feedbackRepository.findAllByCitizenId(citizenId);
-    return feedbacks.stream().map(FeedbackDto::fromFeedback).toList();
+    return feedbackRepository.findAllByCitizenId(citizenId).stream()
+        .map(
+            feedback -> {
+              UserDto citizen =
+                  userServiceClient.fetchUserById(feedback.getCitizenId().citizenId());
+              UserDto employee =
+                  feedback.getEmployeeId() != null
+                      ? userServiceClient.fetchUserById(feedback.getEmployeeId().employeeId())
+                      : null;
+              return FeedbackDto.of(feedback, citizen, employee);
+            })
+        .toList();
   }
 
   @Transactional
-  public Feedback updateFeedback(
+  public FeedbackDto updateFeedback(
       Long feedbackId, String comment, Long userId, String userRole, String updateType) {
     Feedback feedback =
         feedbackRepository
@@ -79,9 +96,8 @@ public class FeedbackService {
             .orElseThrow(() -> new EntityNotFoundException("Feedback not found"));
 
     // Check if the employeeId matches the employeeId from the requested userId
-    if (feedback.getEmployeeId() != null
-        && !feedback.getEmployeeId().employeeId().equals(userId)
-        && !userRole.equals("EMPLOYEE")) {
+    if (feedback.getEmployeeId() != null && !feedback.getEmployeeId().employeeId().equals(userId)
+        || !userRole.equals("EMPLOYEE")) {
       throw new IllegalArgumentException(
           "Unauthorized to update this feedback. You are not the assigned employee or have not the role of an employee.");
     }
@@ -100,24 +116,54 @@ public class FeedbackService {
       default:
         throw new IllegalArgumentException("Invalid update type");
     }
+
+    feedback = feedbackRepository.save(feedback);
     // Create the domain event
     FeedbackUpdatedEvent event =
         new FeedbackUpdatedEvent(
-            feedback.getId(), feedback.getUpdatedAt(), feedback.getStatus().getStatusName());
+            feedback.getId(),
+            feedback.getCitizenId().citizenId(),
+            feedback.getEmployeeId().employeeId(),
+            feedback.getTitle(),
+            feedback.getUpdatedAt(),
+            feedback.getStatus().getStatusName());
     // Publish the event
     eventPublisher.publishEvent(event);
-    return feedbackRepository.save(feedback);
+
+    UserDto citizen = userServiceClient.fetchUserById(feedback.getCitizenId().citizenId());
+    UserDto employee =
+        feedback.getEmployeeId() != null
+            ? userServiceClient.fetchUserById(feedback.getEmployeeId().employeeId())
+            : null;
+    return FeedbackDto.of(feedback, citizen, employee);
   }
 
   public List<FeedbackDto> findAllOpenFeedbacks() {
     // find all feedbacks that are not in status closed
-    List<Feedback> feedbacks = feedbackRepository.findAllByStatusNot(FeedbackStatus.CLOSED);
-    return feedbacks.stream().map(FeedbackDto::fromFeedback).toList();
+    return feedbackRepository.findAllByStatusNot(FeedbackStatus.CLOSED).stream()
+        .map(
+            feedback -> {
+              UserDto citizen =
+                  userServiceClient.fetchUserById(feedback.getCitizenId().citizenId());
+              UserDto employee =
+                  feedback.getEmployeeId() != null
+                      ? userServiceClient.fetchUserById(feedback.getEmployeeId().employeeId())
+                      : null;
+              return FeedbackDto.of(feedback, citizen, employee);
+            })
+        .toList();
   }
 
-  public Feedback getFeedbackById(Long feedbackId) {
-    return feedbackRepository
-        .findById(feedbackId)
-        .orElseThrow(() -> new EntityNotFoundException("Feedback not found"));
+  public FeedbackDto getFeedbackById(Long feedbackId) {
+    Feedback feedback =
+        feedbackRepository
+            .findById(feedbackId)
+            .orElseThrow(() -> new EntityNotFoundException("Feedback not found"));
+    UserDto citizen = userServiceClient.fetchUserById(feedback.getCitizenId().citizenId());
+    UserDto employee =
+        feedback.getEmployeeId() != null
+            ? userServiceClient.fetchUserById(feedback.getEmployeeId().employeeId())
+            : null;
+    return FeedbackDto.of(feedback, citizen, employee);
   }
 }

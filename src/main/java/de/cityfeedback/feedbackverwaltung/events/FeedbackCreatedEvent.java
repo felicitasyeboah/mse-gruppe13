@@ -1,16 +1,15 @@
-package de.cityfeedback.feedbackverwaltung.domain.events;
+package de.cityfeedback.feedbackverwaltung.events;
 
+import de.cityfeedback.shared.events.DomainEvent;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 
-@Setter
 @Getter
 @AllArgsConstructor
 @ToString
-public class FeedbackCreatedEvent {
+public class FeedbackCreatedEvent extends DomainEvent {
   Long feedbackId;
   String category;
   String title;
