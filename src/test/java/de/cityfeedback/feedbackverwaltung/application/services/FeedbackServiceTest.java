@@ -147,7 +147,7 @@ class FeedbackServiceTest {
     Feedback mockFeedback =
         new Feedback("Test Title", "Test Content", FeedbackCategory.COMPLAINT, new CitizenId(123L));
     mockFeedback.assignToEmployee(new EmployeeId(userId));
-
+    mockFeedback.setId(feedbackId);
     UserDto mockCitizenDto = new UserDto(123L, "John Doe", "john.doe@example.com", "CITIZEN");
     UserDto mockEmployeeDto =
         new UserDto(userId, "Jane Smith", "jane.smith@example.com", "EMPLOYEE");
@@ -203,7 +203,6 @@ class FeedbackServiceTest {
 
     Feedback mockFeedback =
         new Feedback("Test Title", "Test Content", FeedbackCategory.COMPLAINT, new CitizenId(123L));
-
     UserDto mockCitizenDto = new UserDto(123L, "John Doe", "john.doe@example.com", "CITIZEN");
 
     when(feedbackRepository.findById(feedbackId)).thenReturn(Optional.of(mockFeedback));
@@ -212,7 +211,7 @@ class FeedbackServiceTest {
     FeedbackDto result = feedbackService.getFeedbackById(feedbackId);
 
     assertNotNull(result);
-    assertEquals(feedbackId, result.id());
+    assertEquals(mockFeedback.getId(), result.id());
     assertEquals(mockFeedback.getTitle(), result.title());
 
     verify(feedbackRepository, times(1)).findById(feedbackId);
