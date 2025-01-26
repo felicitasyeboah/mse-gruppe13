@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthService } from './services/auth.service';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './navbar/navbar.component';
@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common'; // Import des CommonModule
   standalone: true,
   imports: [CommonModule, NavbarComponent, ImpressumComponent, RouterModule, RouterOutlet]  // Remove the duplicate CommonModule
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'angular-frontend';
   isLoggedIn = false;
 
