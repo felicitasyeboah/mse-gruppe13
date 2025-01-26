@@ -87,6 +87,30 @@ public class ValidationTest {
         () -> Validation.validateFeedbackContent("A".repeat(501))); // Zu lang
   }
 
+  // Test für die Validierung des Kommentars
+  @Test
+  public void testValidateComment_Valid() {
+    // Gültige Kommentare (zwischen 3 und 200 Zeichen und entsprechen dem Muster)
+    assertDoesNotThrow(() -> Validation.validateComment("Kurzer Kommentar"));
+    assertDoesNotThrow(
+        () ->
+            Validation.validateComment(
+                "Das ist ein Testkommentar, der länger als 3 Zeichen und kürzer als 200 Zeichen lang ist."));
+  }
+
+  @Test
+  public void testValidateComment_Invalid() {
+    // Ungültige Kommentare
+    assertThrows(WrongUserInputException.class, () -> Validation.validateComment("")); // Zu kurz
+    assertThrows(WrongUserInputException.class, () -> Validation.validateComment("A")); // Zu kurz
+    assertThrows(
+        WrongUserInputException.class,
+        () -> Validation.validateComment("A".repeat(201))); // Zu lang
+    // assertThrows(WrongUserInputException.class, () -> Validation.validateComment("Das ist ein
+    // Testkommentar, der länger als 3 Zeichen und kürzer als 200 Zeichen lang ist.")); // Ungültige
+    // Zeichen (je nach EMPLOYEE_FEEDBACK Muster)
+  }
+
   /**
    * // Test für die Validierung der Kategorien @Test void testValidateCategory_Valid() { // Gültige
    * Kategorien assertDoesNotThrow(() -> Validation.validateCategory("Verkehr"));
