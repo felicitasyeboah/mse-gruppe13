@@ -6,23 +6,14 @@
 </head>
 <body>
 <p> Test :) </p>
-<div *ngIf="response">
+<!--<div *ngIf="response">
   <pre>{{ response.data | json }}</pre>
   <h1>{{ response.data.title }}</h1>
   <p>Kategorie: {{ response.data.category }}</p>
   <p>Inhalt: {{ response.data.content }}</p>
   <p>Status: {{ response.data.status }}</p>
-</div>
+</div>-->
 <form (ngSubmit)="updateFeedback()" #feedbackForm="ngForm">
-  <!-- Category Dropdown
-  <label for="category">Kategorie:</label>
-  <select id="category" name="category" [(ngModel)]="response.category">
-    <option value="" disabled selected>Bitte wählen</option>
-    <option value="Anfrage">Anfrage</option>
-    <option value="Beschwerde">Beschwerde</option>
-    <option value="Sonstiges">Sonstiges</option>
-  </select>-->
-
   <!-- Comment Input -->
   <label for="comment">Antwort zum Feedback:</label>
   <textarea
@@ -32,20 +23,8 @@
     [(ngModel)]="feedback.comment"
     placeholder="Kommentar eingeben"></textarea>
 
-  <!-- Feedback Content -->
-  <label for="content">Feedback:</label>
-  <textarea
-    id="content"
-    name="content"
-    [(ngModel)]="response.content"
-    rows="6"
-    placeholder="Beschwerde hier eingeben..."
-  ></textarea>
-
   <!-- Submit Button -->
   <button type="submit">Absenden</button>
 </form>
-<!-- Submit Button -->
-<button type="submit">Absenden</button>
 </body>
 </html>

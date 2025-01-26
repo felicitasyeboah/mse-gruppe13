@@ -45,17 +45,19 @@ export class ApiService {
    * @returns An Observable of the feedbacks.
    */
   getFeedbackById(feedbackId: string | null): Observable<any> {
-    const detailFeedbackUrl = `${this.feedbackEndpoint}/feedback/${feedbackId}`;
+    const detailFeedbackUrl = `${this.feedbackEndpoint}/${feedbackId}`;
     return this.http.get<any>(detailFeedbackUrl);
   }
 /**
- * Fetches a specific feedback from a specific user.
+ * Updates a specific feedback from a specific user.
  * @returns An Observable of the feedbacks.
+ * @param feedbackId
  * @param feedback
  */
-  updateFeedback(feedback: UpdateRequest): Observable<any> {
+updateFeedback(feedbackId: number | null, feedback: UpdateRequest): Observable<any> {
   const headers = new HttpHeaders({'Content-Type': 'application/json'});
-  return this.http.post<ApiResponse>(this.feedbackEndpoint, feedback, {
+  const updateFeedbackUrl = `${this.feedbackEndpoint}/${feedbackId}`;
+  return this.http.patch<ApiResponse>(updateFeedbackUrl, feedback, {
     headers,
     });
   }

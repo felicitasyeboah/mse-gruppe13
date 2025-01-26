@@ -10,6 +10,8 @@ public class Validation {
       "^[a-zA-Z0-9_]{3,20}$"; // Erlaubt Buchstaben, Zahlen und Unterstriche, Länge 3-20 Zeichen
   private static final String EMAIL_REGEX =
       "^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+[.][A-Za-z.]{2,}$"; // E-Mail-Validierung
+  private static final String PW_REGEX =
+      "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{}|;:'\",.<>?/])[A-Za-z\\d!@#$%^&*()_+\\-=\\[\\]{}|;:'\",.<>?/]{8,20}$";
   private static final String FEEDBACK_TITLE_REGEX =
       "^.{3,100}$"; // Titel muss zwischen 3 und 100 Zeichen lang sein
   private static final String FEEDBACK_DESCRIPTION_REGEX =
@@ -33,8 +35,12 @@ public class Validation {
 
   // Validierung des Passworts
   public static void validatePassword(String password) {
-    if (password == null || password.trim().isEmpty()) {
+    if (password == null) {
       throw new WrongUserInputException("Bitte Passwort eingeben.");
+    }
+    if (!Pattern.matches(PW_REGEX, password)) {
+      throw new WrongUserInputException(
+          "Das Passwort muss folgende Anforderungen erfüllen: Mindestens 8 Zeichen und maximal 20 Zeichen lang, mindestens ein Großbuchstabe, mindestens ein Kleinbuchstabe, mindestens eine Zahl, mindestens ein Sonderzeichen (z.B. !@#$%^&*()).");
     }
   }
 

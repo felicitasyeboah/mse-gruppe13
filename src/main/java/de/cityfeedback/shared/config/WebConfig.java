@@ -1,4 +1,4 @@
-package de.cityfeedback.shared;
+package de.cityfeedback.shared.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -11,7 +11,7 @@ public class WebConfig implements WebMvcConfigurer {
     registry
         .addMapping("/**") // Allow all paths
         .allowedOrigins("http://localhost:4200") // Angular app URL
-        .allowedMethods("GET", "POST", "PUT", "DELETE")
+        .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
         .allowedHeaders("*")
         .allowCredentials(true);
   }
