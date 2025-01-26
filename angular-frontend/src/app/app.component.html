@@ -1,10 +1,12 @@
-<!-- Navigation -->
-<app-navbar></app-navbar>
+<!-- Navigation: Wird nur angezeigt, wenn der Benutzer eingeloggt ist -->
+<app-navbar *ngIf="isLoggedIn"></app-navbar>
 <br>
 <br>
-<!-- Router Outlet -->
+
+<!-- Router Outlet: Hier werden die Seiteninhalte geladen -->
 <router-outlet></router-outlet>
 <br>
 <br>
+
 <!-- Impressum -->
 <app-impressum></app-impressum>

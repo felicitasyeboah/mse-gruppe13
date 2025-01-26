@@ -1,14 +1,24 @@
-import { Component } from '@angular/core';
-import { ImpressumComponent } from './impressum/impressum.component';
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from './services/auth.service';
+import { RouterModule, RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './navbar/navbar.component';
-import { RouterOutlet } from '@angular/router';
+import { ImpressumComponent } from './impressum/impressum.component';
+import { CommonModule } from '@angular/common'; // Import des CommonModule
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css',
-  imports: [NavbarComponent, ImpressumComponent, RouterOutlet],
+  styleUrls: ['./app.component.css'],
+  standalone: true,
+  imports: [CommonModule, NavbarComponent, ImpressumComponent, RouterModule, RouterOutlet]  // Remove the duplicate CommonModule
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'angular-frontend';
+  isLoggedIn = false;
+
+  constructor(private authService: AuthService) {}
+
+  ngOnInit() {
+    this.isLoggedIn = this.authService.getUserStatus();  // Verwende getUserStatus() hier
+  }
 }

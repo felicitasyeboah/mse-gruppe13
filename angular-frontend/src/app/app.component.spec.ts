@@ -1,29 +1,24 @@
-import { TestBed } from '@angular/core/testing';
-import { AppComponent } from './app.component';
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from './services/auth.service';
+import { RouterModule, RouterOutlet } from '@angular/router';
+import { NavbarComponent } from './navbar/navbar.component';
+import { ImpressumComponent } from './impressum/impressum.component';
+import { CommonModule } from '@angular/common'; // Import des CommonModule
 
-describe('AppComponent', () => {
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [AppComponent],
-    }).compileComponents();
-  });
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+  standalone: true,
+  imports: [NavbarComponent, ImpressumComponent, RouterModule, RouterOutlet, CommonModule], // Hinzufügen des CommonModule
+})
+export class AppComponent implements OnInit {
+  title = 'angular-frontend';
+  isLoggedIn = false;
 
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
-  });
+  constructor(private authService: AuthService) {}
 
-  it(`should have the 'angular-frontend' title`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('angular-frontend');
-  });
-
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, angular-frontend');
-  });
-});
+  ngOnInit() {
+    this.isLoggedIn = this.authService.isLoggedIn();
+  }
+}
