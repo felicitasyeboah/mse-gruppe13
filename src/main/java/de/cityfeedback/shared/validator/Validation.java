@@ -1,6 +1,6 @@
 package de.cityfeedback.shared.validator;
 
-import de.cityfeedback.exception.WrongUserInputException;
+import de.cityfeedback.shared.exception.WrongUserInputException;
 import java.util.regex.Pattern;
 
 public class Validation {

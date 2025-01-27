@@ -4,7 +4,7 @@ import static de.cityfeedback.userverwaltung.domain.valueobject.Role.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import de.cityfeedback.exception.WrongUserInputException;
+import de.cityfeedback.shared.exception.WrongUserInputException;
 import de.cityfeedback.userverwaltung.domain.model.User;
 import de.cityfeedback.userverwaltung.domain.valueobject.Role;
 import de.cityfeedback.userverwaltung.infrastructure.repositories.UserRepository;

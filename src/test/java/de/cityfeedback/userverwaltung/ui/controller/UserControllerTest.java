@@ -6,7 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import de.cityfeedback.shared.GlobalExceptionHandler;
+import de.cityfeedback.shared.exception.GlobalExceptionHandler;
 import de.cityfeedback.userverwaltung.application.services.UserService;
 import de.cityfeedback.userverwaltung.domain.model.User;
 import de.cityfeedback.userverwaltung.domain.valueobject.Role;

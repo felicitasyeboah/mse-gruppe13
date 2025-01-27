@@ -1,7 +1,7 @@
 package de.cityfeedback.userverwaltung.application.services;
 
-import de.cityfeedback.exception.WrongUserInputException;
 import de.cityfeedback.shared.events.UserRegisteredEvent;
+import de.cityfeedback.shared.exception.WrongUserInputException;
 import de.cityfeedback.shared.validator.Validation;
 import de.cityfeedback.userverwaltung.domain.model.User;
 import de.cityfeedback.userverwaltung.domain.valueobject.Role;
