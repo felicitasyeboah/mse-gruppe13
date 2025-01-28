@@ -7,7 +7,6 @@ import static org.mockito.Mockito.verify;
 import de.cityfeedback.feedbackverwaltung.application.dto.UserDto;
 import de.cityfeedback.feedbackverwaltung.application.services.UserCacheService;
 import de.cityfeedback.shared.events.UserRegisteredEvent;
-import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class ApplicationDomainUserEventListenerTest {
+class ApplicationUserEventListenerTest {
   @Mock private UserCacheService userCacheService;
 
   @InjectMocks private ApplicationUserEventListener applicationUserEventListener;
@@ -26,10 +25,8 @@ public class ApplicationDomainUserEventListenerTest {
 
   @BeforeEach
   void setUp() {
-
     userRegisteredEvent =
-        new UserRegisteredEvent(
-            1L, "John Doe", "john.doe@example.com", "CITIZEN", LocalDateTime.now());
+        new UserRegisteredEvent(1L, "John Doe", "john.doe@example.com", "CITIZEN");
   }
 
   @Test
@@ -47,7 +44,7 @@ public class ApplicationDomainUserEventListenerTest {
     assertEquals("CITIZEN", capturedUser.getRole());
 
     assertEquals(
-        "Benutzerdaten wurden aktualisiert regi: EventId "
+        "Benutzerdaten wurden aktualisiert: EventId "
             + userRegisteredEvent.getEventId()
             + " - Event occured on:"
             + userRegisteredEvent.getEventOccurredOn()

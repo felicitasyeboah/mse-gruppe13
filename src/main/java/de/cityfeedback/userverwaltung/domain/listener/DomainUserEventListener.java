@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class DomainUserEventListener {
 
   @EventListener
-  public void handleUserLoggedInEvent(UserLoggedInEvent event) {
-    System.out.println("Benutzer hat sich erfolgreich eingeloggt: " + event.getEmail());
+  public String handleUserLoggedInEvent(UserLoggedInEvent event) {
+    return "Authenticated user with email: " + event.getEmail();
   }
 }

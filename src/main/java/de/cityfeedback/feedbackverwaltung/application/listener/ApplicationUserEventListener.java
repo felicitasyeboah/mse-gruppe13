@@ -19,7 +19,7 @@ public class ApplicationUserEventListener {
     UserDto user =
         new UserDto(event.getUserId(), event.getUsername(), event.getEmail(), event.getRole());
     userCacheService.cacheUser(user);
-    return "Benutzerdaten wurden aktualisiert regi: EventId "
+    return "Benutzerdaten wurden aktualisiert: EventId "
         + event.getEventId()
         + " - Event occured on:"
         + event.getEventOccurredOn()

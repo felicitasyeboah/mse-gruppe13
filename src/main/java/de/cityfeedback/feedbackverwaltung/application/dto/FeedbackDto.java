@@ -37,34 +37,6 @@ public record FeedbackDto(
         null);
   }
 
-  public FeedbackDto(
-      String title,
-      String content,
-      Long citizenId,
-      String citizenName,
-      String citizenEmail,
-      String comment,
-      String categoryName,
-      Long employeeId,
-      String employeeName,
-      String employeeEmail) {
-    this(
-        null,
-        title,
-        content,
-        categoryName,
-        citizenId,
-        citizenName,
-        citizenEmail,
-        employeeId,
-        employeeName,
-        employeeEmail,
-        comment,
-        null,
-        null,
-        null);
-  }
-
   public static FeedbackDto of(Feedback feedback, UserDto citizen, UserDto employee) {
     return new FeedbackDto(
         feedback.getId(),
