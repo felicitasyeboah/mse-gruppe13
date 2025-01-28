@@ -2,11 +2,11 @@ package de.cityfeedback.feedbackverwaltung.domain.model;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.cityfeedback.exception.WrongUserInputException;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.CitizenId;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.EmployeeId;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackCategory;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackStatus;
+import de.cityfeedback.shared.exception.WrongUserInputException;
 import org.junit.jupiter.api.Test;
 
 class FeedbackTest {
@@ -15,11 +15,16 @@ class FeedbackTest {
   void feedbackCreationWithValidData() {
     CitizenId citizenId = new CitizenId(1L);
     Feedback feedback =
-        new Feedback("Title", "Content of the request", FeedbackCategory.REQUEST, citizenId);
+        new Feedback(
+            "Title",
+            "Content of the request",
+            FeedbackCategory.REQUEST.getCategoryName(),
+            citizenId);
 
     assertEquals("Title", feedback.getTitle());
     assertEquals("Content of the request", feedback.getContent());
-    assertEquals(FeedbackCategory.REQUEST, feedback.getCategory());
+    assertEquals(
+        FeedbackCategory.REQUEST.getCategoryName(), feedback.getCategory().getCategoryName());
     assertEquals(citizenId, feedback.getCitizenId());
     assertEquals(FeedbackStatus.NEW, feedback.getStatus());
     assertNotNull(feedback.getCreatedAt());
@@ -30,7 +35,7 @@ class FeedbackTest {
     CitizenId citizenId = new CitizenId(1L);
     assertThrows(
         WrongUserInputException.class,
-        () -> new Feedback("", "Content", FeedbackCategory.REQUEST, citizenId));
+        () -> new Feedback("", "Content", FeedbackCategory.REQUEST.getCategoryName(), citizenId));
   }
 
   @Test
@@ -38,7 +43,7 @@ class FeedbackTest {
     CitizenId citizenId = new CitizenId(1L);
     assertThrows(
         WrongUserInputException.class,
-        () -> new Feedback("xy", "Content", FeedbackCategory.REQUEST, citizenId));
+        () -> new Feedback("xy", "Content", FeedbackCategory.REQUEST.getCategoryName(), citizenId));
   }
 
   @Test
@@ -46,10 +51,10 @@ class FeedbackTest {
     CitizenId citizenId = new CitizenId(1L);
     assertThrows(
         WrongUserInputException.class,
-        () -> new Feedback("Title", "", FeedbackCategory.REQUEST, citizenId));
+        () -> new Feedback("Title", "", FeedbackCategory.REQUEST.getCategoryName(), citizenId));
     assertThrows(
         WrongUserInputException.class,
-        () -> new Feedback("Title", "xyz", FeedbackCategory.REQUEST, citizenId));
+        () -> new Feedback("Title", "xyz", FeedbackCategory.REQUEST.getCategoryName(), citizenId));
   }
 
   @Test
@@ -87,13 +92,13 @@ class FeedbackTest {
         new Feedback(
             "Title",
             "Content mit mindestens 10 Zeichen",
-            FeedbackCategory.REQUEST,
+            FeedbackCategory.REQUEST.getCategoryName(),
             new CitizenId(1L));
     Feedback feedback2 =
         new Feedback(
             "Title",
             "Content mit mindestens 10 Zeichen",
-            FeedbackCategory.REQUEST,
+            FeedbackCategory.REQUEST.getCategoryName(),
             new CitizenId(1L));
 
     assertEquals(feedback1, feedback2);
@@ -105,13 +110,13 @@ class FeedbackTest {
         new Feedback(
             "Title1",
             "Content mit mindestens 10 Zeichen",
-            FeedbackCategory.REQUEST,
+            FeedbackCategory.REQUEST.getCategoryName(),
             new CitizenId(1L));
     Feedback feedback2 =
         new Feedback(
             "Title2",
             "Content mit mindestens 10 Zeichen",
-            FeedbackCategory.REQUEST,
+            FeedbackCategory.REQUEST.getCategoryName(),
             new CitizenId(1L));
 
     assertNotEquals(feedback1, feedback2);

@@ -1,0 +1,25 @@
+tr.spaceUnder > td {
+  padding-bottom: 3em;
+}
+
+table {
+  border-collapse: separate;
+  border-spacing: 2em;
+}
+
+img {
+  max-width: 30px;
+}
+
+.icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 6em;
+  cursor: pointer;
+}
+
+
+section#offene-anliegen {
+  max-width: 95%;
+}

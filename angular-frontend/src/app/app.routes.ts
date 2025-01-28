@@ -1,12 +1,12 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './login/login.component';
-import { FeedbackListComponent } from './feedback-list/feedback-list.component';
-import { OpenFeedbackComponent } from './open-feedback/open-feedback.component';
+import { LoginComponent } from './components/login/login.component';
+import { FeedbackListComponent } from './components/feedback-list/feedback-list.component';
+import { OpenFeedbackComponent } from './components/open-feedback/open-feedback.component';
 import { AuthGuard } from './shared/auth.guard';
-import { FeedbackFormComponent } from './feedback-form/feedback-form.component';
-import { FeedbackEditComponent } from './feedback-edit/feedback-edit.component';
-import { FeedbackDetailComponent } from './feedback-detail/feedback-detail.component';
-import { RegisterComponent } from './register/register.component';
+import { FeedbackFormComponent } from './components/feedback-form/feedback-form.component';
+import { FeedbackEditComponent } from './components/feedback-edit/feedback-edit.component';
+import { FeedbackDetailComponent } from './components/feedback-detail/feedback-detail.component';
+import { RegisterComponent } from './components/register/register.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },

@@ -30,12 +30,9 @@ public class User {
   @Column(name = "ROLE")
   private Role role;
 
-  // parameterloser Konstruktor
   public User() {}
 
-  // public User(long id, String email, String password, Role role, String userName) {
   public User(String email, String password, Role role, String userName) {
-    // this.id = id; // Konvertiere UserID zu Long
     this.email = email;
     this.password = password;
     this.role = role;

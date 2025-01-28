@@ -3,7 +3,6 @@ package de.cityfeedback.feedbackverwaltung.ui.controller;
 import de.cityfeedback.feedbackverwaltung.application.dto.FeedbackDto;
 import de.cityfeedback.feedbackverwaltung.application.dto.FeedbackUpdateRequest;
 import de.cityfeedback.feedbackverwaltung.application.services.FeedbackService;
-import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackCategory;
 import de.cityfeedback.shared.dto.ApiResponse;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -25,10 +24,9 @@ public class FeedbackController {
     String title = request.title();
     String content = request.content();
     Long citizenId = request.citizenId();
-    FeedbackCategory category = FeedbackCategory.fromCategoryName(request.category());
 
     FeedbackDto createdFeedback =
-        feedbackService.createFeedback(title, content, citizenId, category);
+        feedbackService.createFeedback(title, content, citizenId, request.category());
 
     String message = "Feedback created successfully with ID: " + createdFeedback.id();
 

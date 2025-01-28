@@ -1,10 +1,7 @@
 package de.cityfeedback.userverwaltung.ui.controller;
 
-import de.cityfeedback.exception.WrongUserInputException;
 import de.cityfeedback.shared.dto.ApiResponse;
-import de.cityfeedback.shared.validator.Validation;
 import de.cityfeedback.userverwaltung.application.dto.UserResponse;
-import de.cityfeedback.userverwaltung.application.dto.UserResponseDto;
 import de.cityfeedback.userverwaltung.application.services.UserService;
 import de.cityfeedback.userverwaltung.domain.model.User;
 import de.cityfeedback.userverwaltung.domain.valueobject.Role;
@@ -27,7 +24,6 @@ public class UserController {
   @PostMapping("/login")
   public ResponseEntity<ApiResponse> login(
       @RequestParam String email, @RequestParam String password) {
-    validateLoginInput(email, password);
     User user = userService.authenticateUser(email, password);
     UserResponse userResponse = UserResponse.fromUser(user);
     return ResponseEntity.ok(new ApiResponse("Erfolgreich eingeloggt.", userResponse));
@@ -46,32 +42,11 @@ public class UserController {
   public ResponseEntity<ApiResponse> register(
       @RequestParam String userName, @RequestParam String email, @RequestParam String password) {
 
-    validateRegisterInput(userName, email, password);
-
-    // Benutzer registrieren
     User newUser = userService.registerUser(userName, email, password, Role.CITIZEN);
 
-    // Antwort-DTO aus User-Objekt generieren
-    UserResponseDto userResponseDto =
-        new UserResponseDto(
-            newUser.getId(), newUser.getUserName(), newUser.getEmail(), newUser.getRole());
+    UserResponse userResponseDto = UserResponse.fromUser(newUser);
 
-    // Erfolgreiche Antwort zurückgeben
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(new ApiResponse("Registrierung erfolgreich.", userResponseDto));
-  }
-
-  private void validateLoginInput(String email, String password) {
-    Validation.validateEmail(email);
-    if (password == null || password.equals("")) {
-      throw new WrongUserInputException("Bitte Passwort eingeben.");
-    }
-    // Validation.validatePassword(password);
-  }
-
-  private void validateRegisterInput(String userName, String email, String password) {
-    Validation.validateEmail(email);
-    Validation.validatePassword(password);
-    Validation.validateUsername(userName);
   }
 }

@@ -2,9 +2,9 @@ package de.cityfeedback.feedbackverwaltung.application.services;
 
 import de.cityfeedback.feedbackverwaltung.application.dto.FeedbackDto;
 import de.cityfeedback.feedbackverwaltung.application.dto.UserDto;
+import de.cityfeedback.feedbackverwaltung.domain.events.FeedbackCreatedEvent;
 import de.cityfeedback.feedbackverwaltung.domain.model.Feedback;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.*;
-import de.cityfeedback.feedbackverwaltung.events.FeedbackCreatedEvent;
 import de.cityfeedback.feedbackverwaltung.infrastructure.repositories.FeedbackRepository;
 import de.cityfeedback.shared.events.FeedbackUpdatedEvent;
 import jakarta.persistence.EntityNotFoundException;
@@ -29,8 +29,7 @@ public class FeedbackService {
   }
 
   @Transactional
-  public FeedbackDto createFeedback(
-      String title, String content, Long citizenId, FeedbackCategory category) {
+  public FeedbackDto createFeedback(String title, String content, Long citizenId, String category) {
 
     Feedback feedback = new Feedback(title, content, category, new CitizenId(citizenId));
     feedback = this.feedbackRepository.save(feedback);
@@ -108,9 +107,15 @@ public class FeedbackService {
         feedback.assignToEmployee(new EmployeeId(userId));
         break;
       case "comment":
+        if (feedback.getEmployeeId() == null) {
+          throw new IllegalArgumentException("Please assign first to the feedback");
+        }
         feedback.addComment(comment);
         break;
       case "close":
+        if (feedback.getEmployeeId() == null) {
+          throw new IllegalArgumentException("Please assign first to the feedback");
+        }
         feedback.closeFeedback();
         break;
       default:
@@ -138,8 +143,8 @@ public class FeedbackService {
     return FeedbackDto.of(feedback, citizen, employee);
   }
 
+  // find all feedbacks that are not in status closed
   public List<FeedbackDto> findAllOpenFeedbacks() {
-    // find all feedbacks that are not in status closed
     return feedbackRepository.findAllByStatusNot(FeedbackStatus.CLOSED).stream()
         .map(
             feedback -> {

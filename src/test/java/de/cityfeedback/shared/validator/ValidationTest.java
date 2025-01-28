@@ -3,7 +3,7 @@ package de.cityfeedback.shared.validator;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import de.cityfeedback.exception.WrongUserInputException;
+import de.cityfeedback.shared.exception.WrongUserInputException;
 import org.junit.jupiter.api.Test;
 
 public class ValidationTest {

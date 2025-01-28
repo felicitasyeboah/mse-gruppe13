@@ -1,6 +1,6 @@
 package de.cityfeedback.shared.validator;
 
-import de.cityfeedback.exception.WrongUserInputException;
+import de.cityfeedback.shared.exception.WrongUserInputException;
 import java.util.regex.Pattern;
 
 public class Validation {
@@ -62,6 +62,12 @@ public class Validation {
   public static void validateComment(String comment) {
     if (comment == null || !Pattern.matches(EMPLOYEE_FEEDBACK, comment)) {
       throw new WrongUserInputException("Der Kommentar muss zwischen 3 und 200 Zeichen lang sein.");
+    }
+  }
+
+  public static void validateFeedbackCategory(String category) {
+    if (category == null || category.isEmpty()) {
+      throw new WrongUserInputException("Bitte Kategorie auswählen.");
     }
   }
 }

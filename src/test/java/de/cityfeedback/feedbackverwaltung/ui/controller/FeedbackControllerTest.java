@@ -11,7 +11,7 @@ import de.cityfeedback.feedbackverwaltung.application.dto.FeedbackUpdateRequest;
 import de.cityfeedback.feedbackverwaltung.application.services.FeedbackService;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackCategory;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackStatus;
-import de.cityfeedback.shared.GlobalExceptionHandler;
+import de.cityfeedback.shared.exception.GlobalExceptionHandler;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -69,8 +69,7 @@ class FeedbackControllerTest {
     String expectedMessage = "Feedback created successfully with ID: " + createdFeedback.id();
 
     // Mock the service behavior
-    when(feedbackService.createFeedback(
-            anyString(), anyString(), anyLong(), any(FeedbackCategory.class)))
+    when(feedbackService.createFeedback(anyString(), anyString(), anyLong(), anyString()))
         .thenReturn(createdFeedback);
 
     // Act: Perform the POST request using MockMvc
@@ -89,7 +88,10 @@ class FeedbackControllerTest {
     // Verify that the service method was called
     verify(feedbackService, times(1))
         .createFeedback(
-            request.title(), request.content(), request.citizenId(), FeedbackCategory.COMPLAINT);
+            request.title(),
+            request.content(),
+            request.citizenId(),
+            FeedbackCategory.COMPLAINT.getCategoryName());
   }
 
   @Test
@@ -99,10 +101,7 @@ class FeedbackControllerTest {
 
     // Mock the service to throw an exception
     when(feedbackService.createFeedback(
-            Mockito.anyString(),
-            Mockito.anyString(),
-            Mockito.anyLong(),
-            Mockito.any(FeedbackCategory.class)))
+            Mockito.anyString(), Mockito.anyString(), Mockito.anyLong(), Mockito.anyString()))
         .thenThrow(new RuntimeException("Test exception"));
 
     // Act: Perform the POST request using MockMvc
@@ -119,10 +118,7 @@ class FeedbackControllerTest {
     // Verify that the service method was called
     verify(feedbackService, times(1))
         .createFeedback(
-            Mockito.anyString(),
-            Mockito.anyString(),
-            Mockito.anyLong(),
-            Mockito.any(FeedbackCategory.class));
+            Mockito.anyString(), Mockito.anyString(), Mockito.anyLong(), Mockito.anyString());
   }
 
   @Test

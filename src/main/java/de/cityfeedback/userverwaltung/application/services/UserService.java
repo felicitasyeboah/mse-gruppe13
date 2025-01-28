@@ -1,7 +1,7 @@
 package de.cityfeedback.userverwaltung.application.services;
 
-import de.cityfeedback.exception.WrongUserInputException;
 import de.cityfeedback.shared.events.UserRegisteredEvent;
+import de.cityfeedback.shared.exception.WrongUserInputException;
 import de.cityfeedback.shared.validator.Validation;
 import de.cityfeedback.userverwaltung.domain.model.User;
 import de.cityfeedback.userverwaltung.domain.valueobject.Role;
@@ -28,7 +28,7 @@ public class UserService {
   }
 
   public User authenticateUser(String email, String password) {
-    System.out.println("Authenticating user with email: " + email /*+ ", password: " + password*/);
+    validateLoginInput(email, password);
     User user = findUserByEmail(email);
 
     validatePassword(password, user.getPassword());
@@ -42,10 +42,7 @@ public class UserService {
   }
 
   public User registerUser(String userName, String email, String password, Role role) {
-    System.out.println(userName);
-    Validation.validatePassword(password);
-    Validation.validateUsername(userName);
-    Validation.validateEmail(email);
+    validateUserInputForRegistration(userName, email, password);
 
     if (userRepository.findByEmail(email).isPresent()) {
       throw new WrongUserInputException("E-Mail-Adresse wird bereits verwendet.");
@@ -53,21 +50,22 @@ public class UserService {
 
     String hashedPassword = passwordEncoder.encode(password);
 
-    User newUser = new User();
-    newUser.setUserName(userName);
-    newUser.setEmail(email);
-    newUser.setPassword(hashedPassword); // Hier ggf. Passwort-Hashing hinzufügen
-    newUser.setRole(role);
+    User newUser = new User(email, hashedPassword, role, userName);
 
-    // Create the domain event
     UserRegisteredEvent event =
         new UserRegisteredEvent(
             newUser.getId(), newUser.getUserName(), newUser.getEmail(), newUser.getRole().name());
 
-    // Publish the event
     eventPublisher.publishEvent(event);
 
     return userRepository.save(newUser);
+  }
+
+  private static void validateUserInputForRegistration(
+      String userName, String email, String password) {
+    Validation.validatePassword(password);
+    Validation.validateUsername(userName);
+    Validation.validateEmail(email);
   }
 
   public User findUserByEmail(String email) {
@@ -88,17 +86,10 @@ public class UserService {
     }
   }
 
-  /*private void publishLoginEvent(User user) {
-    UserLoggedInEvent event =
-        new UserLoggedInEvent(
-            user.getId(), user.getUserName(), user.getEmail(), user.getRole());
-    eventPublisher.publishEvent(event);
+  private void validateLoginInput(String email, String password) {
+    Validation.validateEmail(email);
+    if (password == null || password.isEmpty()) {
+      throw new WrongUserInputException("Bitte Passwort eingeben.");
+    }
   }
-
-  private void publishRegisterEvent(User user) {
-    UserRegisteredEvent event =
-            new UserRegisteredEvent(
-                    user.getId(), user.getUserName(), user.getEmail(), user.getRole());
-    eventPublisher.publishEvent(event);
-  }*/
 }

@@ -1,0 +1,45 @@
+<section id="offene-anliegen">
+  <h1>Offenes Feedback</h1>
+  <div *ngIf="errorMessage">
+    <p>Error: {{ errorMessage }}</p>  <!-- Display the error message -->
+  </div>
+  <div *ngIf="response">
+    <!-- <pre>{{ data | json }}</pre>   Display the fetched data -->
+    <table *ngIf="response.data && response.data.length > 0" class="feedback-table">
+      <thead>
+      <tr>
+        <th>Bearbeiten</th>
+        <th>ID</th>
+        <th>Titel</th>
+        <th>Kategorie</th>
+        <th>Inhalt</th>
+        <th>Status</th>
+        <th>Kommentar</th>
+        <th>Bearbeiter</th>
+        <th>Abschließen</th>
+        <th>Zuweisen</th>
+
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let feedback of response.data" class="clickable-row">
+        <td class="icon" (click)="openModal(feedback)"><figure><img src="/icon_edit.png" alt="icon bearbeiten"> </figure> </td>
+        <td>{{ feedback.id }}</td>
+        <td>{{ feedback.title }}</td>
+        <td>{{ feedback.category }}</td>
+        <td>{{ feedback.content }}</td>
+        <td>{{ feedback.status }}</td>
+        <td>{{ feedback.comment }}</td>
+        <td>{{ feedback.employeeName }}</td>
+        <td (click)="feedback.id !== undefined && closeFeedback(feedback.id)">Abschließen</td>
+        <td (click)="feedback.id !== undefined && assign(feedback.id)">Zuweisen</td>
+      </tr>
+      </tbody>
+    </table>
+
+  </div>
+</section>
+
+<app-feedback-edit [isVisible]="isModalVisible" [feedback]="selectedFeedback" (formSubmit)="handleFormSubmit($event)">
+</app-feedback-edit>
+
