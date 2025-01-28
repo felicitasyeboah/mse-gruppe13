@@ -1,7 +1,6 @@
+import { User } from '../services/api.service';
+
 export interface UserResponse {
-    userId: number;
-    userName: string;
-    email: string;
-    role: string;
-  }
-  
+  message: string;
+  data: User;
+}

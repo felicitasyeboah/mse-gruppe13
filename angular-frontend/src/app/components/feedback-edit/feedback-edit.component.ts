@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
-  ApiResponse,
   ApiService,
+  FeedbackResponse,
   UpdateRequest,
 } from '../../services/api.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -34,7 +34,7 @@ export class FeedbackEditComponent implements OnInit {
 
   updateFeedback(): void {
     this.apiService.updateFeedback(this.itemId, this.feedback).subscribe({
-      next: (response: ApiResponse) => {
+      next: (response: FeedbackResponse) => {
         console.log('Feedback updated successfully:', response);
         this.responseMessage = response.message; // Set success message
         this.isError = false;

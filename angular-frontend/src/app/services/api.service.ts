@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { UserResponse } from '../models/user-response.model';
 
 @Injectable({
   providedIn: 'root',
@@ -25,7 +26,7 @@ export class ApiService {
    * Fetches feedbacks for a specific user.
    * @returns An Observable of the feedbacks.
    */
-  fetchOpenFeedbacks(): Observable<any> {
+  fetchOpenFeedbacks(): Observable<FeedbackListResponse> {
     const userFeedbackUrl = `${this.feedbackEndpoint}/all-open`;
     return this.http.get<any>(userFeedbackUrl);
   }
@@ -34,9 +35,9 @@ export class ApiService {
    * @param feedback - The feedback request object.
    * @returns An Observable of the API response.
    */
-  createFeedback(feedback: FeedbackRequest): Observable<ApiResponse> {
+  createFeedback(feedback: FeedbackRequest): Observable<FeedbackResponse> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.post<ApiResponse>(this.feedbackEndpoint, feedback, {
+    return this.http.post<FeedbackResponse>(this.feedbackEndpoint, feedback, {
       headers,
     });
   }
@@ -45,7 +46,7 @@ export class ApiService {
    * @param feedbackId - The ID of the user whose feedbacks are being retrieved.
    * @returns An Observable of the feedbacks.
    */
-  getFeedbackById(feedbackId: string | null): Observable<any> {
+  getFeedbackById(feedbackId: string | null): Observable<FeedbackResponse> {
     const detailFeedbackUrl = `${this.feedbackEndpoint}/${feedbackId}`;
     return this.http.get<any>(detailFeedbackUrl);
   }
@@ -58,10 +59,10 @@ export class ApiService {
   updateFeedback(
     feedbackId: number | null,
     feedback: UpdateRequest,
-  ): Observable<any> {
+  ): Observable<FeedbackResponse> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const updateFeedbackUrl = `${this.feedbackEndpoint}/${feedbackId}`;
-    return this.http.patch<ApiResponse>(updateFeedbackUrl, feedback, {
+    return this.http.patch<FeedbackResponse>(updateFeedbackUrl, feedback, {
       headers,
     });
   }
@@ -71,11 +72,11 @@ export class ApiService {
    * @param password - The password of the user.
    * @returns An Observable of the API response.
    */
-  login(email: string, password: string): Observable<ApiResponse> {
+  login(email: string, password: string): Observable<UserResponse> {
     const params = new HttpParams() // Sende die Parameter in der URL statt im Body
       .set('email', email)
       .set('password', password);
-    return this.http.post<ApiResponse>(
+    return this.http.post<UserResponse>(
       `${this.userEndpoint}/login`,
       {},
       { params },
@@ -85,13 +86,13 @@ export class ApiService {
     username: string,
     email: string,
     password: string,
-  ): Observable<ApiResponse> {
+  ): Observable<UserResponse> {
     const params = new HttpParams()
       .set('userName', username) // Sende die Parameter in der URL statt im Body
       .set('email', email)
       .set('password', password);
     const url = `${this.userEndpoint}/register`;
-    return this.http.post<ApiResponse>(url, {}, { params });
+    return this.http.post<UserResponse>(url, {}, { params });
   }
 }
 
@@ -121,4 +122,38 @@ export interface UpdateRequest {
 export interface ApiResponse {
   message: string;
   data: any;
+}
+
+export interface FeedbackListResponse {
+  message: string;
+  data: Feedback[];
+}
+
+export interface FeedbackResponse {
+  message: string;
+  data: Feedback;
+}
+
+export interface Feedback {
+  id: number;
+  title: string;
+  content: string;
+  category: string;
+  citizenId: number;
+  citizenName: string;
+  citizenEmail: string;
+  employeeId: number;
+  employeeName: string;
+  employeeEmail: string;
+  comment: string;
+  status: string;
+  createdAt: string; // ISO 8601 formatted date-time string
+  updatedAt: string; // ISO 8601 formatted date-time string
+}
+
+export interface User {
+  userId: number;
+  userName: string;
+  email: string;
+  role: string;
 }

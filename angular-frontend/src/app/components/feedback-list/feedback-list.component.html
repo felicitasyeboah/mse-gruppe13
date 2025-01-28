@@ -1,8 +1,8 @@
 <section id="beschwerden-status">
     <h1>Ihr Feedback im Überblick</h1>
-  <div *ngIf="response">
-     <!--<pre>{{ data.data | json }}</pre>   Display the fetched data -->
-    <table *ngIf="response.data && response.data.length > 0" class="feedback-table">
+  <div *ngIf="feedbacks && feedbacks.length > 0">
+    <!-- Display the feedback table if there are feedbacks -->
+    <table class="feedback-table">
       <thead>
       <tr>
         <th>ID</th>
@@ -10,23 +10,28 @@
         <th>Kategorie</th>
         <th>Inhalt</th>
         <th>Status</th>
+        <th>Antwort</th>
+        <th>Bearbeiter</th>
       </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let feedback of response.data" (click)="goToDetail(feedback.id)" class="clickable-row">
+      <tr
+        *ngFor="let feedback of feedbacks"
+        (click)="goToDetail(feedback.id)"
+        class="clickable-row">
         <td>{{ feedback.id }}</td>
         <td>{{ feedback.title }}</td>
         <td>{{ feedback.category }}</td>
         <td>{{ feedback.content }}</td>
         <td>{{ feedback.status }}</td>
+        <td>{{ feedback.comment }}</td>
+        <td>{{ feedback.employeeName }}</td>
       </tr>
       </tbody>
     </table>
-
   </div>
-
   <div *ngIf="errorMessage">
-    <p>Error: {{ errorMessage }}</p>  <!-- Display the error message -->
- </div>
+    <!-- Display the error message if there is an error -->
+    <p>Error: {{ errorMessage }}</p>
+  </div>
 </section>
-

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForOf, NgIf } from '@angular/common';
-import { ApiService } from '../../services/api.service';
+import { ApiService, FeedbackListResponse } from '../../services/api.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
   standalone: true,
 })
 export class OpenFeedbackComponent implements OnInit {
-  response: any; // to store the fetched data
+  response: FeedbackListResponse | undefined; // to store the fetched data
   errorMessage = ''; // to store any error message
 
   constructor(
@@ -33,7 +33,7 @@ export class OpenFeedbackComponent implements OnInit {
       },
     );
   }
-  goToEdit(id: string): void {
+  goToEdit(id: number): void {
     this.router.navigate(['/feedback', id]);
   }
 }

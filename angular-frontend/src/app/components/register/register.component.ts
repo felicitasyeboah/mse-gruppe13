@@ -3,7 +3,8 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ApiResponse, ApiService } from '../../services/api.service';
+import { ApiService } from '../../services/api.service';
+import { UserResponse } from '../../models/user-response.model';
 
 @Component({
   selector: 'app-register',
@@ -34,7 +35,7 @@ export class RegisterComponent {
     this.apiService
       .register(this.username, this.email, this.password)
       .subscribe({
-        next: (response: ApiResponse) => {
+        next: (response: UserResponse) => {
           this.handleRegisterSuccess(response);
         },
         error: (error) => {
@@ -43,7 +44,7 @@ export class RegisterComponent {
       });
   }
 
-  private handleRegisterSuccess(response: ApiResponse) {
+  private handleRegisterSuccess(response: UserResponse) {
     this.msg = response.message;
     const user = response.data;
 

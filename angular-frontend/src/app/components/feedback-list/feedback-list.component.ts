@@ -1,7 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../../services/api.service';
+import {
+  ApiService,
+  Feedback,
+  FeedbackListResponse,
+} from '../../services/api.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-feedback-list',
@@ -11,21 +16,24 @@ import { Router } from '@angular/router';
   styleUrl: './feedback-list.component.css',
 })
 export class FeedbackListComponent implements OnInit {
-  response: any; // to store the fetched data
+  response: FeedbackListResponse | undefined;
+  feedbacks: Feedback[] | undefined;
   errorMessage = ''; // to store any error message
 
   constructor(
     private apiService: ApiService,
     private router: Router,
+    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
     // Call the service method to fetch data
-    const userId = 1; // TODO: get the user id from the logged in user
+    const userId = this.authService.getUser().userId;
     this.apiService.fetchUserFeedbacks(userId).subscribe(
-      (response) => {
-        this.response = response; // Handle the successful response
-        console.log('response', this.response);
+      (response: FeedbackListResponse) => {
+        this.feedbacks = response.data;
+        this.errorMessage = response.message;
+        console.log('response:', response.data);
       },
       (error) => {
         this.errorMessage = error.message; // Handle the error
@@ -34,7 +42,7 @@ export class FeedbackListComponent implements OnInit {
     );
   }
 
-  goToDetail(id: string): void {
+  goToDetail(id: number): void {
     this.router.navigate(['/feedback/detail', id]);
   }
 }

@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
-import { ApiResponse } from '../../models/api-response.model'; // Dein Model importieren
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ApiService } from '../../services/api.service';
+import { ApiResponse, ApiService, User } from '../../services/api.service';
+import { UserResponse } from '../../models/user-response.model';
 
 @Component({
   selector: 'app-login',
@@ -27,7 +27,7 @@ export class LoginComponent {
 
   onLogin(): void {
     this.apiService.login(this.email, this.password).subscribe({
-      next: (response: ApiResponse) => {
+      next: (response: UserResponse) => {
         // Weiterleitung basierend auf der Rolle
         this.handleLoginSuccess(response);
       },
@@ -37,10 +37,10 @@ export class LoginComponent {
     });
   }
 
-  private handleLoginSuccess(response: ApiResponse) {
+  private handleLoginSuccess(response: UserResponse) {
     this.msg = response.message;
     //this.toastrService.success(response.message, 'Success');
-    const user = response.data;
+    const user: User = response.data;
 
     // Store user information in localStorage
     this.authService.setUser(user);

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {
-  ApiResponse,
   ApiService,
   FeedbackRequest,
+  FeedbackResponse,
 } from '../../services/api.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -34,7 +34,7 @@ export class FeedbackFormComponent implements OnInit {
     this.isError = false;
 
     this.apiService.createFeedback(this.feedback).subscribe({
-      next: (response: ApiResponse) => {
+      next: (response: FeedbackResponse) => {
         console.log('Feedback created successfully:', response);
         this.responseMessage = response.message; // Set success message
         this.resetForm();
