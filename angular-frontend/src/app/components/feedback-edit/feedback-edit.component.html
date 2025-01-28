@@ -1,11 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Feedbackübersicht</title>
-</head>
-<body>
-<p> Test :) </p>
+
 <!--<div *ngIf="response">
   <pre>{{ response.data | json }}</pre>
   <h1>{{ response.data.title }}</h1>
@@ -13,18 +6,29 @@
   <p>Inhalt: {{ response.data.content }}</p>
   <p>Status: {{ response.data.status }}</p>
 </div>-->
-<form (ngSubmit)="updateFeedback()" #feedbackForm="ngForm">
-  <!-- Comment Input -->
-  <label for="comment">Antwort zum Feedback:</label>
-  <textarea
-    id="comment"
-    name="comment"
-    rows="6"
-    [(ngModel)]="feedback.comment"
-    placeholder="Kommentar eingeben"></textarea>
+<!--<section>-->
+<!--<form (ngSubmit)="updateFeedback()" #feedbackForm="ngForm">-->
+<!--  <label for="comment">Antwort zum Feedback:</label>-->
+<!--  <textarea-->
+<!--    id="comment"-->
+<!--    name="comment"-->
+<!--    rows="6"-->
+<!--    [(ngModel)]="feedback?.comment"-->
+<!--    placeholder="Kommentar eingeben"></textarea>-->
 
-  <!-- Submit Button -->
-  <button type="submit">Absenden</button>
-</form>
-</body>
-</html>
+<!--  &lt;!&ndash; Submit Button &ndash;&gt;-->
+<!--  <button type="submit">Absenden</button>-->
+<!--</form>-->
+<!--</section>-->
+<div class="modal" *ngIf="isVisible">
+  <div class="modal-content">
+    <span class="close" (click)="closeModal()">&times;</span>
+    <form (ngSubmit)="onSubmit()">
+      <h2>Antwort zu Feedback</h2>
+      <label for="comment">Kommentar hinzufügen:</label>
+      <textarea id="comment" [(ngModel)]="comment" name="comment"></textarea>
+
+      <button type="submit">Speichern</button>
+    </form>
+  </div>
+</div>

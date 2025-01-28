@@ -108,6 +108,7 @@ public class Feedback {
   }
 
   public void closeFeedback() {
+
     this.status = FeedbackStatus.CLOSED;
     this.updatedAt = LocalDateTime.now();
   }

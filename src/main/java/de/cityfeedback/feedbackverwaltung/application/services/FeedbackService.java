@@ -107,9 +107,15 @@ public class FeedbackService {
         feedback.assignToEmployee(new EmployeeId(userId));
         break;
       case "comment":
+        if (feedback.getEmployeeId() == null) {
+          throw new IllegalArgumentException("Please assign first to the feedback");
+        }
         feedback.addComment(comment);
         break;
       case "close":
+        if (feedback.getEmployeeId() == null) {
+          throw new IllegalArgumentException("Please assign first to the feedback");
+        }
         feedback.closeFeedback();
         break;
       default:

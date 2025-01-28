@@ -1,5 +1,5 @@
 <section id="beschwerden-status">
-    <h1>Ihr Feedback im Überblick</h1>
+    <h1>Ihre Feedbacks im Überblick</h1>
   <div *ngIf="feedbacks && feedbacks.length > 0">
     <!-- Display the feedback table if there are feedbacks -->
     <table class="feedback-table">
@@ -17,7 +17,7 @@
       <tbody>
       <tr
         *ngFor="let feedback of feedbacks"
-        (click)="goToDetail(feedback.id)"
+        (click)="feedback.id !== undefined  && goToDetail(feedback.id)"
         class="clickable-row">
         <td>{{ feedback.id }}</td>
         <td>{{ feedback.title }}</td>

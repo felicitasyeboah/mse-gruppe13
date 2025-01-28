@@ -54,17 +54,41 @@ export class ApiService {
    * Updates a specific feedback from a specific user.
    * @returns An Observable of the feedbacks.
    * @param feedbackId
-   * @param feedback
+   * @param employee
+   * @param updateType
+   * @param comment
    */
   updateFeedback(
-    feedbackId: number | null,
-    feedback: UpdateRequest,
+    feedbackId: number,
+    employee: User,
+    updateType: string,
+    comment?: string,
   ): Observable<FeedbackResponse> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    const updateFeedbackUrl = `${this.feedbackEndpoint}/${feedbackId}`;
-    return this.http.patch<FeedbackResponse>(updateFeedbackUrl, feedback, {
-      headers,
-    });
+    const request: UpdateRequest = {
+      comment: comment,
+      userId: employee.userId,
+      userRole: employee.role,
+      updateType: updateType,
+    };
+    return this.http.patch<FeedbackResponse>(
+      `${this.feedbackEndpoint}/${feedbackId}`,
+      request,
+    );
+  }
+  assignFeedback(
+    feedbackId: number,
+    userId: number,
+    userRole: string,
+  ): Observable<FeedbackResponse> {
+    const request: UpdateRequest = {
+      userId: userId,
+      userRole: userRole,
+      updateType: 'assign',
+    };
+    return this.http.patch<FeedbackResponse>(
+      `${this.feedbackEndpoint}/${feedbackId}`,
+      request,
+    );
   }
   /**
    * Logs in a user.
@@ -110,7 +134,7 @@ export interface FeedbackRequest {
  * Interface for UpdateRequest matching the server-side FeedbackRequest record.
  */
 export interface UpdateRequest {
-  comment: string;
+  comment?: string;
   userId: number;
   userRole: string;
   updateType: string;
@@ -135,20 +159,20 @@ export interface FeedbackResponse {
 }
 
 export interface Feedback {
-  id: number;
-  title: string;
-  content: string;
-  category: string;
-  citizenId: number;
-  citizenName: string;
-  citizenEmail: string;
-  employeeId: number;
-  employeeName: string;
-  employeeEmail: string;
-  comment: string;
-  status: string;
-  createdAt: string; // ISO 8601 formatted date-time string
-  updatedAt: string; // ISO 8601 formatted date-time string
+  id?: number;
+  title?: string;
+  content?: string;
+  category?: string;
+  citizenId?: number;
+  citizenName?: string;
+  citizenEmail?: string;
+  employeeId?: number;
+  employeeName?: string;
+  employeeEmail?: string;
+  comment?: string;
+  status?: string;
+  createdAt?: string; // ISO 8601 formatted date-time string
+  updatedAt?: string; // ISO 8601 formatted date-time string
 }
 
 export interface User {
