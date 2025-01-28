@@ -23,7 +23,8 @@ class FeedbackTest {
 
     assertEquals("Title", feedback.getTitle());
     assertEquals("Content of the request", feedback.getContent());
-    assertEquals(FeedbackCategory.REQUEST.getCategoryName(), feedback.getCategory());
+    assertEquals(
+        FeedbackCategory.REQUEST.getCategoryName(), feedback.getCategory().getCategoryName());
     assertEquals(citizenId, feedback.getCitizenId());
     assertEquals(FeedbackStatus.NEW, feedback.getStatus());
     assertNotNull(feedback.getCreatedAt());
