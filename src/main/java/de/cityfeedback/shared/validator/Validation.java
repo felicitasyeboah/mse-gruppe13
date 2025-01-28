@@ -64,4 +64,10 @@ public class Validation {
       throw new WrongUserInputException("Der Kommentar muss zwischen 3 und 200 Zeichen lang sein.");
     }
   }
+
+  public static void validateFeedbackCategory(String category) {
+    if (category == null || category.isEmpty()) {
+      throw new WrongUserInputException("Bitte Kategorie auswählen.");
+    }
+  }
 }

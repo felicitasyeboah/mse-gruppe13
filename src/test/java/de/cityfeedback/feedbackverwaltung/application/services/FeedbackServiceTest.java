@@ -44,7 +44,7 @@ class FeedbackServiceTest {
     String title = "Test Title";
     String content = "Test Content";
     Long citizenId = 123L;
-    FeedbackCategory category = FeedbackCategory.COMPLAINT;
+    String category = FeedbackCategory.COMPLAINT.getCategoryName();
 
     Feedback mockFeedback = new Feedback(title, content, category, new CitizenId(citizenId));
 
@@ -79,7 +79,11 @@ class FeedbackServiceTest {
     Long employeeId = 456L;
 
     Feedback mockFeedback =
-        new Feedback("Test Title", "Test Content", FeedbackCategory.COMPLAINT, new CitizenId(123L));
+        new Feedback(
+            "Test Title",
+            "Test Content",
+            FeedbackCategory.COMPLAINT.getCategoryName(),
+            new CitizenId(123L));
 
     when(feedbackRepository.findById(feedbackId)).thenReturn(Optional.of(mockFeedback));
     when(feedbackRepository.save(any(Feedback.class))).thenReturn(mockFeedback);
@@ -99,7 +103,11 @@ class FeedbackServiceTest {
     String comment = "New Comment";
 
     Feedback mockFeedback =
-        new Feedback("Test Title", "Test Content", FeedbackCategory.COMPLAINT, new CitizenId(123L));
+        new Feedback(
+            "Test Title",
+            "Test Content",
+            FeedbackCategory.COMPLAINT.getCategoryName(),
+            new CitizenId(123L));
 
     when(feedbackRepository.findById(feedbackId)).thenReturn(Optional.of(mockFeedback));
     when(feedbackRepository.save(any(Feedback.class))).thenReturn(mockFeedback);
@@ -119,7 +127,10 @@ class FeedbackServiceTest {
 
     Feedback mockFeedback =
         new Feedback(
-            "Test Title", "Test Content", FeedbackCategory.COMPLAINT, new CitizenId(citizenId));
+            "Test Title",
+            "Test Content",
+            FeedbackCategory.COMPLAINT.getCategoryName(),
+            new CitizenId(citizenId));
 
     UserDto mockUserDto = new UserDto(citizenId, "John Doe", "john.doe@example.com", "CITIZEN");
 
@@ -145,7 +156,11 @@ class FeedbackServiceTest {
     String updateType = "comment";
 
     Feedback mockFeedback =
-        new Feedback("Test Title", "Test Content", FeedbackCategory.COMPLAINT, new CitizenId(123L));
+        new Feedback(
+            "Test Title",
+            "Test Content",
+            FeedbackCategory.COMPLAINT.getCategoryName(),
+            new CitizenId(123L));
     mockFeedback.assignToEmployee(new EmployeeId(userId));
     mockFeedback.setId(feedbackId);
     UserDto mockCitizenDto = new UserDto(123L, "John Doe", "john.doe@example.com", "CITIZEN");
@@ -179,7 +194,11 @@ class FeedbackServiceTest {
   @Test
   void findAllOpenFeedbacks_ShouldReturnOpenFeedbacks() {
     Feedback mockFeedback =
-        new Feedback("Test Title", "Test Content", FeedbackCategory.COMPLAINT, new CitizenId(123L));
+        new Feedback(
+            "Test Title",
+            "Test Content",
+            FeedbackCategory.COMPLAINT.getCategoryName(),
+            new CitizenId(123L));
 
     UserDto mockUserDto = new UserDto(123L, "John Doe", "john.doe@example.com", "CITIZEN");
 
@@ -202,7 +221,11 @@ class FeedbackServiceTest {
     Long feedbackId = 1L;
 
     Feedback mockFeedback =
-        new Feedback("Test Title", "Test Content", FeedbackCategory.COMPLAINT, new CitizenId(123L));
+        new Feedback(
+            "Test Title",
+            "Test Content",
+            FeedbackCategory.COMPLAINT.getCategoryName(),
+            new CitizenId(123L));
     UserDto mockCitizenDto = new UserDto(123L, "John Doe", "john.doe@example.com", "CITIZEN");
 
     when(feedbackRepository.findById(feedbackId)).thenReturn(Optional.of(mockFeedback));

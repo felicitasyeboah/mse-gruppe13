@@ -29,8 +29,7 @@ public class FeedbackService {
   }
 
   @Transactional
-  public FeedbackDto createFeedback(
-      String title, String content, Long citizenId, FeedbackCategory category) {
+  public FeedbackDto createFeedback(String title, String content, Long citizenId, String category) {
 
     Feedback feedback = new Feedback(title, content, category, new CitizenId(citizenId));
     feedback = this.feedbackRepository.save(feedback);

@@ -58,15 +58,16 @@ public class Feedback {
   private LocalDateTime updatedAt;
 
   // Constructor for creation
-  public Feedback(String title, String content, FeedbackCategory category, CitizenId citizenId) {
+  public Feedback(String title, String content, String categoryName, CitizenId citizenId) {
+    Validation.validateFeedbackContent(content);
+    Validation.validateFeedbackTitle(title);
+    Validation.validateFeedbackCategory(categoryName);
     this.title = title;
     this.content = content;
-    this.category = category;
     this.citizenId = citizenId;
     this.status = FeedbackStatus.NEW; // Default status
     this.createdAt = LocalDateTime.now();
-    Validation.validateFeedbackContent(this.content);
-    Validation.validateFeedbackTitle(this.title);
+    this.category = FeedbackCategory.fromCategoryName(categoryName);
   }
 
   public Feedback() {

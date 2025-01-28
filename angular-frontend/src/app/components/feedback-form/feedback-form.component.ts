@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   ApiResponse,
   ApiService,
@@ -6,6 +6,7 @@ import {
 } from '../../services/api.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-feedback-form',
@@ -14,19 +15,20 @@ import { CommonModule } from '@angular/common';
   templateUrl: './feedback-form.component.html',
   styleUrl: './feedback-form.component.css',
 })
-export class FeedbackFormComponent {
-  feedback: FeedbackRequest = {
-    title: '',
-    content: '',
-    citizenId: 1,
-    category: '',
-  };
+export class FeedbackFormComponent implements OnInit {
+  feedback: FeedbackRequest = {} as FeedbackRequest; // Feedback object to be submitted
 
   responseMessage: string | null = null; // Holds the success or error message
   isError = false; // Indicates if the message is an error
 
-  constructor(private apiService: ApiService) {}
+  constructor(
+    private apiService: ApiService,
+    private authService: AuthService,
+  ) {}
 
+  ngOnInit(): void {
+    this.resetForm();
+  }
   submitFeedback() {
     this.responseMessage = null; // Reset response message before submission
     this.isError = false;
@@ -35,6 +37,7 @@ export class FeedbackFormComponent {
       next: (response: ApiResponse) => {
         console.log('Feedback created successfully:', response);
         this.responseMessage = response.message; // Set success message
+        this.resetForm();
         this.isError = false;
       },
       error: (error) => {
@@ -45,5 +48,13 @@ export class FeedbackFormComponent {
         this.isError = true;
       },
     });
+  }
+  resetForm() {
+    this.feedback = {
+      title: '',
+      content: '',
+      citizenId: this.authService.getUser().userId,
+      category: '',
+    };
   }
 }
