@@ -1,4 +1,4 @@
-package de.cityfeedback.userverwaltung.infrastructure.listener;
+package de.cityfeedback.userverwaltung.application.listener;
 
 import de.cityfeedback.shared.events.FeedbackUpdatedEvent;
 import de.cityfeedback.userverwaltung.application.services.EmailService;
@@ -10,12 +10,12 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 @Component("userFeedbackEventListener")
-public class IntegrationFeedbackEventListener {
+public class ApplicationFeedbackEventListener {
   private final UserService userService;
   private final EmailService emailService;
-  public Logger logger = LoggerFactory.getLogger(IntegrationFeedbackEventListener.class);
+  public Logger logger = LoggerFactory.getLogger(ApplicationFeedbackEventListener.class);
 
-  public IntegrationFeedbackEventListener(UserService userService, EmailService emailService) {
+  public ApplicationFeedbackEventListener(UserService userService, EmailService emailService) {
     this.userService = userService;
     this.emailService = emailService;
   }
@@ -28,12 +28,11 @@ public class IntegrationFeedbackEventListener {
         emailService.sendFeedbackUpdatedEmail(
             user.getEmail(),
             "Feedback Updated",
-            "Your feedback has been updated. "
-                + event.getFeedbackId()
-                + " - "
+            "Your feedback \""
                 + event.getTitle()
-                + " - "
-                + event.getStatusName());
+                + "\" has been updated. New status: "
+                + event.getStatusName()
+                + "Log in to see more details.");
       } catch (Exception e) {
         logger.error("Error sending email: " + e.getMessage());
       }

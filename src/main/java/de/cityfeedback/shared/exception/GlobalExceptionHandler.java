@@ -44,7 +44,7 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(IllegalArgumentException.class)
   public ResponseEntity<ApiResponse> handleInvalidArgumentException(IllegalArgumentException ex) {
-    String message = "Fehler: " + ex.getMessage();
+    String message = ex.getMessage();
     logger.error(message, ex);
     ApiResponse response = new ApiResponse(message, null);
     return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -60,7 +60,7 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(EntityNotFoundException.class)
   public ResponseEntity<ApiResponse> handleEntityNotFoundException(EntityNotFoundException ex) {
-    String message = "Fehler: " + ex.getMessage();
+    String message = ex.getMessage();
     logger.error(message, ex);
     ApiResponse response = new ApiResponse(message, null);
     return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);

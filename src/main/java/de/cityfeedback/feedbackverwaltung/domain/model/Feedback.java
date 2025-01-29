@@ -59,9 +59,9 @@ public class Feedback {
 
   // Constructor for creation
   public Feedback(String title, String content, String categoryName, CitizenId citizenId) {
-    Validation.validateFeedbackContent(content);
-    Validation.validateFeedbackTitle(title);
     Validation.validateFeedbackCategory(categoryName);
+    Validation.validateFeedbackTitle(title);
+    Validation.validateFeedbackContent(content);
     this.title = title;
     this.content = content;
     this.citizenId = citizenId;
@@ -94,21 +94,40 @@ public class Feedback {
   }
 
   // Domain logic
-  public void assignToEmployee(EmployeeId employeeId) {
-    this.employeeId = employeeId;
+  public void assignToEmployee(Long providedEmployeeId) {
+    if (this.getEmployeeId() != null
+        && this.getEmployeeId().employeeId().equals(providedEmployeeId)) {
+      throw new IllegalArgumentException("Feedback is already assigned to you");
+    }
+    this.employeeId = new EmployeeId(providedEmployeeId);
     this.status = FeedbackStatus.IN_PROGRESS;
     this.updatedAt = LocalDateTime.now();
   }
 
-  public void addComment(String comment) {
+  public void addComment(String comment, Long providedEmployeeId) {
+    if (this.getEmployeeId() == null) {
+      throw new IllegalArgumentException("Please assign first to the feedback");
+    }
+    // Check if the employeeId matches the employeeId from the requested userId
+    if (!this.getEmployeeId().employeeId().equals(providedEmployeeId)) {
+      throw new IllegalArgumentException(
+          "Unauthorized to update this feedback. You are not the assigned employee. Please assign first.");
+    }
     this.comment = comment;
     Validation.validateComment(comment);
     this.status = FeedbackStatus.IN_PROGRESS;
     this.updatedAt = LocalDateTime.now();
   }
 
-  public void closeFeedback() {
-
+  public void closeFeedback(Long providedEmployeeId) {
+    if (this.getEmployeeId() == null) {
+      throw new IllegalArgumentException("Please assign first to the feedback");
+    }
+    // Check if the employeeId matches the employeeId from the requested userId
+    if (!this.getEmployeeId().employeeId().equals(providedEmployeeId)) {
+      throw new IllegalArgumentException(
+          "Unauthorized to update this feedback. You are not the assigned employee. Please assign first.");
+    }
     this.status = FeedbackStatus.CLOSED;
     this.updatedAt = LocalDateTime.now();
   }

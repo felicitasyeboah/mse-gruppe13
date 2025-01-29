@@ -9,7 +9,6 @@ import de.cityfeedback.feedbackverwaltung.application.dto.UserDto;
 import de.cityfeedback.feedbackverwaltung.domain.events.FeedbackCreatedEvent;
 import de.cityfeedback.feedbackverwaltung.domain.model.Feedback;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.CitizenId;
-import de.cityfeedback.feedbackverwaltung.domain.valueobject.EmployeeId;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackCategory;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackStatus;
 import de.cityfeedback.feedbackverwaltung.infrastructure.repositories.FeedbackRepository;
@@ -74,54 +73,6 @@ class FeedbackServiceTest {
   }
 
   @Test
-  void assignFeedbackToEmployee_ShouldAssignAndSaveFeedback() {
-    Long feedbackId = 1L;
-    Long employeeId = 456L;
-
-    Feedback mockFeedback =
-        new Feedback(
-            "Test Title",
-            "Test Content",
-            FeedbackCategory.COMPLAINT.getCategoryName(),
-            new CitizenId(123L));
-
-    when(feedbackRepository.findById(feedbackId)).thenReturn(Optional.of(mockFeedback));
-    when(feedbackRepository.save(any(Feedback.class))).thenReturn(mockFeedback);
-
-    Feedback result = feedbackService.assignFeedbackToEmployee(feedbackId, employeeId);
-
-    assertNotNull(result);
-    assertEquals(employeeId, result.getEmployeeId().employeeId());
-
-    verify(feedbackRepository, times(1)).findById(feedbackId);
-    verify(feedbackRepository, times(1)).save(any(Feedback.class));
-  }
-
-  @Test
-  void addCommentToFeedback_ShouldAddCommentAndSaveFeedback() {
-    Long feedbackId = 1L;
-    String comment = "New Comment";
-
-    Feedback mockFeedback =
-        new Feedback(
-            "Test Title",
-            "Test Content",
-            FeedbackCategory.COMPLAINT.getCategoryName(),
-            new CitizenId(123L));
-
-    when(feedbackRepository.findById(feedbackId)).thenReturn(Optional.of(mockFeedback));
-    when(feedbackRepository.save(any(Feedback.class))).thenReturn(mockFeedback);
-
-    Feedback result = feedbackService.addCommentToFeedback(feedbackId, comment);
-
-    assertNotNull(result);
-    assertTrue(result.getComment().contains(comment));
-
-    verify(feedbackRepository, times(1)).findById(feedbackId);
-    verify(feedbackRepository, times(1)).save(any(Feedback.class));
-  }
-
-  @Test
   void findAllFeedbacksForCitizen_ShouldReturnFeedbackList() {
     Long citizenId = 123L;
 
@@ -145,50 +96,6 @@ class FeedbackServiceTest {
 
     verify(feedbackRepository, times(1)).findAllByCitizenId(citizenId);
     verify(userServiceClient, times(1)).fetchUserById(citizenId);
-  }
-
-  @Test
-  void updateFeedback_ShouldPublishFeedbackUpdatedEvent() {
-    Long feedbackId = 1L;
-    String comment = "Updated Comment";
-    Long userId = 456L;
-    String userRole = "EMPLOYEE";
-    String updateType = "comment";
-
-    Feedback mockFeedback =
-        new Feedback(
-            "Test Title",
-            "Test Content",
-            FeedbackCategory.COMPLAINT.getCategoryName(),
-            new CitizenId(123L));
-    mockFeedback.assignToEmployee(new EmployeeId(userId));
-    mockFeedback.setId(feedbackId);
-    UserDto mockCitizenDto = new UserDto(123L, "John Doe", "john.doe@example.com", "CITIZEN");
-    UserDto mockEmployeeDto =
-        new UserDto(userId, "Jane Smith", "jane.smith@example.com", "EMPLOYEE");
-
-    when(feedbackRepository.findById(feedbackId)).thenReturn(Optional.of(mockFeedback));
-    when(feedbackRepository.save(any(Feedback.class))).thenReturn(mockFeedback);
-    when(userServiceClient.fetchUserById(123L)).thenReturn(mockCitizenDto);
-    when(userServiceClient.fetchUserById(userId)).thenReturn(mockEmployeeDto);
-
-    FeedbackDto result =
-        feedbackService.updateFeedback(feedbackId, comment, userId, userRole, updateType);
-
-    assertNotNull(result);
-    assertEquals(feedbackId, result.id());
-    assertTrue(mockFeedback.getComment().contains(comment));
-
-    ArgumentCaptor<FeedbackUpdatedEvent> eventCaptor =
-        ArgumentCaptor.forClass(FeedbackUpdatedEvent.class);
-    verify(eventPublisher, times(1)).publishEvent(eventCaptor.capture());
-
-    FeedbackUpdatedEvent publishedEvent = eventCaptor.getValue();
-    assertNotNull(publishedEvent);
-    assertEquals(feedbackId, publishedEvent.getFeedbackId());
-
-    verify(feedbackRepository, times(1)).findById(feedbackId);
-    verify(feedbackRepository, times(1)).save(any(Feedback.class));
   }
 
   @Test
@@ -239,5 +146,188 @@ class FeedbackServiceTest {
 
     verify(feedbackRepository, times(1)).findById(feedbackId);
     verify(userServiceClient, times(1)).fetchUserById(123L);
+  }
+
+  @Test
+  void updateFeedbackWithValidCommentShouldUpdateCommentAndPublishEvent() {
+    Long feedbackId = 1L;
+    String comment = "Updated Comment";
+    Long userId = 456L;
+    String userRole = "EMPLOYEE";
+    String updateType = "comment";
+
+    Feedback mockFeedback =
+        new Feedback(
+            "Test Title",
+            "Test Content",
+            FeedbackCategory.COMPLAINT.getCategoryName(),
+            new CitizenId(123L));
+    mockFeedback.assignToEmployee(userId);
+    mockFeedback.setId(feedbackId);
+    UserDto mockCitizenDto = new UserDto(123L, "John Doe", "john.doe@example.com", "CITIZEN");
+    UserDto mockEmployeeDto =
+        new UserDto(userId, "Jane Smith", "jane.smith@example.com", "EMPLOYEE");
+
+    when(feedbackRepository.findById(feedbackId)).thenReturn(Optional.of(mockFeedback));
+    when(feedbackRepository.save(any(Feedback.class))).thenReturn(mockFeedback);
+    when(userServiceClient.fetchUserById(123L)).thenReturn(mockCitizenDto);
+    when(userServiceClient.fetchUserById(userId)).thenReturn(mockEmployeeDto);
+
+    FeedbackDto result =
+        feedbackService.updateFeedback(feedbackId, comment, userId, userRole, updateType);
+
+    assertNotNull(result);
+    assertEquals(feedbackId, result.id());
+    assertTrue(mockFeedback.getComment().contains(comment));
+
+    ArgumentCaptor<FeedbackUpdatedEvent> eventCaptor =
+        ArgumentCaptor.forClass(FeedbackUpdatedEvent.class);
+    verify(eventPublisher, times(1)).publishEvent(eventCaptor.capture());
+
+    FeedbackUpdatedEvent publishedEvent = eventCaptor.getValue();
+    assertNotNull(publishedEvent);
+    assertEquals(feedbackId, publishedEvent.getFeedbackId());
+
+    verify(feedbackRepository, times(1)).findById(feedbackId);
+    verify(feedbackRepository, times(1)).save(any(Feedback.class));
+  }
+
+  @Test
+  void updateFeedbackWithInvalidRoleShouldThrowException() {
+    Long feedbackId = 1L;
+    String comment = "Updated Comment";
+    Long userId = 456L;
+    String userRole = "CITIZEN";
+    String updateType = "comment";
+
+    Feedback mockFeedback =
+        new Feedback(
+            "Test Title",
+            "Test Content",
+            FeedbackCategory.COMPLAINT.getCategoryName(),
+            new CitizenId(123L));
+    mockFeedback.setId(feedbackId);
+
+    when(feedbackRepository.findById(feedbackId)).thenReturn(Optional.of(mockFeedback));
+
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> feedbackService.updateFeedback(feedbackId, comment, userId, userRole, updateType));
+
+    verify(feedbackRepository, times(1)).findById(feedbackId);
+    verify(feedbackRepository, times(0)).save(any(Feedback.class));
+  }
+
+  @Test
+  void updateFeedbackWithInvalidUpdateTypeShouldThrowException() {
+    Long feedbackId = 1L;
+    String comment = "Updated Comment";
+    Long userId = 456L;
+    String userRole = "EMPLOYEE";
+    String updateType = "invalidType";
+
+    Feedback mockFeedback =
+        new Feedback(
+            "Test Title",
+            "Test Content",
+            FeedbackCategory.COMPLAINT.getCategoryName(),
+            new CitizenId(123L));
+    mockFeedback.setId(feedbackId);
+
+    when(feedbackRepository.findById(feedbackId)).thenReturn(Optional.of(mockFeedback));
+
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> feedbackService.updateFeedback(feedbackId, comment, userId, userRole, updateType));
+
+    verify(feedbackRepository, times(1)).findById(feedbackId);
+    verify(feedbackRepository, times(0)).save(any(Feedback.class));
+  }
+
+  @Test
+  void updateFeedbackWithValidAssignShouldAssignEmployeeAndPublishEvent() {
+    Long feedbackId = 1L;
+    String comment = "Assign Employee";
+    Long userId = 456L;
+    String userRole = "EMPLOYEE";
+    String updateType = "assign";
+
+    Feedback mockFeedback =
+        new Feedback(
+            "Test Title",
+            "Test Content",
+            FeedbackCategory.COMPLAINT.getCategoryName(),
+            new CitizenId(123L));
+    mockFeedback.setId(feedbackId);
+    UserDto mockCitizenDto = new UserDto(123L, "John Doe", "john.doe@example.com", "CITIZEN");
+    UserDto mockEmployeeDto =
+        new UserDto(userId, "Jane Smith", "jane.smith@example.com", "EMPLOYEE");
+
+    when(feedbackRepository.findById(feedbackId)).thenReturn(Optional.of(mockFeedback));
+    when(feedbackRepository.save(any(Feedback.class))).thenReturn(mockFeedback);
+    when(userServiceClient.fetchUserById(123L)).thenReturn(mockCitizenDto);
+    when(userServiceClient.fetchUserById(userId)).thenReturn(mockEmployeeDto);
+
+    FeedbackDto result =
+        feedbackService.updateFeedback(feedbackId, comment, userId, userRole, updateType);
+
+    assertNotNull(result);
+    assertEquals(feedbackId, result.id());
+    assertEquals(userId, mockFeedback.getEmployeeId().employeeId());
+
+    ArgumentCaptor<FeedbackUpdatedEvent> eventCaptor =
+        ArgumentCaptor.forClass(FeedbackUpdatedEvent.class);
+    verify(eventPublisher, times(1)).publishEvent(eventCaptor.capture());
+
+    FeedbackUpdatedEvent publishedEvent = eventCaptor.getValue();
+    assertNotNull(publishedEvent);
+    assertEquals(feedbackId, publishedEvent.getFeedbackId());
+
+    verify(feedbackRepository, times(1)).findById(feedbackId);
+    verify(feedbackRepository, times(1)).save(any(Feedback.class));
+  }
+
+  @Test
+  void updateFeedbackWithValidCloseShouldCloseFeedbackAndPublishEvent() {
+    Long feedbackId = 1L;
+    String comment = "Close Feedback";
+    Long userId = 456L;
+    String userRole = "EMPLOYEE";
+    String updateType = "close";
+
+    Feedback mockFeedback =
+        new Feedback(
+            "Test Title",
+            "Test Content",
+            FeedbackCategory.COMPLAINT.getCategoryName(),
+            new CitizenId(123L));
+    mockFeedback.assignToEmployee(userId);
+    mockFeedback.setId(feedbackId);
+    UserDto mockCitizenDto = new UserDto(123L, "John Doe", "john.doe@example.com", "CITIZEN");
+    UserDto mockEmployeeDto =
+        new UserDto(userId, "Jane Smith", "jane.smith@example.com", "EMPLOYEE");
+
+    when(feedbackRepository.findById(feedbackId)).thenReturn(Optional.of(mockFeedback));
+    when(feedbackRepository.save(any(Feedback.class))).thenReturn(mockFeedback);
+    when(userServiceClient.fetchUserById(123L)).thenReturn(mockCitizenDto);
+    when(userServiceClient.fetchUserById(userId)).thenReturn(mockEmployeeDto);
+
+    FeedbackDto result =
+        feedbackService.updateFeedback(feedbackId, comment, userId, userRole, updateType);
+
+    assertNotNull(result);
+    assertEquals(feedbackId, result.id());
+    assertEquals(FeedbackStatus.CLOSED, mockFeedback.getStatus());
+
+    ArgumentCaptor<FeedbackUpdatedEvent> eventCaptor =
+        ArgumentCaptor.forClass(FeedbackUpdatedEvent.class);
+    verify(eventPublisher, times(1)).publishEvent(eventCaptor.capture());
+
+    FeedbackUpdatedEvent publishedEvent = eventCaptor.getValue();
+    assertNotNull(publishedEvent);
+    assertEquals(feedbackId, publishedEvent.getFeedbackId());
+
+    verify(feedbackRepository, times(1)).findById(feedbackId);
+    verify(feedbackRepository, times(1)).save(any(Feedback.class));
   }
 }
