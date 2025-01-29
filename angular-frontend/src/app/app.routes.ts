@@ -5,7 +5,6 @@ import { OpenFeedbackComponent } from './components/open-feedback/open-feedback.
 import { AuthGuard } from './shared/auth.guard';
 import { FeedbackFormComponent } from './components/feedback-form/feedback-form.component';
 import { FeedbackEditComponent } from './components/feedback-edit/feedback-edit.component';
-import { FeedbackDetailComponent } from './components/feedback-detail/feedback-detail.component';
 import { RegisterComponent } from './components/register/register.component';
 
 export const routes: Routes = [
@@ -29,11 +28,6 @@ export const routes: Routes = [
   {
     path: 'feedback/:id',
     component: FeedbackEditComponent,
-    canActivate: [AuthGuard],
-  },
-  {
-    path: 'feedback/detail/:id',
-    component: FeedbackDetailComponent,
     canActivate: [AuthGuard],
   },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
