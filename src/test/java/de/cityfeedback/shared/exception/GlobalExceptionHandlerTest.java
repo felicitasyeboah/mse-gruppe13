@@ -51,7 +51,7 @@ class GlobalExceptionHandlerTest {
         globalExceptionHandler.handleInvalidArgumentException(exception);
 
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    assertEquals("Fehler: Invalid argument", response.getBody().getMessage());
+    assertEquals("Invalid argument", response.getBody().getMessage());
     assertNull(response.getBody().getData());
   }
 
@@ -75,7 +75,7 @@ class GlobalExceptionHandlerTest {
         globalExceptionHandler.handleEntityNotFoundException(exception);
 
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-    assertEquals("Fehler: Entity not found", response.getBody().getMessage());
+    assertEquals("Entity not found", response.getBody().getMessage());
     assertNull(response.getBody().getData());
   }
 }
