@@ -1,7 +1,7 @@
 <section id="offene-anliegen">
   <h1>Offenes Feedback</h1>
-  <div *ngIf="errorMessage">
-    <p>Error: {{ errorMessage }}</p>  <!-- Display the error message -->
+  <div *ngIf="responseMessage" [class]="isError ? 'error' : 'success'">
+    {{ responseMessage }}
   </div>
   <div *ngIf="response">
     <!-- <pre>{{ data | json }}</pre>   Display the fetched data -->

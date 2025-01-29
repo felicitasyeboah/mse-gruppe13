@@ -6,7 +6,6 @@ import {
   FeedbackListResponse,
   User,
 } from '../../services/api.service';
-import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { FeedbackEditComponent } from '../feedback-edit/feedback-edit.component';
 
@@ -19,22 +18,19 @@ import { FeedbackEditComponent } from '../feedback-edit/feedback-edit.component'
 })
 export class OpenFeedbackComponent implements OnInit {
   response: FeedbackListResponse | undefined; // to store the fetched data
-  feedbacks: Feedback[] | undefined; // to store the feedbacks
-  errorMessage = ''; // to store any error message
+  responseMessage: string | null = null; // Holds the success or error message
+  isError = false; // Indicates if the message is an error
   isModalVisible = false;
   selectedFeedback: Feedback = { content: '' };
   constructor(
     private apiService: ApiService,
-    private router: Router,
     private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
     this.reloadOpenFeedbacks();
   }
-  goToEdit(feedback: Feedback): void {
-    this.router.navigate(['/feedback', feedback]);
-  }
+
   openModal(feedback: Feedback): void {
     this.selectedFeedback = feedback;
     this.isModalVisible = true;
@@ -54,11 +50,12 @@ export class OpenFeedbackComponent implements OnInit {
         (response) => {
           console.log('Feedback updated successfully:', response);
           this.isModalVisible = false;
-          // Update the feedback list or handle the response as needed
         },
         (error) => {
-          this.errorMessage =
-            error.error?.message || 'An unknown error occurred';
+          this.responseMessage =
+            error?.error?.message || 'An unexpected error occurred.'; // Set error message
+          console.log(error?.error?.message);
+          this.isError = true;
         },
       );
   }
@@ -68,11 +65,15 @@ export class OpenFeedbackComponent implements OnInit {
 
     this.apiService.updateFeedback(id, user, 'close').subscribe(
       (response) => {
-        console.log(response);
+        this.responseMessage = response.message;
+        this.isError = false;
         this.reloadOpenFeedbacks();
       },
       (error) => {
-        this.errorMessage = error.error?.message || 'An unknown error occurred';
+        this.responseMessage =
+          error?.error?.message || 'An unexpected error occurred.'; // Set error message
+        console.log(error?.error?.message);
+        this.isError = true;
       },
     );
   }
@@ -83,23 +84,31 @@ export class OpenFeedbackComponent implements OnInit {
       .subscribe(
         (response) => {
           console.log(response);
+          this.responseMessage = response.message;
+          this.isError = false;
           this.reloadOpenFeedbacks(); // Reload the list of open feedbacks
         },
         (error) => {
-          this.errorMessage =
-            error.error?.message || 'An unknown error occurred';
+          this.responseMessage =
+            error?.error?.message || 'An unexpected error occurred.'; // Set error message
+          console.log(error?.error?.message);
+          this.isError = true;
         },
       );
   }
   private reloadOpenFeedbacks(): void {
     this.apiService.fetchOpenFeedbacks().subscribe(
       (response) => {
+        this.responseMessage = response.message;
+        this.isError = false;
         this.response = response; // Handle the successful response
         console.log(this.response);
       },
       (error) => {
-        this.errorMessage = error.message; // Handle the error
-        console.error(error);
+        this.responseMessage =
+          error?.error?.message || 'An unexpected error occurred.'; // Set error message
+        console.log(error?.error?.message);
+        this.isError = true;
       },
     );
   }

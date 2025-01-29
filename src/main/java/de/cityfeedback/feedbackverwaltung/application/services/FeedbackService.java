@@ -53,24 +53,6 @@ public class FeedbackService {
     return FeedbackDto.of(feedback, citizen, null);
   }
 
-  public Feedback assignFeedbackToEmployee(Long feedbackId, Long employeeId) {
-    Feedback feedback =
-        feedbackRepository
-            .findById(feedbackId)
-            .orElseThrow(() -> new EntityNotFoundException("Feedback not found"));
-    feedback.assignToEmployee(new EmployeeId(employeeId));
-    return feedbackRepository.save(feedback);
-  }
-
-  public Feedback addCommentToFeedback(Long feedbackId, String comment) {
-    Feedback feedback =
-        feedbackRepository
-            .findById(feedbackId)
-            .orElseThrow(() -> new EntityNotFoundException("Feedback not found"));
-    feedback.addComment(comment);
-    return feedbackRepository.save(feedback);
-  }
-
   public List<FeedbackDto> findAllFeedbacksForCitizen(Long citizenId) {
     return feedbackRepository.findAllByCitizenId(citizenId).stream()
         .map(
@@ -93,30 +75,21 @@ public class FeedbackService {
         feedbackRepository
             .findById(feedbackId)
             .orElseThrow(() -> new EntityNotFoundException("Feedback not found"));
-
-    // Check if the employeeId matches the employeeId from the requested userId
-    if (feedback.getEmployeeId() != null && !feedback.getEmployeeId().employeeId().equals(userId)
-        || !userRole.equals("EMPLOYEE")) {
+    if (!userRole.equals("EMPLOYEE")) {
       throw new IllegalArgumentException(
-          "Unauthorized to update this feedback. You are not the assigned employee or have not the role of an employee.");
+          "Unauthorized to update this feedback. You have not the role of an employee.");
     }
 
     // Update feedback based on updateType
     switch (updateType.toLowerCase()) {
       case "assign":
-        feedback.assignToEmployee(new EmployeeId(userId));
+        feedback.assignToEmployee(userId);
         break;
       case "comment":
-        if (feedback.getEmployeeId() == null) {
-          throw new IllegalArgumentException("Please assign first to the feedback");
-        }
-        feedback.addComment(comment);
+        feedback.addComment(comment, userId);
         break;
       case "close":
-        if (feedback.getEmployeeId() == null) {
-          throw new IllegalArgumentException("Please assign first to the feedback");
-        }
-        feedback.closeFeedback();
+        feedback.closeFeedback(userId);
         break;
       default:
         throw new IllegalArgumentException("Invalid update type");

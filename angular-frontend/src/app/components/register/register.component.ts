@@ -51,8 +51,8 @@ export class RegisterComponent {
     // Store user information in localStorage
     this.authService.setUser(user);
 
-    // Redirect to login page after successful registration
-    this.router.navigate(['/login']);
+    // Redirect to feedback create page after successful registration
+    this.router.navigate(['/feedback-form']);
   }
 
   private handleRegisterError(error: any) {

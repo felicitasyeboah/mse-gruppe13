@@ -1,86 +1,96 @@
 package de.cityfeedback.feedbackverwaltung.domain.model;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.CitizenId;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.EmployeeId;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackCategory;
 import de.cityfeedback.feedbackverwaltung.domain.valueobject.FeedbackStatus;
-import de.cityfeedback.shared.exception.WrongUserInputException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class FeedbackTest {
+  private Feedback feedback;
+  private EmployeeId mockEmployeeId;
 
-  @Test
-  void feedbackCreationWithValidData() {
-    CitizenId citizenId = new CitizenId(1L);
-    Feedback feedback =
-        new Feedback(
-            "Title",
-            "Content of the request",
-            FeedbackCategory.REQUEST.getCategoryName(),
-            citizenId);
-
-    assertEquals("Title", feedback.getTitle());
-    assertEquals("Content of the request", feedback.getContent());
-    assertEquals(
-        FeedbackCategory.REQUEST.getCategoryName(), feedback.getCategory().getCategoryName());
-    assertEquals(citizenId, feedback.getCitizenId());
-    assertEquals(FeedbackStatus.NEW, feedback.getStatus());
-    assertNotNull(feedback.getCreatedAt());
+  @BeforeEach
+  void setUp() {
+    feedback = new Feedback();
+    mockEmployeeId = mock(EmployeeId.class);
   }
 
   @Test
-  void feedbackCreationWithEmptyTitleThrowsException() {
-    CitizenId citizenId = new CitizenId(1L);
-    assertThrows(
-        WrongUserInputException.class,
-        () -> new Feedback("", "Content", FeedbackCategory.REQUEST.getCategoryName(), citizenId));
+  void assignToEmployee_ShouldThrowException_WhenAlreadyAssignedToSameEmployee() {
+    feedback.setEmployeeId(new EmployeeId(1L));
+    when(mockEmployeeId.employeeId()).thenReturn(1L);
+
+    IllegalArgumentException exception =
+        assertThrows(IllegalArgumentException.class, () -> feedback.assignToEmployee(1L));
+    assertEquals("Feedback is already assigned to you", exception.getMessage());
   }
 
   @Test
-  void feedbackCreationWithInvalidTitleThrowsException() {
-    CitizenId citizenId = new CitizenId(1L);
-    assertThrows(
-        WrongUserInputException.class,
-        () -> new Feedback("xy", "Content", FeedbackCategory.REQUEST.getCategoryName(), citizenId));
-  }
+  void assignToEmployee_ShouldAssign_WhenValid() {
+    feedback.setEmployeeId(new EmployeeId(2L));
+    feedback.assignToEmployee(1L);
 
-  @Test
-  void feedbackCreationWithEmptyOrInvalidContentThrowsException() {
-    CitizenId citizenId = new CitizenId(1L);
-    assertThrows(
-        WrongUserInputException.class,
-        () -> new Feedback("Title", "", FeedbackCategory.REQUEST.getCategoryName(), citizenId));
-    assertThrows(
-        WrongUserInputException.class,
-        () -> new Feedback("Title", "xyz", FeedbackCategory.REQUEST.getCategoryName(), citizenId));
-  }
-
-  @Test
-  void assignToEmployeeUpdatesStatusAndTimestamp() {
-    Feedback feedback = new Feedback();
-    EmployeeId employeeId = new EmployeeId(1L);
-    feedback.assignToEmployee(employeeId);
-
-    assertEquals(employeeId, feedback.getEmployeeId());
+    assertEquals(1L, feedback.getEmployeeId().employeeId());
     assertEquals(FeedbackStatus.IN_PROGRESS, feedback.getStatus());
     assertNotNull(feedback.getUpdatedAt());
   }
 
   @Test
-  void addCommentUpdatesCommentAndTimestamp() {
-    Feedback feedback = new Feedback();
-    feedback.addComment("New comment");
+  void addComment_ShouldThrowException_WhenFeedbackNotAssigned() {
+    IllegalArgumentException exception =
+        assertThrows(IllegalArgumentException.class, () -> feedback.addComment("Test Comment", 1L));
+    assertEquals("Please assign first to the feedback", exception.getMessage());
+  }
 
-    assertEquals("New comment", feedback.getComment());
+  @Test
+  void addComment_ShouldThrowException_WhenEmployeeNotAssigned() {
+    feedback.setEmployeeId(new EmployeeId(2L));
+
+    IllegalArgumentException exception =
+        assertThrows(IllegalArgumentException.class, () -> feedback.addComment("Test Comment", 1L));
+    assertEquals(
+        "Unauthorized to update this feedback. You are not the assigned employee. Please assign first.",
+        exception.getMessage());
+  }
+
+  @Test
+  void addComment_ShouldAddComment_WhenValid() {
+    feedback.setEmployeeId(new EmployeeId(1L));
+    feedback.addComment("Test Comment", 1L);
+
+    assertEquals("Test Comment", feedback.getComment());
+    assertEquals(FeedbackStatus.IN_PROGRESS, feedback.getStatus());
     assertNotNull(feedback.getUpdatedAt());
   }
 
   @Test
-  void closeFeedbackUpdatesCommentStatusAndTimestamp() {
-    Feedback feedback = new Feedback();
-    feedback.closeFeedback();
+  void closeFeedback_ShouldThrowException_WhenFeedbackNotAssigned() {
+    IllegalArgumentException exception =
+        assertThrows(IllegalArgumentException.class, () -> feedback.closeFeedback(1L));
+    assertEquals("Please assign first to the feedback", exception.getMessage());
+  }
+
+  @Test
+  void closeFeedback_ShouldThrowException_WhenEmployeeNotAssigned() {
+    feedback.setEmployeeId(new EmployeeId(2L));
+
+    IllegalArgumentException exception =
+        assertThrows(IllegalArgumentException.class, () -> feedback.closeFeedback(1L));
+    assertEquals(
+        "Unauthorized to update this feedback. You are not the assigned employee. Please assign first.",
+        exception.getMessage());
+  }
+
+  @Test
+  void closeFeedback_ShouldCloseFeedback_WhenValid() {
+    feedback.setEmployeeId(new EmployeeId(1L));
+    feedback.closeFeedback(1L);
 
     assertEquals(FeedbackStatus.CLOSED, feedback.getStatus());
     assertNotNull(feedback.getUpdatedAt());

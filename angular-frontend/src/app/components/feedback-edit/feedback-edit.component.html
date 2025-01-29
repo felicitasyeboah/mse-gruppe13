@@ -1,25 +1,3 @@
-
-<!--<div *ngIf="response">
-  <pre>{{ response.data | json }}</pre>
-  <h1>{{ response.data.title }}</h1>
-  <p>Kategorie: {{ response.data.category }}</p>
-  <p>Inhalt: {{ response.data.content }}</p>
-  <p>Status: {{ response.data.status }}</p>
-</div>-->
-<!--<section>-->
-<!--<form (ngSubmit)="updateFeedback()" #feedbackForm="ngForm">-->
-<!--  <label for="comment">Antwort zum Feedback:</label>-->
-<!--  <textarea-->
-<!--    id="comment"-->
-<!--    name="comment"-->
-<!--    rows="6"-->
-<!--    [(ngModel)]="feedback?.comment"-->
-<!--    placeholder="Kommentar eingeben"></textarea>-->
-
-<!--  &lt;!&ndash; Submit Button &ndash;&gt;-->
-<!--  <button type="submit">Absenden</button>-->
-<!--</form>-->
-<!--</section>-->
 <div class="modal" *ngIf="isVisible">
   <div class="modal-content">
     <span class="close" (click)="closeModal()">&times;</span>

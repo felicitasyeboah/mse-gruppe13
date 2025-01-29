@@ -185,7 +185,7 @@ class FeedbackControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.message").value("Fehler: Invalid update type"));
+        .andExpect(jsonPath("$.message").value("Invalid update type"));
 
     verify(feedbackService, times(1))
         .updateFeedback(feedbackId, "Updated comment", 101L, "EMPLOYEE", "invalid");
@@ -211,7 +211,7 @@ class FeedbackControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isNotFound())
-        .andExpect(jsonPath("$.message").value("Fehler: Feedback not found"));
+        .andExpect(jsonPath("$.message").value("Feedback not found"));
 
     verify(feedbackService, times(1))
         .updateFeedback(feedbackId, "Updated comment", 101L, "EMPLOYEE", "comment");
@@ -242,7 +242,7 @@ class FeedbackControllerTest {
         .andExpect(
             jsonPath("$.message")
                 .value(
-                    "Fehler: Unauthorized to update this feedback. You are not the assigned employee or have not the role of an employee."));
+                    "Unauthorized to update this feedback. You are not the assigned employee or have not the role of an employee."));
 
     verify(feedbackService, times(1))
         .updateFeedback(feedbackId, "Updated comment", 102L, "EMPLOYEE", "comment");

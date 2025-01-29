@@ -5,7 +5,6 @@ import {
   FeedbackListResponse,
 } from '../../services/api.service';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -18,12 +17,11 @@ import { AuthService } from '../../services/auth.service';
 export class FeedbackListComponent implements OnInit {
   response: FeedbackListResponse | undefined;
   feedbacks: Feedback[] | undefined;
-  errorMessage = ''; // to store any error message
-
+  responseMessage: string | null = null; // Holds the success or error message
+  isError = false; // Indicates if the message is an error
   constructor(
-    private apiService: ApiService,
-    private router: Router,
-    private authService: AuthService,
+    private readonly apiService: ApiService,
+    private readonly authService: AuthService,
   ) {}
 
   ngOnInit(): void {
@@ -32,17 +30,15 @@ export class FeedbackListComponent implements OnInit {
     this.apiService.fetchUserFeedbacks(userId).subscribe(
       (response: FeedbackListResponse) => {
         this.feedbacks = response.data;
-        this.errorMessage = response.message;
-        console.log('response:', response.data);
+        this.responseMessage = response.message;
+        this.isError = false;
       },
       (error) => {
-        this.errorMessage = error.message; // Handle the error
-        console.error(error);
+        this.responseMessage =
+          error?.error?.message || 'An unexpected error occurred.'; // Set error message
+        console.log(error?.error?.message);
+        this.isError = true;
       },
     );
-  }
-
-  goToDetail(id: number): void {
-    this.router.navigate(['/feedback/detail', id]);
   }
 }
