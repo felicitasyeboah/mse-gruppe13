@@ -53,7 +53,8 @@ class DomainUserEventListenerTest {
         .sendFeedbackUpdatedEmail(
             eq("john.doe@example.com"),
             eq("Feedback Updated"),
-            eq("Your feedback has been updated. 1 - Pothole on Main Street - IN_PROGRESS"));
+            eq(
+                "Your feedback \"Pothole on Main Street\" has been updated. New status: IN_PROGRESSLog in to see more details."));
   }
 
   @Test
